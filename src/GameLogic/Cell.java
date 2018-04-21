@@ -1,3 +1,5 @@
+package GameLogic;
+
 public class Cell {
     private int turn, occupant;
 
@@ -7,7 +9,7 @@ public class Cell {
     }
 
     public int getOccupant() {
-        return occupant;
+        return occupant; // 1 or 2 if occupied by a player's stone, 0 if empty
     }
 
     public boolean isEmpty() {
@@ -15,11 +17,7 @@ public class Cell {
     }
 
     public void drop(int moveNo) {
-        turn = moveNo / 2 + moveNo % 2;
+        turn = moveNo / 2 + moveNo % 2; // the turn° stone of this player
         occupant = moveNo % 2 == 0 ? 2 : 1;
-    }
-
-    public int getTurn() {
-        return turn;
     }
 }
