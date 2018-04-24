@@ -17,7 +17,12 @@ public class Cell {
     }
 
     public void drop(int moveNo) {
-        turn = moveNo / 2 + moveNo % 2; // the turn° stone of this player
+        turn = moveNo / 2 + moveNo % 2; // the turn° stone of this player half of moveNo
         occupant = moveNo % 2 == 0 ? 2 : 1;
+    }
+
+    public void undrop() {
+        turn=0;
+        occupant=0;
     }
 }

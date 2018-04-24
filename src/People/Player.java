@@ -5,7 +5,7 @@ public class Player {
     int score, id; // id: 1 or 2
 
     public Player(int id) {
-        this.id=id;
-        score=0;
+        this.id = id;
+        score =0;
     }
 }

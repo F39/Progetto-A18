@@ -19,10 +19,10 @@ public class Tester {
                 multiplayerRoutine(game);
                 break;
             case 1:
-                artificalRoutine(game, new ArtificialLev1(game));
+                artificalRoutine(game, new ArtificialVarLev(game,4,-3,2,-1));
                 break;
             case 2:
-                artificalRoutine(game, new ArtificialLev2(game));
+                artificalRoutine(game, new ArtificialVarLev(game,5,-4,3,-1));
                 break;
         }
     }
@@ -42,12 +42,13 @@ public class Tester {
         }
     }
 
-    public static void artificalRoutine(Connect4Game game, ArtificialLev1 cpu) {
+    public static void artificalRoutine(Connect4Game game, ArtificialVarLev cpu) {
         while (true) {
             try {
                 game.move(read());
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
+                continue;
             } catch (RuntimeException e) {
                 System.err.println(e.getMessage());
                 print(game.getBoard());

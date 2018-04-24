@@ -1,15 +1,18 @@
 package GameLogic;
 
-public class Board {
-    private int moveNo, length, height, lastC, lastR;
+import java.util.ArrayList;
+
+public class Board{
+    private int moveNo, length, height;
+    private ArrayList<Integer> lastC, lastR;
     private Cell[][] board;
 
     public Board(int l, int h) {
         moveNo = 0; //progressivo mossa, contatore
         length = l; //numero di colonne
         height = h; //numero di righe
-        lastC=-1; //colonna dell'ultima mossa
-        lastR=-1; //riga dell'ultima mossa
+        lastC =new ArrayList<>(); //colonna dell'ultima mossa
+        lastR =new ArrayList<>(); //riga dell'ultima mossa
         board = new Cell[height][length];
         for (int i = 0; i < h; i++)
             for (int j = 0; j < l; j++)
@@ -37,12 +40,13 @@ public class Board {
     }
 
     public int getLastC() {
-        return lastC;
+        return lastC.get(lastC.size()-1);
     }
 
     public int getLastR() {
-        return lastR;
+        return lastR.get(lastR.size()-1);
     }
+
     public void move(int column) {
         if (column < 0 || column > length - 1)
             throw new IllegalArgumentException(column + " is not an existing column");
@@ -53,42 +57,58 @@ public class Board {
             if (board[i][column].isEmpty()) {
                 moveNo++;
                 board[i][column].drop(moveNo);
-                lastC=column;
-                lastR=i;
-                result = scan(i, column);
+                lastC.add(column);
+                lastR.add(i);
+                result = scan(column);
                 break;
             }
         }
         if (result != 0)
             throw new RuntimeException(result + " win!");
-        if (moveNo==length*height)
+        if (moveNo == length * height)
             throw new RuntimeException("tie!");
     }
+    public void undo(){
+        moveNo--;
+        board[lastR.get(lastR.size()-1)][lastC.get(lastC.size()-1)].undrop();
+        lastR.remove(lastR.size()-1);
+        lastC.remove(lastC.size()-1);
+    }
 
-    public int scan(int r, int c) {
-        if (moveNo <7)
-            return 0;
-        int possibleWinner = board[r][c].getOccupant();
-        int counter = 0;
-        int i, j;
+    public int scanHorizontal(int c, int line) {
+        int r=getLastR();
+        int counter = 0, j;
+        int player = board[r][c].getOccupant();
         for (j = 0; j < length; j++) { //row check
-            if (board[r][j].getOccupant() == possibleWinner)
+            if (board[r][j].getOccupant() == player)
                 counter++;
             else
                 counter = 0;
-            if (counter == 4)
-                return possibleWinner;
+            if (counter == line)
+                return player;
         }
-        counter = 0;
+        return 0;
+    }
+
+    public int scanVertical(int c, int line) {
+        int r=getLastR();
+        int counter = 0, i;
+        int player = board[r][c].getOccupant();
         for (i = 0; i <= r; i++) { //column check
-            if (board[i][c].getOccupant() == possibleWinner)
+            if (board[i][c].getOccupant() == player)
                 counter++;
             else
                 counter = 0;
-            if (counter == 4)
-                return possibleWinner;
+            if (counter == line)
+                return player;
         }
-        counter = 0;
+        return 0;
+    }
+
+    public int scanForDiag(int c, int line) {
+        int r=getLastR();
+        int counter = 0, i, j;
+        int player = board[r][c].getOccupant();
         if (r - c <= 0) {
             i = 0;
             j = c - r;
@@ -97,14 +117,20 @@ public class Board {
             j = 0;
         }
         for (; i < height && j < length; i++, j++) {   //diagonal forward check
-            if (board[i][j].getOccupant() == possibleWinner)
+            if (board[i][j].getOccupant() == player)
                 counter++;
             else
                 counter = 0;
-            if (counter == 4)
-                return possibleWinner;
+            if (counter == line)
+                return player;
         }
-        counter = 0;
+        return 0;
+    }
+
+    public int scanBacDiag(int c, int line) {
+        int r=getLastR();
+        int counter = 0, i, j;
+        int player = board[r][c].getOccupant();
         if (r + c <= length - 1) {
             i = 0;
             j = r + c;
@@ -113,13 +139,33 @@ public class Board {
             j = length - 1;
         }
         for (; i < height && j >= 0; i++, j--) {   //diagonal backward check
-            if (board[i][j].getOccupant() == possibleWinner)
+            if (board[i][j].getOccupant() == player)
                 counter++;
             else
                 counter = 0;
-            if (counter == 4)
-                return possibleWinner;
+            if (counter == line)
+                return player;
         }
+        return 0;
+    }
+
+
+    public int scan(int c) {
+        if (moveNo < 7)
+            return 0;
+        int scan;
+        scan = scanHorizontal(c, 4);
+        if (scan != 0)
+            return scan;
+        scan = scanVertical(c, 4);
+        if (scan != 0)
+            return scan;
+        scan = scanForDiag(c, 4);
+        if (scan != 0)
+            return scan;
+        scan = scanBacDiag(c, 4);
+        if (scan != 0)
+            return scan;
         return 0;
     }
 }
