@@ -31,6 +31,7 @@ public class UserController {
     }
 
     // Create new user
+    @CrossOrigin(value = "*")
     @PostMapping(path="/user/create")
     public @ResponseBody String createNewUser(@RequestBody User user)
     {
