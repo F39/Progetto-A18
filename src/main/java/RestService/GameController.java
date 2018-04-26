@@ -9,19 +9,19 @@ public class GameController {
 
     // Crete new game
     @PostMapping(path="/create")
-    public @ResponseBody Game createNewGame(){
+    public @ResponseBody String createNewGame(){
         return "Miao";
     }
 
     // Save game
     @PostMapping(path="/save")
-    public @ResponseBody Game saveGame(){
+    public @ResponseBody String saveGame(){
         return "Bau";
     }
 
     // Join a new game
     @GetMapping(path="/{game_id}/join")
-    public @ResponseBody Game joinNewGame(@PathVariable("game_id") long game_id){
+    public @ResponseBody String joinNewGame(@PathVariable("game_id") long game_id){
         return "Grrrr";
     }
 
