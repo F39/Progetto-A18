@@ -1,5 +1,5 @@
 package src.GameLogic;
-
+/**Handles the development of the match in Single Player mode, in both the levels of difficulty*/
 public class AIRoutine implements PlayingRoutine {
     private ArtificialVarLev cpu;
     private Connect4Game game;

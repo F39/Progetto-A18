@@ -4,7 +4,7 @@ package src.GameLogic;
  */
 public class Cell {
     private int turn, occupant;
-
+/**Create a new empty cell*/
     public Cell() {
         turn = 0;
         occupant = 0;

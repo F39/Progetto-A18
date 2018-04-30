@@ -1,7 +1,8 @@
 package src.GameLogic;
 
-import src.GameLogic.*;
-
+/**
+ * Implementation of an artificial player
+ */
 public class ArtificialVarLev {
     private Connect4Game game;
     private Board mirror;
@@ -10,6 +11,9 @@ public class ArtificialVarLev {
     private int[] pesi;
     //int me = 2, player = 1;
 
+    /**
+     * Create a new artificial player for the specified game, with the level of difficulty specified by the parameters a, b, c, d, representing the weights of the 4-move horizon
+     */
     public ArtificialVarLev(Connect4Game game, int a, int b, int c, int d) {
         this.game = game;
         mirror = game.getBoard();
@@ -19,6 +23,9 @@ public class ArtificialVarLev {
         pesi = new int[]{a, b, c, d};
     }
 
+    /**
+     * Algorithm for the choice of the best move to do, checking all the possible scenarios of the next 4 moves
+     */
     public void move() {
         int guess;
         if (mirror.getMoveNo() <= 2) {

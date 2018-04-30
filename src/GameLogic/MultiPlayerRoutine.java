@@ -1,9 +1,9 @@
 package src.GameLogic;
-
-public class MultiplayerRoutine implements PlayingRoutine {
+/**Handles the development of the match in MultiPlayer mode*/
+public class MultiPlayerRoutine implements PlayingRoutine {
     private Connect4Game game;
 
-    public MultiplayerRoutine(Connect4Game game) {
+    public MultiPlayerRoutine(Connect4Game game) {
         this.game = game;
     }
 

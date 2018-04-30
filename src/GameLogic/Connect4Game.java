@@ -20,7 +20,7 @@ public class Connect4Game {
         this.player1 = player1;
         this.player2 = player2;
         switch (mode){
-            case MultiPlayer: routine=new MultiplayerRoutine(this); break;
+            case MultiPlayer: routine=new MultiPlayerRoutine(this); break;
             case SinglePlayerLevel1: routine=new AIRoutine(this, 4,-3,2,-1); break;
             case SinglePlayerLevel2: routine=new AIRoutine(this, 5,-4,3,-1); break;
         }
