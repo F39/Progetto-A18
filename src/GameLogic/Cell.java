@@ -1,5 +1,7 @@
-package GameLogic;
-
+package src.GameLogic;
+/**
+ * Class representing a single cell of the playground. It keeps memory of the occupant and the turn it has been filled.
+ */
 public class Cell {
     private int turn, occupant;
 
@@ -22,7 +24,7 @@ public class Cell {
     }
 
     public void undrop() {
-        turn=0;
-        occupant=0;
+        turn = 0;
+        occupant = 0;
     }
 }

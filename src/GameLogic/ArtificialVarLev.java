@@ -1,7 +1,6 @@
-package ArtificialAgent;
+package src.GameLogic;
 
-import GameLogic.Board;
-import GameLogic.Connect4Game;
+import src.GameLogic.*;
 
 public class ArtificialVarLev {
     private Connect4Game game;
@@ -17,7 +16,7 @@ public class ArtificialVarLev {
         lenght = mirror.getLength();
         height = mirror.getHeight();
         futur1 = new int[lenght];
-        pesi= new int[]{a,b,c,d};
+        pesi = new int[]{a, b, c, d};
     }
 
     public void move() {
@@ -38,7 +37,7 @@ public class ArtificialVarLev {
         }
     }
 
-    public int forcast() { //muove con orizzonte di predizione 4
+    private int forcast() { //muove con orizzonte di predizione 4
         boolean imoved = false, jmoved = false, kmoved = false, lmoved = false;
         for (int i = 0; i < lenght; i++)
             futur1[i] = 0;
@@ -107,7 +106,7 @@ public class ArtificialVarLev {
             if (futur1[i] > max)
                 max = futur1[i];
         }
-        for (int i = ((int) (Math.random() * lenght)), count=0; count < lenght; count++, i = (i + 1) % lenght) {
+        for (int i = ((int) (Math.random() * lenght)), count = 0; count < lenght; count++, i = (i + 1) % lenght) {
             if (futur1[i] == max && max > -1000) {
                 return i;
             }
@@ -115,7 +114,7 @@ public class ArtificialVarLev {
         return -1;
     }
 
-    public int test(int c, int peso) {
+    private int test(int c, int peso) {
         int vittorie = 0;
         vittorie += (mirror.scanHorizontal(c, 4) != 0 ? 3 * peso : 0);
         vittorie += (mirror.scanVertical(c, 4) != 0 ? 3 * peso : 0);
@@ -124,8 +123,9 @@ public class ArtificialVarLev {
 
         return vittorie;
     }
-    public int deeptest(int c, int peso){
-        int vittorie=test(c, peso);
+
+    private int deeptest(int c, int peso) {
+        int vittorie = test(c, peso);
         vittorie += mirror.scanHorizontal(c, 3) != 0 ? peso : 0;
         vittorie += mirror.scanVertical(c, 3) != 0 ? peso : 0;
         vittorie += mirror.scanForDiag(c, 3) != 0 ? peso : 0;

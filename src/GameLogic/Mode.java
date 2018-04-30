@@ -1,5 +1,5 @@
-package GameLogic;
+package src.GameLogic;
 
 public enum Mode {
-    SinglePlayerLevel1, SinglePlayerLevel2, Multiplayer
+    MultiPlayer, SinglePlayerLevel1, SinglePlayerLevel2
 }

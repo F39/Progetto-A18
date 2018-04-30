@@ -1,24 +1,33 @@
-package GameLogic;
+package src.GameLogic;
 
 import java.util.ArrayList;
 
-public class Board{
+/**
+ * Class representing a playground. It keeps memory of the cells it is made of.
+ */
+public class Board {
     private int moveNo, length, height;
     private ArrayList<Integer> lastC, lastR;
     private Cell[][] board;
 
+    /**
+     * Create a new empty Board
+     */
     public Board(int l, int h) {
         moveNo = 0; //progressivo mossa, contatore
         length = l; //numero di colonne
         height = h; //numero di righe
-        lastC =new ArrayList<>(); //colonna dell'ultima mossa
-        lastR =new ArrayList<>(); //riga dell'ultima mossa
+        lastC = new ArrayList<>(); //colonna dell'ultima mossa
+        lastR = new ArrayList<>(); //riga dell'ultima mossa
         board = new Cell[height][length];
         for (int i = 0; i < h; i++)
             for (int j = 0; j < l; j++)
                 board[i][j] = new Cell();
     }
 
+    /**
+     * Returns the occupant's number of the specified cell
+     */
     public int getCellOccupant(int r, int c) {
         try {
             return board[r][c].getOccupant();
@@ -27,26 +36,44 @@ public class Board{
         }
     }
 
+    /**
+     * Returns the length of the board
+     */
     public int getLength() {
         return length;
     }
 
+    /**
+     * Returns the height of the board
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Returns the number of stones occupying the board
+     */
     public int getMoveNo() {
         return moveNo;
     }
 
+    /**
+     * Returns the column of the last move
+     */
     public int getLastC() {
-        return lastC.get(lastC.size()-1);
+        return lastC.get(lastC.size() - 1);
     }
 
+    /**
+     * Returns the row of the last move
+     */
     public int getLastR() {
-        return lastR.get(lastR.size()-1);
+        return lastR.get(lastR.size() - 1);
     }
 
+    /**
+     * Make a move in the specified column; throws IllegalArgumentException in case the column is full or doesn't exist; throws RuntimeException in case of end of the match
+     */
     public void move(int column) {
         if (column < 0 || column > length - 1)
             throw new IllegalArgumentException(column + " is not an existing column");
@@ -68,15 +95,22 @@ public class Board{
         if (moveNo == length * height)
             throw new RuntimeException("tie!");
     }
-    public void undo(){
+
+    /**
+     * Opposite of move, retires the last move done
+     */
+    public void undo() {
         moveNo--;
-        board[lastR.get(lastR.size()-1)][lastC.get(lastC.size()-1)].undrop();
-        lastR.remove(lastR.size()-1);
-        lastC.remove(lastC.size()-1);
+        board[lastR.get(lastR.size() - 1)][lastC.get(lastC.size() - 1)].undrop();
+        lastR.remove(lastR.size() - 1);
+        lastC.remove(lastC.size() - 1);
     }
 
+    /**
+     * Starting from the last move on the specified column, scan the board horizontally searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
+     */
     public int scanHorizontal(int c, int line) {
-        int r=getLastR();
+        int r = getLastR();
         int counter = 0, j;
         int player = board[r][c].getOccupant();
         for (j = 0; j < length; j++) { //row check
@@ -90,8 +124,11 @@ public class Board{
         return 0;
     }
 
+    /**
+     * Starting from the last move on the specified column, scan the board vertically searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
+     */
     public int scanVertical(int c, int line) {
-        int r=getLastR();
+        int r = getLastR();
         int counter = 0, i;
         int player = board[r][c].getOccupant();
         for (i = 0; i <= r; i++) { //column check
@@ -105,8 +142,11 @@ public class Board{
         return 0;
     }
 
+    /**
+     * Starting from the last move on the specified column, scan the board diagonally (/) searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
+     */
     public int scanForDiag(int c, int line) {
-        int r=getLastR();
+        int r = getLastR();
         int counter = 0, i, j;
         int player = board[r][c].getOccupant();
         if (r - c <= 0) {
@@ -127,8 +167,11 @@ public class Board{
         return 0;
     }
 
+    /**
+     * Starting from the last move on the specified column, scan the board diagonally (\) searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
+     */
     public int scanBacDiag(int c, int line) {
-        int r=getLastR();
+        int r = getLastR();
         int counter = 0, i, j;
         int player = board[r][c].getOccupant();
         if (r + c <= length - 1) {
@@ -149,7 +192,9 @@ public class Board{
         return 0;
     }
 
-
+    /**
+     * Starting from the last move on the specified column, scan the board in all directions checking whether a player has won the match. Returns the player number in case of success, otherwise 0
+     */
     public int scan(int c) {
         if (moveNo < 7)
             return 0;
