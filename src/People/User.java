@@ -1,4 +1,4 @@
-package People;
+package src.People;
 
 public class User {
     String nickname, email, password;

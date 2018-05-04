@@ -1,6 +1,6 @@
 package src;
 import src.GameLogic.*;
-import People.Player;
+import src.People.*;
 
 import java.util.Scanner;
 
@@ -18,7 +18,7 @@ public class Tester {
                 break;
             }
         }
-        Connect4Game game = new Connect4Game(l, h, mode != null ? mode : Mode.MultiPlayer, new Player(1), new Player(2));
+        Connect4Game game = new Connect4Game(l, h, mode != null ? mode : Mode.MultiPlayer, new User("", "", "", ""), new User("", "", "", ""));
         TerminalIO.print(game.getBoard());
         game.startGame();
     }

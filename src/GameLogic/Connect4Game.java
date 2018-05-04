@@ -1,6 +1,6 @@
 package src.GameLogic;
 
-import People.Player;
+import src.People.*;
 
 /**Game controller. It handles a match*/
 public class Connect4Game {
@@ -9,16 +9,17 @@ public class Connect4Game {
     private long timer, delta;
     private Player player1, player2;
     private PlayingRoutine routine;
+    private int winner;
 
     /**
      * Create a new game specifying the board dimensions, the modality and the two players
      */
-    public Connect4Game(int l, int h, Mode mode, Player player1, Player player2) {
+    public Connect4Game(int l, int h, Mode mode, User player1, User player2) {
         board = new Board(l, h);
         modality = mode;
         timer = 0L;
-        this.player1 = player1;
-        this.player2 = player2;
+        this.player1 = new Player(player1, 1);
+        this.player2 = new Player(player2, 2);
         switch (mode){
             case MultiPlayer: routine=new MultiPlayerRoutine(this); break;
             case SinglePlayerLevel1: routine=new AIRoutine(this, 4,-3,2,-1); break;
@@ -32,7 +33,7 @@ public class Connect4Game {
     public void startGame() {
         delta = System.currentTimeMillis();
         routine.execute();
-
+        endGame(winner, true);
     }
 
     /**
@@ -50,14 +51,32 @@ public class Connect4Game {
     }
 
     /**
-     * Saves the game state
+     * End of the game: assigning scores to the players
      */
-    public Board saveGame() {
+    public Board endGame(int w, boolean termine) {
+        int gamePlayed;
+        if (termine)
+            gamePlayed=7+board.getMoveNo()/2;
+        else
+            gamePlayed=0;
+        switch (w) {
+            case 1:
+                player1.setScore(gamePlayed+board.getMoveNo()%2+50);
+                player2.setScore(gamePlayed);
+                break;
+            case 2:
+                player1.setScore(gamePlayed);
+                player2.setScore(gamePlayed+board.getMoveNo()%2+50);
+                break;
+            default:
+                player1.setScore(gamePlayed);
+                player2.setScore(gamePlayed);
+        }
         return board;
     }
 
     /**
-     * Interrupts the game without saving
+     * Interrupts the game
      */
     public void quitGame() {
     }
@@ -81,5 +100,9 @@ public class Connect4Game {
      */
     public void move(int col) {
         board.move(col);
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
     }
 }
