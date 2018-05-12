@@ -8,7 +8,7 @@ public class Tester {
     private static final int l = 7, h = 6;
 
     public static void main(String[] args) {
-        TerminalIO.setTastiera(new Scanner(System.in));
+        TerminalIO.setInput(new Scanner(System.in));
         System.out.print("Scegli una modalità (Multiplayer, SinglePlayerLevel1, SinglePlayerLevel2): ");
         int read = TerminalIO.read();
         Mode mode = null;

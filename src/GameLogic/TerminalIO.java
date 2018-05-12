@@ -3,7 +3,7 @@ package src.GameLogic;
 import java.util.Scanner;
 
 public class TerminalIO {
-    private static Scanner tastiera;
+    private static Scanner input;
 
     public static void print(Board b) {
         int l=b.getLength();
@@ -37,13 +37,13 @@ public class TerminalIO {
     public static int read() {
         while (true) {
             try {
-                return Integer.parseInt(tastiera.nextLine());
+                return Integer.parseInt(input.nextLine());
             } catch (Exception e) {
             }
         }
     }
 
-    public static void setTastiera(Scanner tastiera) {
-        TerminalIO.tastiera = tastiera;
+    public static void setInput(Scanner tastiera) {
+        TerminalIO.input = tastiera;
     }
 }
