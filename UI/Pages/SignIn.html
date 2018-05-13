@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../CSS/Signit.css">
+    <link rel="stylesheet" href="../CSS/button_style.css">
+    <link rel="stylesheet" href="../CSS/Sfondo_style.css">
+</head>
+<body>
+
+    <div class="format">
+        <div class="fields">
+            <input placeholder="Username" id="username" type="text" required autofocus="">
+            <input placeholder="Email" id="email" type="email" required>
+            <input placeholder="Password" type="password" id="password" required>
+            <input placeholder="Confirm password" type="password" id="c_password" required>
+
+            <div class="confirm">
+                <input type="submit" value="Confirm" id="Confirm" onclick="get_signin_data()">
+            </div>
+        </div>
+    </div>
+
+    <script src="../JS/Auth.js"></script>
+
+</body>
+</html>
