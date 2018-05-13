@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <link rel="stylesheet" href="../CSS/NewGameCss.css">
+        <link rel="stylesheet" href="../CSS/button_style.css">
+        <link rel="stylesheet" href="../CSS/Sfondo_style.css">
+        <link rel="stylesheet" href="../CSS/gif_style.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+    <body>  
+        
+
+        <ul id="home_icon">
+            <li id="home_icon"><a href="#"><i class="fa fa-gift" aria-hidden="true"></i></a></li>
+        </ul>
+        <div class="loading">
+            <img src="../Img/g.gif" alt="HTML5 Icon" style="width:200px;height:200px;">
+        </div>
+
+
+        <div class="menu_game">
+
+            <div class="menu_butt">
+            <input type="checkbox" class="button" id="new_game">
+                <span class="aaa" id="aaa">
+                <label for="new_game" id="new_game">New Game</label>
+                            <div class="mod_game">
+                            <ul>
+                                <li><input type="button" value="1 vs 1" class="mod1" onclick="document.location.href='./connect4.html'"></li>
+                                <li><a href="#"><input type="button" value="1 vs CPU" class="mod2"></a></li>
+                            </ul>
+                            </div>
+
+
+                </span>
+
+                <input type="button" value="Load Game" class="button2" onclick="document.location.href='./loadgame.html'" >
+                <input type="button" value="Log out" class="logout" onclick="logout()">
+            </div>
+        </div>
+
+        <script src="../JS/Auth.js"></script>
+        <script>window.onload = check_token()</script>
+
+
+    </body>
+</html>
