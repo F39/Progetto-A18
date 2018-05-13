@@ -1,0 +1,18 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
+
+body {
+    -webkit-perspective: 800px;
+    -webkit-perspective: 800px;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Gudea', sans-serif;
+    background: #2192ef;
+    background: linear-gradient(135deg, #2192ef 20%, #053b66 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ee5c35 ', endColorstr='#ec225f',GradientType=1 );
+}
+body ::-webkit-input-placeholder{
+    color: #4E546D;
+}
+
+
