@@ -1,4 +1,4 @@
-package src.GameLogic;
+package GameLogic;
 /**
  * Class representing a single cell of the playground. It keeps memory of the occupant and the turn it has been filled.
  */

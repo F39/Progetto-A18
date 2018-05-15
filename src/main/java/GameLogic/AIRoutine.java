@@ -1,8 +1,8 @@
-package src.GameLogic;
+package GameLogic;
 /**Handles the development of the match in Single Player mode, in both the levels of difficulty*/
 public class AIRoutine extends PlayingRoutine {
     private ArtificialVarLev cpu;
-    public AIRoutine(Connect4Game game, int a, int b, int c, int d) {
+    public AIRoutine(Match game, int a, int b, int c, int d) {
         super(game);
         cpu=new ArtificialVarLev(game, a, b, c, d);
     }

@@ -1,9 +1,9 @@
-package src.GameLogic;
+package GameLogic;
 
-import src.People.*;
+import People.*;
 
 /**Game controller. It handles a match*/
-public class Connect4Game {
+public class Match {
     private Board board;
     private Mode modality;
     private long timer, delta;
@@ -14,7 +14,7 @@ public class Connect4Game {
     /**
      * Create a new game specifying the board dimensions, the modality and the two players
      */
-    public Connect4Game(int l, int h, Mode mode, User player1, User player2) {
+    public Match(int l, int h, Mode mode, User player1, User player2) {
         board = new Board(l, h);
         modality = mode;
         timer = 0L;

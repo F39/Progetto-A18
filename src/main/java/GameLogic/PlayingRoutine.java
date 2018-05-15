@@ -1,9 +1,9 @@
-package src.GameLogic;
+package GameLogic;
 /**Interface for the routines of the matches*/
 public abstract class PlayingRoutine {
-    public Connect4Game game;
+    public Match game;
 
-    public PlayingRoutine(Connect4Game game) {
+    public PlayingRoutine(Match game) {
         this.game = game;
     }
 

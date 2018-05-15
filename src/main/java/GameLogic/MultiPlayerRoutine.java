@@ -1,8 +1,8 @@
-package src.GameLogic;
+package GameLogic;
 /**Handles the development of the match in MultiPlayer mode*/
 public class MultiPlayerRoutine extends PlayingRoutine {
 
-    public MultiPlayerRoutine(Connect4Game game) {
+    public MultiPlayerRoutine(Match game) {
         super(game);
     }
 

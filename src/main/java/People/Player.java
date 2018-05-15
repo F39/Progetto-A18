@@ -1,4 +1,4 @@
-package src.People;
+package People;
 
 public class Player {
     User user;

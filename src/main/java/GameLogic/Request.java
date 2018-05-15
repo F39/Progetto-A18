@@ -1,6 +1,6 @@
-package src.GameLogic;
+package GameLogic;
 
-import src.People.User;
+import People.User;
 
 import java.util.ArrayList;
 
@@ -15,8 +15,8 @@ public class Request {
         waiting.add(user);
     }
 
-    public Connect4Game match(User user1, User user2) {
-        Connect4Game game = new Connect4Game(7, 6, Mode.MultiPlayer, user1, user2);
+    public Match match(User user1, User user2) {
+        Match game = new Match(7, 6, Mode.MultiPlayer, user1, user2);
         ArrayList<User> remove = new ArrayList<>();
         for (User u : waiting) {
             if (u.equals(user1) || u.equals(user2))

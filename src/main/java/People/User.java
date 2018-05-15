@@ -1,6 +1,6 @@
-package src.People;
+package People;
 
-import src.GameLogic.Request;
+import GameLogic.Request;
 
 public class User {
     String nickname, email, password;

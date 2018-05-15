@@ -1,4 +1,4 @@
-package src.GameLogic;
+package GameLogic;
 
 public interface Observer {
 }
