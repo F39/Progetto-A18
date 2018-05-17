@@ -1,11 +1,9 @@
-//package DatabaseManagement;
-//
-//import org.springframework.data.repository.CrudRepository;
-//import DatabaseManagement.User;
-//
-//// This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
-//// CRUD refers Create, Read, Update, Delete
-//
-//public interface UserRepository extends CrudRepository<User, Long> {
-//
-//}
+package DatabaseManagement;
+
+public class UserRepository {
+
+    public User getUserByAuthToken(String token) {
+        return null; // You shall not pass!
+    }
+
+}
