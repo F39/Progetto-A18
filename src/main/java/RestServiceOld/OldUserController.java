@@ -8,7 +8,7 @@
 //@RestController
 //@CrossOrigin(value = "*")
 //@RequestMapping(path="/api/v1/user")
-//public class UserController {
+//public class Controllers.ConnectionController {
 //
 //    @Autowired
 //    private UserRepository userRepository;
