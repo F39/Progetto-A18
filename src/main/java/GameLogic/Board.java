@@ -6,22 +6,21 @@ import java.util.ArrayList;
  * Class representing a playground. It keeps memory of the cells it is made of.
  */
 public class Board {
-    private int moveNo, length, height;
+    private int moveNo;
+    static final int length=7, height=6;
     private ArrayList<Integer> lastC, lastR;
     private Cell[][] board;
 
     /**
      * Create a new empty Board
      */
-    public Board(int l, int h) {
+    public Board() {
         moveNo = 0; //progressivo mossa, contatore
-        length = l; //numero di colonne
-        height = h; //numero di righe
         lastC = new ArrayList<>(); //colonna dell'ultima mossa
         lastR = new ArrayList<>(); //riga dell'ultima mossa
         board = new Cell[height][length];
-        for (int i = 0; i < h; i++)
-            for (int j = 0; j < l; j++)
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < length; j++)
                 board[i][j] = new Cell();
     }
 

@@ -1,4 +1,9 @@
-package GameLogic;
+package GameLogic.ArtificialIntelligence;
+
+import GameLogic.Match;
+import GameLogic.PlayingRoutine;
+import GameLogic.TerminalIO;
+
 /**Handles the development of the match in Single Player mode, in both the levels of difficulty*/
 public class AIRoutine extends PlayingRoutine {
     private ArtificialVarLev cpu;

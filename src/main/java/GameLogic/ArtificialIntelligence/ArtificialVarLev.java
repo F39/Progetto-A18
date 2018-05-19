@@ -1,4 +1,7 @@
-package GameLogic;
+package GameLogic.ArtificialIntelligence;
+
+import GameLogic.Board;
+import GameLogic.Match;
 
 /**
  * Implementation of an artificial player
