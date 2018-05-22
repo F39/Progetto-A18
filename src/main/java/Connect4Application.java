@@ -69,18 +69,18 @@ public class Connect4Application {
             destChannel.close();
         }
     }
-    private static void copyFolder(File sourceFolder, File destinationFolder) throws IOException{
-        if(sourceFolder.isDirectory()){
-            if(!destinationFolder.exists())
+    private static void copyFolder(File sourceFolder, File destinationFolder) throws IOException {
+        if (sourceFolder.isDirectory()) {
+            if (!destinationFolder.exists())
                 destinationFolder.mkdirs();
             String files[] = sourceFolder.list();
-            for(String file:files){
+            for (String file : files) {
                 File scrFile = new File(sourceFolder, file);
                 File destFile = new File(destinationFolder, file);
                 copyFolder(scrFile, destFile);
-                System.out.println("file copiato" +destFile.toPath());
+                System.out.println("file copiato" + destFile.toPath());
                 Connect4Application.copyFileUsingChannel(scrFile, destFile);
             }
         }
-
+    }
 }
