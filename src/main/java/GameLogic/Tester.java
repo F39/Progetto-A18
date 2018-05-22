@@ -18,7 +18,7 @@ public class Tester {
                 break;
             }
         }
-        Match game = new Match(l, h, mode != null ? mode : Mode.MultiPlayer, new User("", "", "", ""), new User("", "", "", ""));
+        Match game = new Match(l, h, mode != null ? mode : Mode.MultiPlayer, new User("", "", ""), new User("", "", ""));
         TerminalIO.print(game.getBoard());
         game.startGame();
     }

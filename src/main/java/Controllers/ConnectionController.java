@@ -49,7 +49,7 @@ public class ConnectionController {
     }
 
     @OnOpen
-    public void onOpen(Session session){
+    public void onOpen(Session session) {
         // TODO : custom handshake for auth, to be investigated ASAP
         System.out.println("Open Connection session id " + session.getId());
         peers.add(session);
@@ -58,7 +58,7 @@ public class ConnectionController {
     }
 
     @OnClose
-    public void onClose(Session session){
+    public void onClose(Session session) {
         System.out.println("Close Connection session id " + session.getId());
         peers.remove(session);
         String tokenToBeInvalidated = authenticatedUserSession.get(session);
@@ -70,38 +70,35 @@ public class ConnectionController {
     }
 
     @OnMessage
-    public void onMessage(JSONObject message, Session session){
+    public void onMessage(JSONObject message, Session session) {
         try {
             // TODO : check auth token
-            if(checkUserAuthToken(message.getString("token"), session)){
+            if (checkUserAuthToken(message.getString("token"), session)) {
                 this.gameController.handleEvent(message, session);
-            }
-            else {
+            } else {
                 // TODO : invalidate session
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private boolean checkUserAuthToken(String token, Session session){
-        if(authenticatedUserSession.containsKey(session)){
+    private boolean checkUserAuthToken(String token, Session session) {
+        if (authenticatedUserSession.containsKey(session)) {
             return true;
         }
         // else check user token on db
         // TODO : maybe we can use an Auth table and a relative repo ?
-        else if(userRepository.getUserByAuthToken(token) != null) {
+        else if (userRepository.getUserByAuthToken(token) != null) {
             authenticatedUserSession.put(session, token);
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
     @OnError
-    public void onError(Throwable e){
+    public void onError(Throwable e) {
         // TODO : Log
         e.printStackTrace();
     }

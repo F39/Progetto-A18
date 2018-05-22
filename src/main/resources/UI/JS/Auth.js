@@ -40,8 +40,7 @@ function get_signin_data(){
         var xhr = RESTrequest('POST', "/api/v1/user/create", data)
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                var json = JSON.parse(xhr.responseText);
-                //console.log(json.email + ", " + json.password);
+                alert("Confirmation email sent");
                 document.location.href="../Index.html";
             }
         };  

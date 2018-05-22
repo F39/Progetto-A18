@@ -1,8 +1,8 @@
 package Controllers;
 
+import DatabaseManagement.User;
 import GameLogic.Match;
 import GameLogic.Mode;
-import People.User;
 import Utils.Observer;
 import org.json.JSONObject;
 
@@ -45,7 +45,7 @@ public class GameController extends Observer {
     }
 
     private void createNewGame(User p1, User p2){
-        Match newMatch = new Match(7, 6, Mode.MultiPlayer, p1, p2);
+        Match newMatch = new Match(Mode.MultiPlayer, p1, p2);
         newMatch.attach(this);
         matches.add(newMatch);
         pendingUsers.remove(p1);
