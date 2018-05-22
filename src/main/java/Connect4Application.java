@@ -27,6 +27,14 @@ public class Connect4Application {
        String webAppRootPathName = "connect4WebApp";
        File webAppFolder = new File(webAppRootPathName + File.separator + "WEB-INF" + File.separator +"lib");
        webAppFolder.mkdirs();
+       File webAppCSS = new File(webAppRootPathName+File.separator+"WEB-INF" + File.separator+ "CSS");
+       webAppCSS.mkdirs();
+       File webAppIMG = new File(webAppRootPathName+ File.separator + "WEB-INF" + File.separator + "Img");
+       webAppIMG.mkdirs();
+       File webAppJS = new File(webAppRootPathName + File.separator + "WEB-INF" + File.separator + "JS");
+       webAppJS.mkdirs();
+       File webAppPages = new File(webAppRootPathName + File.separator + "WEB-INF" + File.separator + "Pages");
+       webAppPages.mkdirs();
        Connect4Application.copyFileUsingChannel(thisJar, new File(webAppFolder.getPath() + File.separator + "app.jar"));
        Connect4Application.copyFileUsingChannel( new File(Connect4Application.class.getResource("index.html").getPath()), new File(webAppRootPathName + File.separator + "index.html"));
        return webAppRootPathName;
