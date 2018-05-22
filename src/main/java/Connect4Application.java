@@ -1,4 +1,8 @@
+
+import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
@@ -14,12 +18,19 @@ public class Connect4Application {
         String port = "8080"; // Also change in index.html
         tomcat.setPort(Integer.parseInt(port));
         String webAppDirLocation = setupWebApp();
-        tomcat.addWebapp("", new File(webAppDirLocation).getAbsolutePath());
+        Context context = tomcat.addWebapp("", new File(webAppDirLocation).getAbsolutePath());
+        tomcat.addServlet(context, "jersey-container-servlet", resourceConfig());
+        context.addServletMapping("/rest/*", "jersey-container-servlet");
         tomcat.start();
         tomcat.getServer().await();
    }
 
-   private static String setupWebApp() throws Exception
+    private static ServletContainer resourceConfig() {
+        return new ServletContainer(new ResourceConfig(
+                new ResourceLoader().getClasses()));
+    }
+
+    private static String setupWebApp() throws Exception
    {
        Path classesPath = Paths.get(Connect4Application.class.getProtectionDomain().getCodeSource().getLocation().toURI());
        String resourcePath = classesPath.getParent().toString();
