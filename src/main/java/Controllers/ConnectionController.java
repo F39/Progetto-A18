@@ -3,10 +3,13 @@ package Controllers;
 import DatabaseManagement.UserRepository;
 import Utils.JsonDecoder;
 import Utils.JsonEncoder;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
 import org.json.JSONObject;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +22,31 @@ import java.util.List;
 )
 public class ConnectionController {
 
+    private String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
+    private String dbUser = "root";
+    private String dbPass = "root";
     private static List<Session> peers = new ArrayList<>();
+    private ConnectionSource connectionSource;
+
+    {
+        try {
+            connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private HashMap<Session, String> authenticatedUserSession = new HashMap<>();
     private GameController gameController = new GameController();
-    private UserRepository userRepository = new UserRepository();
+    private UserRepository userRepository;
+
+    {
+        try {
+            userRepository = new UserRepository(connectionSource);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @OnOpen
     public void onOpen(Session session){
