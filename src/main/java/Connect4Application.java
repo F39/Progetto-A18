@@ -35,6 +35,7 @@ public class Connect4Application {
        Path classesPath = Paths.get(Connect4Application.class.getProtectionDomain().getCodeSource().getLocation().toURI());
        String resourcePath = classesPath.getParent().toString();
        File thisJar = new File(resourcePath + File.separator + "Connect4WebApp.jar");
+       Path UIPath = Paths.get(classesPath.getParent().getParent()+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"UI");
        String webAppRootPathName = "connect4WebApp";
        File webAppFolder = new File(webAppRootPathName + File.separator + "WEB-INF" + File.separator +"lib");
        webAppFolder.mkdirs();
@@ -46,6 +47,10 @@ public class Connect4Application {
        webAppJS.mkdirs();
        File webAppPages = new File(webAppRootPathName + File.separator + "WEB-INF" + File.separator + "Pages");
        webAppPages.mkdirs();
+       Connect4Application.copyFolder(new File(UIPath+File.separator+"CSS"), webAppCSS);
+       Connect4Application.copyFolder(new File(UIPath+File.separator+"Img"), webAppIMG);
+       Connect4Application.copyFolder(new File(UIPath+File.separator+"JS"), webAppJS);
+       Connect4Application.copyFolder(new File(UIPath+File.separator+"Pages"), webAppPages);
        Connect4Application.copyFileUsingChannel(thisJar, new File(webAppFolder.getPath() + File.separator + "app.jar"));
        Connect4Application.copyFileUsingChannel( new File(Connect4Application.class.getResource("index.html").getPath()), new File(webAppRootPathName + File.separator + "index.html"));
        return webAppRootPathName;
@@ -64,5 +69,18 @@ public class Connect4Application {
             destChannel.close();
         }
     }
+    private static void copyFolder(File sourceFolder, File destinationFolder) throws IOException{
+        if(sourceFolder.isDirectory()){
+            if(!destinationFolder.exists())
+                destinationFolder.mkdirs();
+            String files[] = sourceFolder.list();
+            for(String file:files){
+                File scrFile = new File(sourceFolder, file);
+                File destFile = new File(destinationFolder, file);
+                copyFolder(scrFile, destFile);
+                System.out.println("file copiato" +destFile.toPath());
+                Connect4Application.copyFileUsingChannel(scrFile, destFile);
+            }
+        }
 
 }
