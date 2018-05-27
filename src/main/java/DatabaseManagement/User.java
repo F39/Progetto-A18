@@ -3,20 +3,26 @@ package DatabaseManagement;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-// TODO : user entity to be mapped to db
 @DatabaseTable(tableName = "user")
 public class User {
 
-        @DatabaseField(generatedId = true)
-        private Integer id;
-        @DatabaseField(unique = true)
-        private String username;
-        @DatabaseField(unique = true)
-        private String email;
-        @DatabaseField
-        private String password;
+    public static final String USERNAME_FIELD_NAME = "username";
+    public static final String EMAIL_FIELD_NAME = "email";
+    public static final String PASSWORD_FIELD_NAME = "password";
+    public static final String AUTH_TOKEN_FIELD_NAME = "auth_token";
 
-        public User(){}
+    @DatabaseField(generatedId = true)
+    private Integer id;
+    @DatabaseField(unique = true, columnName = USERNAME_FIELD_NAME)
+    private String username;
+    @DatabaseField(unique = true, columnName = EMAIL_FIELD_NAME)
+    private String email;
+    @DatabaseField(canBeNull = false, columnName = PASSWORD_FIELD_NAME)
+    private String password;
+    @DatabaseField(columnName = AUTH_TOKEN_FIELD_NAME)
+    private String token;
+
+    public User(){}
 
     public User(String username, String password) {
         this.username = username;
@@ -29,36 +35,43 @@ public class User {
             this.password=password;
         }
 
+    public String getToken() {
+        return token;
+    }
 
-        public Integer getId() {
-            return id;
-        }
+    public void setToken(String token) {
+        this.token = token;
+    }
 
-        public void setId(Integer id) {
-            this.id = id;
-        }
+    public Integer getId() {
+        return id;
+    }
 
-        public String getUsername() {
-            return username;
-        }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-        public void setUser(String user) {
-            this.username = user;
-        }
+    public String getUsername() {
+        return username;
+    }
 
-        public String getEmail() {
-            return email;
-        }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        public void setMail(String mail) {
-            this.email = mail;
-        }
+    public String getEmail() {
+        return email;
+    }
 
-        public String getPassword() {
-            return password;
-        }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-        public void setPassword(String password) {
-            this.password = password;
-        }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
