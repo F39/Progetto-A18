@@ -1,11 +1,11 @@
 package GameLogic;
 
-public enum Mode {
-    MultiPlayer(0), SinglePlayerLevel1(1), SinglePlayerLevel2(2);
+public enum MatchFlowState {
+    started(0), running(1), paused(2), quitted(3), finished(4);
 
     private final int value;
 
-    Mode(int value) {
+    MatchFlowState(int value) {
         this.value = value;
     }
 

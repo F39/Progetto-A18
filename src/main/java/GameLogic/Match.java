@@ -1,10 +1,10 @@
 package GameLogic;
 
 import DatabaseManagement.User;
-import GameLogic.ArtificialIntelligence.AIRoutine;
-import Utils.Observer;
+import Utils.ObserverGame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,87 +12,84 @@ import java.util.List;
  */
 public class Match {
 
+    private int gameId;
     private Board board;
-    private Mode modality;
     private long timer, delta;
     private User player1, player2;
-    private int score1, score2;
-    private PlayingRoutine routine;
-    private int winner;
-    private List<Observer> observers = new ArrayList<>();
-    private Flux fluxState;
-    private int[] moveState;
+    private int scoreP1, scoreP2;
 
-    public Flux getFluxState() {
-        // to be updated with the game state
-        return fluxState;
+    private List<ObserverGame> observerGames = new ArrayList<>();
+
+    private MatchFlowState matchFlowState;
+    private int lastMove; // column of the last cell occupied
+
+    public int getGameId() {
+        return gameId;
     }
 
-    public void setFluxState(Flux state) {
-        this.fluxState = state;
+    public MatchFlowState getMatchFlowState() {
+        return matchFlowState;
+    }
+
+    public void setMatchFlowState(MatchFlowState state) {
+        matchFlowState = state;
         notifyAllObservers();
     }
 
-    public int[] getMoveState() {
-        return moveState;
+    public int getLastMove() {
+        return lastMove;
     }
 
-    public void setMoveState(int r, int c) {
-        moveState[0] = r;
-        moveState[1] = c;
+    public void setLastMove(int column) {
+        lastMove = column;
+        board.move(lastMove); // board update and self evaluation
+        notifyAllObservers();
     }
 
-    public void attach(Observer observer) {
-        observers.add(observer);
+    public void attach(ObserverGame observerGame) {
+        observerGames.add(observerGame);
     }
 
-    public void notifyAllObservers() {
-        for (Observer observer : observers) {
-            observer.update();
+    private void notifyAllObservers() {
+        for (ObserverGame observerGame : observerGames) {
+            observerGame.update(this.gameId);
         }
     }
 
     /**
-     * Create a new game specifying the board dimensions, the modality and the two players
+     * Create a new game specifying the board dimensions, the gameMode and the two players
      */
     // TODO : discriminate game mode with multiple constructor
     public Match(Mode mode, User user1, User user2) {
-        board = new Board();
-        modality = mode;
-        timer = 0;
-        this.player1 = user1;
-        this.player2 = user2;
-        score1 = 0;
-        score2 = 0;
-        moveState = new int[2]; // coordinates of the last cell occupied
-        switch (mode) {
-            case MultiPlayer:
-                routine = new MultiPlayerRoutine(this);
-                break;
-            case SinglePlayerLevel1:
-                routine = new AIRoutine(this, 4, -3, 2, -1);
-                break;
-            case SinglePlayerLevel2:
-                routine = new AIRoutine(this, 5, -4, 3, -1);
-                break;
+        // TODO : how to generate an appropriate game id ?
+        this.gameId = 1;
+        this.board = new Board();
+        if (mode == Mode.MultiPlayer) {
+            this.player1 = user1;
+            this.player2 = user2;
+            this.scoreP1 = 0;
+            this.scoreP2 = 0;
+        } else {
+            this.player1 = user1;
+            this.scoreP1 = 0;
+            // TODO : here setup the AI player
         }
+        this.timer = 0;
     }
 
     /**
      * Begins a new game
      */
     public void startGame() {
-        setFluxState(Flux.running);
+        setMatchFlowState(MatchFlowState.started);
         delta = System.currentTimeMillis();
-        routine.execute();
-        endGame(winner, true);
     }
 
     /**
      * Pauses the game
      */
     public void pauseGame() {
-        setFluxState(Flux.paused);
+        setMatchFlowState(MatchFlowState.paused);
         timer += System.currentTimeMillis() - delta;
     }
 
@@ -100,7 +97,7 @@ public class Match {
      * Restarts the game after pausing
      */
     public void resumeGame() {
-        setFluxState(Flux.running);
+        setMatchFlowState(MatchFlowState.running);
         delta = System.currentTimeMillis();
     }
 
@@ -108,7 +105,7 @@ public class Match {
      * End of the game: assigning scores to the players
      */
     public Board endGame(int w, boolean termine) {
-        setFluxState(Flux.finished);
+        setMatchFlowState(MatchFlowState.finished);
         timer += System.currentTimeMillis() - delta;
         int gamePlayed;
         if (termine)
@@ -119,20 +116,20 @@ public class Match {
             case 1:
                 //player1.setScore(gamePlayed+board.getMoveNo()%2+50);
                 //player2.setScore(gamePlayed);
-                score1 = gamePlayed + board.getMoveNo() % 2 + 50;
-                score2 = gamePlayed;
+                scoreP1 = gamePlayed + board.getMoveNo() % 2 + 50;
+                scoreP2 = gamePlayed;
                 break;
             case 2:
                 //player1.setScore(gamePlayed);
                 //player2.setScore(gamePlayed+board.getMoveNo()%2+50);
-                score1 = gamePlayed;
-                score1 = gamePlayed + board.getMoveNo() % 2 + 50;
+                scoreP1 = gamePlayed;
+                scoreP1 = gamePlayed + board.getMoveNo() % 2 + 50;
                 break;
             default:
                 //player1.setScore(gamePlayed);
                 //player2.setScore(gamePlayed);
-                score1 = gamePlayed;
-                score2 = gamePlayed;
+                scoreP1 = gamePlayed;
+                scoreP2 = gamePlayed;
         }
         return board;
     }
@@ -141,7 +138,7 @@ public class Match {
      * Interrupts the game
      */
     public void quitGame() {
-        setFluxState(Flux.quitted);
+        setMatchFlowState(MatchFlowState.quitted);
         timer += System.currentTimeMillis() - delta;
     }
 
@@ -149,7 +146,7 @@ public class Match {
      * Returns the chronometer of the game
      */
     public long getTime() {
-        if (fluxState.equals(Flux.running))
+        if (matchFlowState.equals(MatchFlowState.running))
             return System.currentTimeMillis() - delta + timer;
         return timer;
     }
@@ -166,10 +163,11 @@ public class Match {
      */
     public void move(int col) {
         board.move(col);
-        setMoveState(board.getLastR(), board.getLastC());
+        setLastMove(col);
     }
 
-    public void setWinner(int winner) {
-        this.winner = winner;
+    public List<User> getPlayers() {
+        return Arrays.asList(player1, player2);
     }
+
 }
