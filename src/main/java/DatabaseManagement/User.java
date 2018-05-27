@@ -10,13 +10,24 @@ public class User {
         @DatabaseField(generatedId = true)
         private Integer id;
         @DatabaseField(unique = true)
-        private String user;
+        private String username;
         @DatabaseField(unique = true)
-        private String mail;
+        private String email;
         @DatabaseField
         private String password;
 
         public User(){}
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(String username, String email, String password){
+            this.username = username;
+            this.email=email;
+            this.password=password;
+        }
 
 
         public Integer getId() {
@@ -27,20 +38,20 @@ public class User {
             this.id = id;
         }
 
-        public String getUser() {
-            return user;
+        public String getUsername() {
+            return username;
         }
 
         public void setUser(String user) {
-            this.user = user;
+            this.username = user;
         }
 
-        public String getMail() {
-            return mail;
+        public String getEmail() {
+            return email;
         }
 
         public void setMail(String mail) {
-            this.mail = mail;
+            this.email = mail;
         }
 
         public String getPassword() {

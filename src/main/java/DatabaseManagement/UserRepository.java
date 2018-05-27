@@ -34,7 +34,7 @@ public class UserRepository implements CrudRepository{
     @Override
     public void update( String[] parameters) throws SQLException {
         for (User u : UserDao) {
-            if (u.getUser().equals(parameters[0])) {
+            if (u.getUsername().equals(parameters[0])) {
                 u.setUser(parameters[1]);
                 UserDao.update(u);
             }
@@ -47,7 +47,7 @@ public class UserRepository implements CrudRepository{
     @Override
     public void delete(String[] parameters) throws SQLException {
         for (User u : UserDao) {
-            if (u.getUser().equals(parameters[0])) {
+            if (u.getUsername().equals(parameters[0])) {
                 UserDao.delete(u);
             }
         }

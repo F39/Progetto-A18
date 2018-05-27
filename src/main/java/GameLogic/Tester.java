@@ -1,6 +1,6 @@
 package GameLogic;
 
-import People.*;
+import DatabaseManagement.User;
 
 import java.util.Scanner;
 
@@ -18,8 +18,8 @@ public class Tester {
                 break;
             }
         }
-        Match game = new Match(l, h, mode != null ? mode : Mode.MultiPlayer, new User("", "", ""), new User("", "", ""));
-        TerminalIO.print(game.getBoard());
-        game.startGame();
+        //Match game = new Match(l, h, mode != null ? mode : Mode.MultiPlayer, new User(), new User());
+        //TerminalIO.print(game.getBoard());
+        //game.startGame();
     }
 }

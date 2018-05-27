@@ -2,16 +2,15 @@ package Controllers;
 
 import DatabaseManagement.User;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 @Path("/user")
 public class UserController {
+
+
 
     @POST
     @Path("/signup")
@@ -27,20 +26,38 @@ public class UserController {
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String login(User user){
+    @Produces(MediaType.APPLICATION_JSON)
+    public User login(User user){
 
-        if(checkCredentials(user.getUser(), user.getPassword())){
-            return generateToken();
+        if(checkCredentials(user.getUsername(), user.getPassword())){
+            System.out.println();
+            return user;
+
         }
         //return user;
         return null;
     }
 
+    @POST
+    @Path("/token/{tokenid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response checkToken(User user, @PathParam("tokenid") String token){
+        System.out.println("User " + user.getUsername() +  " token: " + token);
+        if(checkDBToken(user.getUsername(), token)){
+            return Response.status(Status.OK).build();
+        }
+        return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    private boolean checkDBToken(String user, String token) {
+        // TODO : check on db/list if token is rightù
+        return true;
+    }
+
     private boolean addUser(User user) {
 
         // TODO : add user to db
-        return false;
+        return true;
     }
 
     private String generateToken() {
