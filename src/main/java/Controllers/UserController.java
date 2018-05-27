@@ -1,23 +1,43 @@
 package Controllers;
 
 import DatabaseManagement.User;
+import DatabaseManagement.UserRepository;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.sql.SQLException;
+import java.util.UUID;
 
 @Path("/user")
 public class UserController {
 
+    private UserRepository userRepository;
 
+    public UserController() {
+        ConnectionSource connectionSource;
+        // TODO : export to config
+        String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
+        String dbUser = "root";
+        String dbPass = "delta";
+        try {
+            connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
+            userRepository = new UserRepository(connectionSource);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @POST
     @Path("/signup")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response signUp(User user){
-
-        if(addUser(user)){
+    public Response signUp(User user) {
+        System.out.println(user.getUsername());
+        if (addUser(user)) {
             return Response.status(Status.OK).build();
         }
         return Response.status(Status.BAD_REQUEST).build();
@@ -27,46 +47,33 @@ public class UserController {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User login(User user){
-
-        if(checkCredentials(user.getUsername(), user.getPassword())){
-            System.out.println();
-            return user;
-
+    public Response login(User user) {
+        try {
+            if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
+                String newToken = generateAuthToken();
+                userRepository.updateUserAuthToken(newToken, user.getUsername());
+                user.setToken(newToken);
+                return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        //return user;
-        return null;
-    }
-
-    @POST
-    @Path("/token/{tokenid}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response checkToken(User user, @PathParam("tokenid") String token){
-        System.out.println("User " + user.getUsername() +  " token: " + token);
-        if(checkDBToken(user.getUsername(), token)){
-            return Response.status(Status.OK).build();
-        }
-        return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    private boolean checkDBToken(String user, String token) {
-        // TODO : check on db/list if token is rightù
-        return true;
+        return Response.status(Status.BAD_REQUEST).entity("Login failed: the provided credentials are not valid ones.").build();
     }
 
     private boolean addUser(User user) {
-
-        // TODO : add user to db
-        return true;
+        try {
+            userRepository.create(user);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    private String generateToken() {
-        // TODO : Discuss about policy to generate token
-        return "Token";
+    private String generateAuthToken() {
+        UUID authToken = UUID.randomUUID();
+        return authToken.toString();
     }
 
-    private boolean checkCredentials(String username, String password) {
-        // TODO : Query on db to check if user exists
-        return true;
-    }
 }

@@ -1,18 +1,22 @@
 package Controllers;
 
+import DatabaseManagement.User;
 import DatabaseManagement.UserRepository;
+import Utils.Command;
 import Utils.JsonDecoder;
 import Utils.JsonEncoder;
+import Utils.ObserverConnection;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import org.json.JSONObject;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 
 // TODO : resolve ambiguity in encoder/decoder classes names
 @ServerEndpoint(
@@ -20,80 +24,66 @@ import java.util.List;
         decoders = JsonDecoder.class,
         encoders = JsonEncoder.class
 )
-public class ConnectionController {
+public class ConnectionController extends ObserverConnection {
 
-    private String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
-    private String dbUser = "root";
-    private String dbPass = "root";
-    private static List<Session> peers = new ArrayList<>();
-    private ConnectionSource connectionSource;
+    private static HashMap<Session, User> peers = new HashMap<>(); // map sessions to relative users
+    private HashMap<Session, String> authenticatedUserSession = new HashMap<>(); // map users to relative auth tokens
+    private GameController gameController;
 
-    {
-        try {
-            connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private HashMap<Session, String> authenticatedUserSession = new HashMap<>();
-    private GameController gameController = new GameController();
     private UserRepository userRepository;
 
-    {
+    public ConnectionController() {
+
+        gameController = new GameController();
+        gameController.attach(this);
+
+        // TODO : export to config
+        String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
+        String dbUser = "root";
+        String dbPass = "";
+        ConnectionSource connectionSource;
         try {
+            connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
             userRepository = new UserRepository(connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     @OnOpen
     public void onOpen(Session session) {
-        // TODO : custom handshake for auth, to be investigated ASAP
-        System.out.println("Open Connection session id " + session.getId());
-        peers.add(session);
         // TODO : Log
-        System.out.println(peers.size());
+        peers.put(session, null);
+        // TODO : Log
     }
 
     @OnClose
     public void onClose(Session session) {
-        System.out.println("Close Connection session id " + session.getId());
-        peers.remove(session);
+        // TODO : Log
         String tokenToBeInvalidated = authenticatedUserSession.get(session);
         authenticatedUserSession.remove(session);
-        // TODO : invalidate user token on db
+        try {
+            userRepository.updateUserAuthToken(null, peers.get(session).getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        peers.remove(session);
         // TODO : force to game controller a match quit event
         // TODO : Log
-        System.out.println(peers.size());
     }
 
     @OnMessage
     public void onMessage(JSONObject message, Session session) {
         try {
-            // TODO : check auth token
             if (checkUserAuthToken(message.getString("token"), session)) {
-                this.gameController.handleEvent(message, session);
+                // TODO : serialize message to command obj here
+                this.gameController.handleEvent(message, peers.get(session));
             } else {
-                // TODO : invalidate session
+                // TODO : invalidate session and eventually notify game controller
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private boolean checkUserAuthToken(String token, Session session) {
-        if (authenticatedUserSession.containsKey(session)) {
-            return true;
-        }
-        // else check user token on db
-        // TODO : maybe we can use an Auth table and a relative repo ?
-        else if (userRepository.getUserByAuthToken(token) != null) {
-            authenticatedUserSession.put(session, token);
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -101,6 +91,55 @@ public class ConnectionController {
     public void onError(Throwable e) {
         // TODO : Log
         e.printStackTrace();
+    }
+
+    private boolean checkUserAuthToken(String token, Session session) {
+        User newAuthUser;
+        if (authenticatedUserSession.containsKey(session)) {
+            return true;
+        } else {
+            try {
+                if ((newAuthUser = userRepository.getUserByAuthToken(token)) != null) {
+                    authenticatedUserSession.put(session, token);
+                    peers.put(session, newAuthUser);
+                    return true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
+    private JSONObject serializeCommand(Command command) {
+        // TODO : to be tested
+        return new JSONObject(command);
+    }
+
+    private static Object getKeyFromValue(HashMap hm, Object value) {
+        for (Object o : hm.keySet()) {
+            if (hm.get(o).equals(value)) {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void update(Command command) {
+        List<User> usersToBeNotified = command.getUsers();
+        JSONObject message = serializeCommand(command);
+        Session session;
+        for (User user : usersToBeNotified) {
+            session = (Session) getKeyFromValue(peers, user);
+            try {
+                if (session != null) {
+                    session.getBasicRemote().sendText(message.toString());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
