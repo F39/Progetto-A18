@@ -1,3 +1,4 @@
+
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -7,6 +8,7 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 
 public class Connect4Application {
 
@@ -20,11 +22,12 @@ public class Connect4Application {
         context.addServletMapping("/rest/*", "jersey-container-servlet");
         tomcat.start();
         tomcat.getServer().await();
-    }
+   }
 
     private static ServletContainer resourceConfig() {
-        return new ServletContainer(new ResourceConfig(
-                new ResourceLoader().getClasses()));
+        ResourceConfig resourceConfig = new ResourceConfig(new ResourceLoader().getClasses());
+        resourceConfig.register(new CORSFilter());
+        return new ServletContainer(resourceConfig);
     }
 
     private static String setupWebApp() throws Exception {
@@ -60,12 +63,12 @@ public class Connect4Application {
             sourceChannel = new FileInputStream(source).getChannel();
             destChannel = new FileOutputStream(dest).getChannel();
             destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        } finally {
+        }
+        finally {
             sourceChannel.close();
             destChannel.close();
         }
     }
-
     private static void copyFolder(File sourceFolder, File destinationFolder) throws IOException {
         if (sourceFolder.isDirectory()) {
             if (!destinationFolder.exists())
@@ -75,7 +78,7 @@ public class Connect4Application {
                 File scrFile = new File(sourceFolder, file);
                 File destFile = new File(destinationFolder, file);
                 copyFolder(scrFile, destFile);
-//                System.out.println("file copiato " + destFile.toPath());
+                System.out.println("file copiato" + destFile.toPath());
                 Connect4Application.copyFileUsingChannel(scrFile, destFile);
             }
         }

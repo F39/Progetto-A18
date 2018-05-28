@@ -1,13 +1,18 @@
 var server='http://localhost:8080';
 
-function get_login_data(){
+function login(){
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
    
 
     /*JSON Version*/
     var data = JSON.stringify({"username": username, "password": password});
-    var xhr=RESTrequest('POST', "/auth/login", data);
+    var xhr = new XMLHttpRequest();
+    console.log(data);
+
+    xhr.open("POST", 'http://localhost:8080/rest/user/login', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var json = JSON.parse(xhr.responseText);
@@ -20,6 +25,10 @@ function get_login_data(){
             }
         }
     };
+    console.log(xhr);
+    xhr.send(data);
+   
+    
     
     
     

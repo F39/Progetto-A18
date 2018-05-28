@@ -1,36 +1,16 @@
 package Controllers;
 
 import DatabaseManagement.User;
-import DatabaseManagement.UserRepository;
-import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.support.ConnectionSource;
-import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.sql.SQLException;
-import java.util.UUID;
 
 @Path("/user")
 public class UserController {
 
-    private UserRepository userRepository;
 
-    public UserController() {
-        ConnectionSource connectionSource;
-        // TODO : export to config
-        String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
-        String dbUser = "root";
-        String dbPass = "delta";
-        try {
-            connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
-            userRepository = new UserRepository(connectionSource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     @POST
     @Path("/signup")
@@ -61,6 +41,11 @@ public class UserController {
         return Response.status(Status.BAD_REQUEST).entity("Login failed: the provided credentials are not valid ones.").build();
     }
 
+    private boolean checkDBToken(String user, String token) {
+        // TODO : check on db/list if token is rightù
+        return true;
+    }
+
     private boolean addUser(User user) {
         try {
             userRepository.create(user);
@@ -75,5 +60,4 @@ public class UserController {
         UUID authToken = UUID.randomUUID();
         return authToken.toString();
     }
-
 }
