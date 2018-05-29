@@ -1,3 +1,6 @@
+package Utils;
+
+import Controllers.RestGameController;
 import Controllers.UserController;
 
 import java.util.HashSet;
@@ -13,6 +16,7 @@ public class ResourceLoader extends Application {
 
         // register root resource
         classes.add(UserController.class);
+        classes.add(RestGameController.class);
         return classes;
     }
 }

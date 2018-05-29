@@ -1,4 +1,6 @@
 
+import Utils.CORSFilter;
+import Utils.ResourceLoader;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -13,6 +15,7 @@ import java.nio.file.Paths;
 public class Connect4Application {
 
     public static void main(String[] args) throws Exception {
+        // TODO : export to config
         Tomcat tomcat = new Tomcat();
         String port = "8080"; // Also change in index.html
         tomcat.setPort(Integer.parseInt(port));
@@ -52,7 +55,6 @@ public class Connect4Application {
         Connect4Application.copyFolder(new File(UIPath + File.separator + "Pages"), webAppPages);
         Connect4Application.copyFileUsingChannel(thisJar, new File(webAppFolder.getPath() + File.separator + "app.jar"));
         Connect4Application.copyFileUsingChannel(new File(Connect4Application.class.getResource("index.html").getPath()), new File(webAppRootPathName + File.separator + "index.html"));
-//       Connect4Application.copyFileUsingChannel( new File(Connect4Application.class.getResource("crossdomain.xml").getPath()), new File(webAppFolder.getPath()));
         return webAppRootPathName;
     }
 
