@@ -10,6 +10,9 @@ public class User {
     public static final String EMAIL_FIELD_NAME = "email";
     public static final String PASSWORD_FIELD_NAME = "password";
     public static final String AUTH_TOKEN_FIELD_NAME = "auth_token";
+    public static final String EMAIL_CONFIRMED_FIELD_NAME = "email_confirmed";
+    public static final String EMAIL_TOKEN_FIELD_NAME = "email_token";
+
 
     @DatabaseField(generatedId = true)
     private Integer id;
@@ -21,6 +24,10 @@ public class User {
     private String password;
     @DatabaseField(columnName = AUTH_TOKEN_FIELD_NAME)
     private String token;
+    @DatabaseField(columnName = EMAIL_CONFIRMED_FIELD_NAME)
+    private boolean email_confirmed;
+    @DatabaseField(columnName = EMAIL_TOKEN_FIELD_NAME)
+    private String email_token;
 
     public User(){}
 
@@ -73,5 +80,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isEmail_confirmed() {
+        return email_confirmed;
+    }
+
+    public void setEmail_confirmed(boolean email_confirmed) {
+        this.email_confirmed = email_confirmed;
+    }
+
+    public String getEmail_token() {
+        return email_token;
+    }
+
+    public void setEmail_token(String email_token) {
+        this.email_token = email_token;
     }
 }

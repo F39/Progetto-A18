@@ -54,7 +54,7 @@ public class Connect4Application {
         Connect4Application.copyFolder(new File(UIPath + File.separator + "JS"), webAppJS);
         Connect4Application.copyFolder(new File(UIPath + File.separator + "Pages"), webAppPages);
         Connect4Application.copyFileUsingChannel(thisJar, new File(webAppFolder.getPath() + File.separator + "app.jar"));
-        Connect4Application.copyFileUsingChannel(new File(Connect4Application.class.getResource("index.html").getPath()), new File(webAppRootPathName + File.separator + "index.html"));
+        Connect4Application.copyFileUsingChannel(new File(Connect4Application.class.getResource("emailconfirmed.html").getPath()), new File(webAppRootPathName + File.separator + "emailconfirmed.html"));
         return webAppRootPathName;
     }
 

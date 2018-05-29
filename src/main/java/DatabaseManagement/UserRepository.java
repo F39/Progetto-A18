@@ -55,6 +55,26 @@ public class UserRepository implements UserRepositoryInt {
     }
 
     @Override
+    public void updateUserEmailConfirmed(User user) throws SQLException{
+        UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
+        updateBuilder.updateColumnValue(User.EMAIL_CONFIRMED_FIELD_NAME, true);
+        updateBuilder.where().eq(User.USERNAME_FIELD_NAME, user.getUsername());
+        updateBuilder.update();
+    }
+
+    @Override
+    public User getUserByEmailToken(String token) throws SQLException {
+        QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
+        queryBuilder.where().eq(User.EMAIL_TOKEN_FIELD_NAME, token);
+        PreparedQuery<User> preparedQuery = queryBuilder.prepare();
+        List<User> userList = userDao.query(preparedQuery);
+        if (!userList.isEmpty()) {
+            return userList.get(0);
+        }
+        else return null;
+    }
+
+    @Override
     public User getUserByAuthToken(String token) throws SQLException {
         QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
         queryBuilder.where().eq(User.AUTH_TOKEN_FIELD_NAME, token);
@@ -69,7 +89,7 @@ public class UserRepository implements UserRepositoryInt {
     @Override
     public User checkUserCredential(String username, String password) throws SQLException {
         QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
-        queryBuilder.where().eq(User.PASSWORD_FIELD_NAME, password).and().eq(User.USERNAME_FIELD_NAME, username);
+        queryBuilder.where().eq(User.PASSWORD_FIELD_NAME, password).and().eq(User.USERNAME_FIELD_NAME, username).and().eq(User.EMAIL_CONFIRMED_FIELD_NAME, true);
         PreparedQuery<User> preparedQuery = queryBuilder.prepare();
         List<User> userList = userDao.query(preparedQuery);
         if (!userList.isEmpty()) {

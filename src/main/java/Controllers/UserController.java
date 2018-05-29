@@ -15,6 +15,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -48,13 +52,37 @@ public class UserController {
     @Path("/signup")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response signUp(User user) {
+        String confirmLink = generateAuthToken();
+        user.setEmail_token(confirmLink);
         if (addUser(user)) {
             // TODO : Add 2 camps on db. Confirmation code and confirmation boolean.
-            String confirmLink = "";
-            email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + confirmLink);
+            String url = "http://localhost:8080/rest/user/confirm/"; //TODO: prendere la stringa dinamicamente
+
+            email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: "+ url + confirmLink);
             return Response.status(Status.OK).build();
         }
         return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    @GET
+    @Path("/confirm/{token}")
+    public InputStream confirmEmail(@PathParam("token") String token){
+        User toConfirm;
+        try {
+            toConfirm = userRepository.getUserByEmailToken(token);
+            toConfirm.setEmail_confirmed(true);
+            userRepository.updateUserEmailConfirmed(toConfirm);
+
+            File f = new  File("connect4WebApp" +  File.separator + "emailconfirmed.html");
+
+            return new FileInputStream(f);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @POST
@@ -107,21 +135,21 @@ public class UserController {
         return authToken.toString();
     }
 
-    private boolean checkAuthToken(User user) {
-        User newAuthUser;
-//        if (user.get) {
-//            return true;
-//        } else {
-            try {
-                if ((newAuthUser = userRepository.getUserByAuthToken(user.getToken())) != null) {
-                    //authenticatedUserSession.put(session, token);
-                    //peers.put(session, newAuthUser);
-                    return true;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-           return false;
-        //}
-    }
+//    private boolean checkAuthToken(User user) {
+//        User newAuthUser;
+////        if (user.get) {
+////            return true;
+////        } else {
+//            try {
+//                if ((newAuthUser = userRepository.getUserByAuthToken(user.getToken())) != null) {
+//                    //authenticatedUserSession.put(session, token);
+//                    //peers.put(session, newAuthUser);
+//                    return true;
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//           return false;
+//        //}
+//    }
 }
