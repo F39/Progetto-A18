@@ -9,10 +9,10 @@ public class UserApp {
 
         String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
         String dbUser = "root";
-        String dbPass = "";
+        String dbPass = "arcanine9";
 
         ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
-        UserRepository userRepository = new UserRepository(connectionSource);
+        UserRepositoryInt userRepository = new UserRepository(connectionSource);
 
         TableUtils.dropTable(connectionSource, User.class, true);
         TableUtils.createTable(connectionSource,User.class);

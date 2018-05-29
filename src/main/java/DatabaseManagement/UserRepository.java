@@ -7,10 +7,13 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
+
+
 import java.sql.SQLException;
 import java.util.List;
 
-public class UserRepository implements CrudRepository {
+
+public class UserRepository implements UserRepositoryInt {
 
     private Dao<User, Integer> userDao;
 
@@ -42,6 +45,7 @@ public class UserRepository implements CrudRepository {
         }
     }
 
+    @Override
     public void updateUserAuthToken(String token, String username) throws SQLException {
         UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
         updateBuilder.updateColumnValue(User.AUTH_TOKEN_FIELD_NAME, token);
@@ -50,6 +54,7 @@ public class UserRepository implements CrudRepository {
         updateBuilder.update();
     }
 
+    @Override
     public User getUserByAuthToken(String token) throws SQLException {
         QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
         queryBuilder.where().eq(User.AUTH_TOKEN_FIELD_NAME, token);
@@ -61,6 +66,7 @@ public class UserRepository implements CrudRepository {
         else return null;
     }
 
+    @Override
     public User checkUserCredential(String username, String password) throws SQLException {
         QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
         queryBuilder.where().eq(User.PASSWORD_FIELD_NAME, password).and().eq(User.USERNAME_FIELD_NAME, username);

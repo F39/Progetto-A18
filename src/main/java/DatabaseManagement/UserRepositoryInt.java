@@ -1,4 +1,9 @@
 package DatabaseManagement;
 
-public interface UserRepositoryInt {
+import java.sql.SQLException;
+
+public interface UserRepositoryInt extends CrudRepository {
+    void updateUserAuthToken(String token, String username) throws SQLException;
+    User getUserByAuthToken(String token) throws SQLException;
+    User checkUserCredential(String username, String password) throws SQLException;
 }
