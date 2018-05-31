@@ -85,17 +85,6 @@
 
 
             function DrawPawn() {
-
-                if(changePlayer===1) {
-                    PlayerMove.Player = "#8b1414";
-                    PlayerMove.disc = "#9e1a1a";
-                    PlayerMove.stroke = "#6a0606"
-                }
-                else {
-                    PlayerMove.Player = "#14245d";
-                    PlayerMove.disc = "#1d2f7c";
-                    PlayerMove.stroke = "#0e1c51";
-                }
                 ctx.beginPath();
                 ctx.arc((PlayerMove.x_coordinate * boardGame.dim_cell) + boardGame.dim_cell / 2, (PlayerMove.y_coordinate * boardGame.dim_cell) + boardGame.dim_cell / 2 +80, 22, 0, 2 * Math.PI, false);
                 ctx.fillStyle = PlayerMove.Player.toString();
@@ -110,6 +99,16 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
                 ctx.stroke();
+                if(changePlayer===1) {
+                    PlayerMove.Player = "#8b1414";
+                    PlayerMove.disc = "#9e1a1a";
+                    PlayerMove.stroke = "#6a0606"
+                }
+                else {
+                    PlayerMove.Player = "#14245d";
+                    PlayerMove.disc = "#1d2f7c";
+                    PlayerMove.stroke = "#0e1c51";
+                }
 
             }
 
