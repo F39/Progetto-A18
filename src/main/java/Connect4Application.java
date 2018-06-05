@@ -1,4 +1,6 @@
 
+import Controllers.GameController;
+import Controllers.MatchMaking;
 import Utils.CORSFilter;
 import Utils.ResourceLoader;
 import org.apache.catalina.Context;
@@ -25,6 +27,7 @@ public class Connect4Application {
         context.addServletMapping("/rest/*", "jersey-container-servlet");
         tomcat.start();
         tomcat.getServer().await();
+        GameController gameController = new GameController();
    }
 
     private static ServletContainer resourceConfig() {

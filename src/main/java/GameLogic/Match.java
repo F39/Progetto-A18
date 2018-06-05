@@ -16,6 +16,7 @@ public class Match {
     private Board board;
     private long timer, delta;
     private User player1, player2;
+
     private int scoreP1, scoreP2;
 
     private List<ObserverGame> observerGames = new ArrayList<>();

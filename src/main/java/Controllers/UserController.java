@@ -29,7 +29,7 @@ public class UserController {
 
     private UserRepositoryInt userRepository;
     private EmailAdapter email;
-    private HashMap<String, User> online = new HashMap<>(); // map sessions to relative users
+    private static HashMap<String, User> online = new HashMap<>(); // map sessions to relative users
 
 
     public UserController() {
@@ -135,6 +135,9 @@ public class UserController {
         return authToken.toString();
     }
 
+    public static HashMap<String, User> getOnline(){
+        return online;
+    }
 //    private boolean checkAuthToken(User user) {
 //        User newAuthUser;
 ////        if (user.get) {

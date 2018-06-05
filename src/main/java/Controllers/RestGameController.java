@@ -3,21 +3,29 @@ package Controllers;
 import DatabaseManagement.User;
 import DatabaseManagement.UserRepository;
 import DatabaseManagement.UserRepositoryInt;
+import Utils.AbstractCommand;
+import Utils.CommandNewGame;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.inject.Inject;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 @Path("/game")
-public class RestGameController {
+public class RestGameController implements RestControllerInt{
 
     private UserRepositoryInt userRepository;
+    @Inject
+    private GameControllerInt gameControllerInt;
+    private List<AbstractCommand> commandQueue;
+
 
     public RestGameController(){
         ConnectionSource connectionSource;
@@ -30,13 +38,17 @@ public class RestGameController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        //gameControllerInt = new GameController();
+        commandQueue = new ArrayList<>();
     }
 
     @POST
     @Path("/newgame")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response newGame (){
+    public Response newGame (@HeaderParam("token") String token, CommandNewGame command){
+        if(token.equals(UserController.getOnline().get(token)))
         return Response.ok().build();
+
     }
 
     @POST
@@ -61,17 +73,13 @@ public class RestGameController {
     }
 
 
-    private boolean checkAuthToken(User user) {
-        User dbUser;
-        try {
-            dbUser = userRepository.getUserByAuthToken(user.getToken());
-            if (dbUser != null && dbUser.getUsername() == user.getUsername()) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+    private boolean checkAuthToken(String token, User user) {
+        if()
+    }
+
+    @Override
+    public void putMessage(AbstractCommand command) {
+        commandQueue.add(command);
     }
 
 }

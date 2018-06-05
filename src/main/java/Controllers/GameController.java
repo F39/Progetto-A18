@@ -4,33 +4,34 @@ import DatabaseManagement.User;
 import GameLogic.Match;
 import GameLogic.MatchFlowState;
 import GameLogic.Mode;
-import Utils.Command;
-import Utils.ObserverGame;
-import Utils.ObserverConnection;
+import Utils.*;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 
-public class GameController extends ObserverGame {
+public class GameController extends ObserverGame implements GameControllerInt {
 
-    private List<User> pendingUsers;
     private HashMap<Integer, Match> matches;
     private List<ObserverConnection> observers = new ArrayList<>();
+    private MatchMaking matchMaker;
+    private RestControllerInt restController;
 
-    GameController() {
+    public GameController() {
         matches = new HashMap<>();
-        pendingUsers = new ArrayList<>();
+        restController = new RestGameController();
+        matchMaker = new MatchMaking(this);
+        Thread matchMaking = new Thread(matchMaker);
+        matchMaking.start();
     }
 
     public void attach(ObserverConnection observer) {
         observers.add(observer);
     }
 
-    private void notifyAllObservers(Command command) {
+    private void notifyAllObservers(AbstractCommand command) {
         for (ObserverConnection observer : observers) {
             observer.update(command);
         }
@@ -85,14 +86,14 @@ public class GameController extends ObserverGame {
         switch (event) {
             case "newGame":
                 int mode = data.getInt("mode");
-                if (mode == Mode.MultiPlayer.getValue()) {
-                    pendingUsers.add(user);
-                    handledMatch = this.matchMaking();
-                } else if (mode == Mode.SinglePlayerLevel1.getValue()) {
-                    handledMatch = this.createNewGame(Mode.SinglePlayerLevel1, user, null);
-                } else {
-                    handledMatch = this.createNewGame(Mode.SinglePlayerLevel2, user, null);
-                }
+//                if (mode == Mode.MultiPlayer.getValue()) {
+//                    pendingUsers.add(user);
+//                    handledMatch = this.matchMaking();
+//                } else if (mode == Mode.SinglePlayerLevel1.getValue()) {
+//                    handledMatch = this.createNewGame(Mode.SinglePlayerLevel1, user, null);
+//                } else {
+//                    handledMatch = this.createNewGame(Mode.SinglePlayerLevel2, user, null);
+//                }
                 // TODO : catch the shitty exceptions
                 if (handledMatch != null) {
                     handledMatch.startGame();
@@ -116,28 +117,56 @@ public class GameController extends ObserverGame {
         }
     }
 
-    private Match matchMaking() {
-        if (pendingUsers.size() > 2) {
-            while (true) {
-                int indexP1, indexP2;
-                // TODO : define a better match-making algorithm
-                indexP1 = ThreadLocalRandom.current().nextInt(0, pendingUsers.size() + 1);
-                indexP2 = ThreadLocalRandom.current().nextInt(0, pendingUsers.size() + 1);
-                if (indexP1 != indexP2) {
-                    return this.createNewGame(Mode.MultiPlayer, pendingUsers.get(indexP1), pendingUsers.get(indexP2));
-                }
-            }
-        }
-        return null;
-    }
-
-    private Match createNewGame(Mode mode, User p1, User p2) {
+    public void createNewGame(Mode mode, User p1, User p2) {
         Match newMatch = new Match(mode, p1, p2);
         newMatch.attach(this);
         matches.put(newMatch.getGameId(), newMatch);
-        pendingUsers.remove(p1);
-        pendingUsers.remove(p2);
-        return newMatch;
+        newMatch.startGame();
+        //TODO : Set logic for gameId
+        //TODO : check for AI player
+        restController.putMessage(new CommandOut(p1,newMatch.getGameId(), newMatch.getMatchFlowState()));
+        restController.putMessage(new CommandOut(p2,newMatch.getGameId(), newMatch.getMatchFlowState()));
     }
 
+    @Override
+    public void newGame(CommandNewGame command) {
+        int mode = command.getMode().getValue();
+        if (mode == Mode.MultiPlayer.getValue()) {
+            matchMaker.putPendingUsers(command.getUser());
+        } else if (mode == Mode.SinglePlayerLevel1.getValue()) {
+            this.createNewGame(Mode.SinglePlayerLevel1, command.getUser(), null);
+        } else {
+            this.createNewGame(Mode.SinglePlayerLevel2, command.getUser(), null);
+        }
+    }
+
+    @Override
+    public void move(CommandMove command) {
+        Match handledMatch = matches.get(command.getGameId());
+        handledMatch.setLastMove(command.getMove());
+        //TODO : Check for right turn
+        User userToNotify = getUserToNotify(handledMatch, command.getUser());
+        restController.putMessage(new CommandOut(userToNotify, handledMatch.getGameId(), handledMatch.getMatchFlowState()));
+    }
+
+    @Override
+    public void pause(CommandPause command) {
+        Match handledMatch = matches.get(command.getGameId());
+        handledMatch.setMatchFlowState(MatchFlowState.paused);
+        //TODO : Check for right turn
+        User userToNotify = getUserToNotify(handledMatch, command.getUser());
+        restController.putMessage(new CommandOut(userToNotify, handledMatch.getGameId(), handledMatch.getMatchFlowState()));
+    }
+
+    @Override
+    public void quit(CommandQuit command) {
+        // TODO : tutto
+    }
+
+    private User getUserToNotify (Match match, User user){
+        if(match.getPlayers().get(0) == user){
+            return match.getPlayers().get(1);
+        }
+        return match.getPlayers().get(0);
+    }
 }
