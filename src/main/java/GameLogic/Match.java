@@ -15,7 +15,8 @@ public class Match {
     private int gameId;
     private Board board;
     private long timer, delta;
-    private User player1, player2;
+    private Player player1, player2;
+    private int turn;
 
     private int scoreP1, scoreP2;
 
@@ -61,7 +62,7 @@ public class Match {
      * Create a new game specifying the board dimensions, the gameMode and the two players
      */
     // TODO : discriminate game mode with multiple constructor
-    public Match(Mode mode, User user1, User user2) {
+    public Match(Mode mode, Player user1, Player user2) {
         // TODO : how to generate an appropriate game id ?
         this.gameId = 1;
         this.board = new Board();
@@ -83,6 +84,7 @@ public class Match {
      */
     public void startGame() {
         setMatchFlowState(MatchFlowState.started);
+        turn = 1;
         delta = System.currentTimeMillis();
     }
 
@@ -167,7 +169,7 @@ public class Match {
         setLastMove(col);
     }
 
-    public List<User> getPlayers() {
+    public List<Player> getPlayers() {
         return Arrays.asList(player1, player2);
     }
 
