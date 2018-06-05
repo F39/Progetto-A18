@@ -2,6 +2,7 @@ package Controllers;
 
 import DatabaseManagement.User;
 import GameLogic.Mode;
+import Utils.CommandNewGame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MatchMaking implements Runnable {
                     indexP1 = ThreadLocalRandom.current().nextInt(0, pendingUsers.size() + 1);
                     indexP2 = ThreadLocalRandom.current().nextInt(0, pendingUsers.size() + 1);
                     if (indexP1 != indexP2) {
-                        gameController.createNewGame(Mode.MultiPlayer, pendingUsers.get(indexP1), pendingUsers.get(indexP2));
+                        gameController.createNewMultiPlayerGame(pendingUsers.get(indexP1), pendingUsers.get(indexP2));
                         pendingUsers.remove(indexP1);
                         pendingUsers.remove(indexP2);
                         break;

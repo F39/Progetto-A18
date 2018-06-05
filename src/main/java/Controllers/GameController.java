@@ -4,6 +4,7 @@ import DatabaseManagement.User;
 import GameLogic.Match;
 import GameLogic.MatchFlowState;
 import GameLogic.Mode;
+import GameLogic.Player;
 import Utils.*;
 import org.json.JSONObject;
 
@@ -18,10 +19,11 @@ public class GameController extends ObserverGame implements GameControllerInt {
     private List<ObserverConnection> observers = new ArrayList<>();
     private MatchMaking matchMaker;
     private RestControllerInt restController;
+    private List<AbstractCommand> commands = new ArrayList<>();
 
-    public GameController() {
+    public GameController(RestGameController restController) {
         matches = new HashMap<>();
-        restController = new RestGameController();
+        this.restController = restController;
         matchMaker = new MatchMaking(this);
         Thread matchMaking = new Thread(matchMaker);
         matchMaking.start();
@@ -39,35 +41,35 @@ public class GameController extends ObserverGame implements GameControllerInt {
 
     @Override
     public void update(int gameId) {
-        Match updatedMatch = matches.get(gameId);
-        MatchFlowState matchState = updatedMatch.getMatchFlowState();
-        List<User> usersToBeNotified = matches.get(gameId).getPlayers();
-        Command newCommand;
-        switch (matchState) {
-            case started:
-                newCommand = new Command(matchState, usersToBeNotified, gameId);
-                notifyAllObservers(newCommand);
-                break;
-            case running:
-                int newMove = updatedMatch.getLastMove();
-                newCommand = new Command(matchState, usersToBeNotified, gameId, newMove);
-                notifyAllObservers(newCommand);
-                break;
-            case paused:
-                newCommand = new Command(matchState, usersToBeNotified, gameId);
-                notifyAllObservers(newCommand);
-                break;
-            case quitted:
-                newCommand = new Command(matchState, usersToBeNotified, gameId);
-                notifyAllObservers(newCommand);
-                break;
-            case finished:
-                newCommand = new Command(matchState, usersToBeNotified, gameId);
-                notifyAllObservers(newCommand);
-                break;
-            default:
-                break;
-        }
+//        Match updatedMatch = matches.get(gameId);
+//        MatchFlowState matchState = updatedMatch.getMatchFlowState();
+//        List<User> usersToBeNotified = matches.get(gameId).getPlayers();
+//        Command newCommand;
+//        switch (matchState) {
+//            case started:
+//                newCommand = new Command(matchState, usersToBeNotified, gameId);
+//                notifyAllObservers(newCommand);
+//                break;
+//            case running:
+//                int newMove = updatedMatch.getLastMove();
+//                newCommand = new Command(matchState, usersToBeNotified, gameId, newMove);
+//                notifyAllObservers(newCommand);
+//                break;
+//            case paused:
+//                newCommand = new Command(matchState, usersToBeNotified, gameId);
+//                notifyAllObservers(newCommand);
+//                break;
+//            case quitted:
+//                newCommand = new Command(matchState, usersToBeNotified, gameId);
+//                notifyAllObservers(newCommand);
+//                break;
+//            case finished:
+//                newCommand = new Command(matchState, usersToBeNotified, gameId);
+//                notifyAllObservers(newCommand);
+//                break;
+//            default:
+//                break;
+//        }
     }
 
     // TODO : handle command obj and not json
@@ -117,56 +119,71 @@ public class GameController extends ObserverGame implements GameControllerInt {
         }
     }
 
-    public void createNewGame(Mode mode, User p1, User p2) {
-        Match newMatch = new Match(mode, p1, p2);
+    public void createNewMultiPlayerGame(User p1, User p2){
+        Match newMatch;
+        newMatch = new Match(Mode.MultiPlayer, new Player(p1), new Player(p2));
         newMatch.attach(this);
-        matches.put(newMatch.getGameId(), newMatch);
+        this.getMatches().put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
         //TODO : Set logic for gameId
         //TODO : check for AI player
-        restController.putMessage(new CommandOut(p1,newMatch.getGameId(), newMatch.getMatchFlowState()));
-        restController.putMessage(new CommandOut(p2,newMatch.getGameId(), newMatch.getMatchFlowState()));
+        this.getRestController().putMessage(new CommandOut(p1.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState()));
+        this.getRestController().putMessage(new CommandOut(p2.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState()));
     }
 
     @Override
     public void newGame(CommandNewGame command) {
-        int mode = command.getMode().getValue();
-        if (mode == Mode.MultiPlayer.getValue()) {
-            matchMaker.putPendingUsers(command.getUser());
-        } else if (mode == Mode.SinglePlayerLevel1.getValue()) {
-            this.createNewGame(Mode.SinglePlayerLevel1, command.getUser(), null);
-        } else {
-            this.createNewGame(Mode.SinglePlayerLevel2, command.getUser(), null);
-        }
+        commands.add(command);
     }
 
     @Override
     public void move(CommandMove command) {
-        Match handledMatch = matches.get(command.getGameId());
-        handledMatch.setLastMove(command.getMove());
-        //TODO : Check for right turn
-        User userToNotify = getUserToNotify(handledMatch, command.getUser());
-        restController.putMessage(new CommandOut(userToNotify, handledMatch.getGameId(), handledMatch.getMatchFlowState()));
+        commands.add(command);
     }
 
     @Override
     public void pause(CommandPause command) {
-        Match handledMatch = matches.get(command.getGameId());
-        handledMatch.setMatchFlowState(MatchFlowState.paused);
-        //TODO : Check for right turn
-        User userToNotify = getUserToNotify(handledMatch, command.getUser());
-        restController.putMessage(new CommandOut(userToNotify, handledMatch.getGameId(), handledMatch.getMatchFlowState()));
+        commands.add(command);
     }
 
     @Override
     public void quit(CommandQuit command) {
-        // TODO : tutto
+        commands.add(command);
     }
 
-    private User getUserToNotify (Match match, User user){
-        if(match.getPlayers().get(0) == user){
-            return match.getPlayers().get(1);
+    public User getUserToNotify (Match match, User user){
+        if(match.getPlayers().get(0).getUser() == user){
+            return match.getPlayers().get(1).getUser();
         }
-        return match.getPlayers().get(0);
+        return match.getPlayers().get(0).getUser();
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            if(commands.size() > 0){
+                AbstractCommand toExecute = commands.get(0);
+                toExecute.execute(this);
+                commands.remove(0);
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public MatchMaking getMatchMaker() {
+        return matchMaker;
+    }
+
+    public HashMap<Integer, Match> getMatches() {
+        return matches;
+    }
+
+    public RestControllerInt getRestController() {
+        return restController;
     }
 }

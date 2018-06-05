@@ -5,7 +5,7 @@ import Utils.CommandNewGame;
 import Utils.CommandPause;
 import Utils.CommandQuit;
 
-public interface GameControllerInt {
+public interface GameControllerInt extends Runnable{
 
     void newGame(CommandNewGame command);
 
