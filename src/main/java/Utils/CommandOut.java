@@ -1,15 +1,17 @@
 package Utils;
 
+import Controllers.GameController;
 import DatabaseManagement.User;
 import GameLogic.MatchFlowState;
 
-public class CommandOut extends AbstractCommand {
+public class CommandOut extends AbstractCommand{
 
     private int gameId;
     private MatchFlowState matchFlowState;
+    private boolean read;
 
-    public CommandOut(User user, int gameId, MatchFlowState matchFlowState) {
-        super(user);
+    public CommandOut(String username, int gameId, MatchFlowState matchFlowState) {
+        super(username);
         this.gameId = gameId;
         this.matchFlowState = matchFlowState;
     }
@@ -22,4 +24,8 @@ public class CommandOut extends AbstractCommand {
         return matchFlowState;
     }
 
+    @Override
+    public void execute(GameController gameController) {
+        read = true;
+    }
 }

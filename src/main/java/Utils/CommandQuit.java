@@ -1,13 +1,14 @@
 package Utils;
 
+import Controllers.GameController;
 import DatabaseManagement.User;
 
 public class CommandQuit extends AbstractCommand {
 
     private int gameId;
 
-    public CommandQuit(User user, int gameId) {
-        super(user);
+    public CommandQuit(String username, int gameId) {
+        super(username);
         this.gameId = gameId;
     }
 
@@ -17,5 +18,10 @@ public class CommandQuit extends AbstractCommand {
 
     public void setGameId(int gameId) {
         this.gameId = gameId;
+    }
+
+    @Override
+    public void execute(GameController gameController) {
+        //TODO : definire logica di quit
     }
 }
