@@ -42,14 +42,14 @@ public class GameController extends ObserverGame implements GameControllerInt {
         }
     }
 
-    @Override
-    public void update(int gameId) {
-        Match updatedMatch = matches.get(gameId);
-        MatchFlowState matchState = updatedMatch.getMatchFlowState();
-        Map<Integer, Player> usersToBeNotified = updatedMatch.getPlayers();
-        CommandOut notify = new CommandOut(usersToBeNotified.get(updatedMatch.getTurn()).getUser().getUsername(), gameId, matchState);
-        restController.putMessage(notify);
-
+//    @Override
+//    public void update(int gameId) {
+//        Match updatedMatch = matches.get(gameId);
+//        MatchFlowState matchState = updatedMatch.getMatchFlowState();
+//        Map<Integer, Player> usersToBeNotified = updatedMatch.getPlayers();
+//        CommandOut notify = new CommandOut(usersToBeNotified.get(updatedMatch.getTurn()).getUser().getUsername(), gameId, matchState, -1);
+//        restController.putMessage(notify);
+//
 //        switch (matchState) {
 //            case started:
 //                newCommand = new Command(matchState, usersToBeNotified, gameId);
@@ -75,6 +75,15 @@ public class GameController extends ObserverGame implements GameControllerInt {
 //            default:
 //                break;
 //        }
+//    }
+
+    @Override
+    public void update(int gameId, int move) {
+        Match updatedMatch = matches.get(gameId);
+        MatchFlowState matchState = updatedMatch.getMatchFlowState();
+        Map<Integer, Player> usersToBeNotified = updatedMatch.getPlayers();
+        CommandOut notify = new CommandOut(usersToBeNotified.get(updatedMatch.getTurn()).getUser().getUsername(), gameId, matchState, move);
+        restController.putMessage(notify);
     }
 
     // TODO : handle command obj and not json
@@ -132,8 +141,8 @@ public class GameController extends ObserverGame implements GameControllerInt {
         newMatch.startGame();
         //TODO : Set logic for gameId
         //TODO : check for AI player
-        this.getRestController().putMessage(new CommandOut(p1.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState()));
-        this.getRestController().putMessage(new CommandOut(p2.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState()));
+        this.getRestController().putMessage(new CommandOut(p1.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState(), -1));
+        this.getRestController().putMessage(new CommandOut(p2.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState(), -1));
     }
 
     @Override

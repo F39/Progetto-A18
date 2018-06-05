@@ -3,9 +3,7 @@ package GameLogic;
 import DatabaseManagement.User;
 import Utils.ObserverGame;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * It handles a match
@@ -15,7 +13,7 @@ public class Match {
     private int gameId;
     private Board board;
     private long timer, delta;
-    private Player player1, player2;
+    private Map<Integer, Player> players = new HashMap<>();
     private int turn;
 
     private int scoreP1, scoreP2;
@@ -23,6 +21,27 @@ public class Match {
     private List<ObserverGame> observerGames = new ArrayList<>();
 
     private MatchFlowState matchFlowState;
+    /**
+     * Create a new game specifying the board dimensions, the gameMode and the two players
+     */
+    // TODO : discriminate game mode with multiple constructor
+    public Match(Mode mode, Player player1, Player player2, int gameId) {
+        // TODO : how to generate an appropriate game id ?
+        this.gameId = gameId;
+        this.board = new Board();
+        if (mode == Mode.MultiPlayer) {
+            this.players.put(1, player1);
+            this.players.put(2, player2);
+            this.scoreP1 = 0;
+            this.scoreP2 = 0;
+        } else {
+            this.players.put(1, player1);
+            this.scoreP1 = 0;
+            // TODO : here setup the AI player
+        }
+        this.timer = 0;
+    }
+
     private int lastMove; // column of the last cell occupied
 
     public int getGameId() {
@@ -35,7 +54,7 @@ public class Match {
 
     public void setMatchFlowState(MatchFlowState state) {
         matchFlowState = state;
-        notifyAllObservers();
+        notifyAllObservers(-1);
     }
 
     public int getLastMove() {
@@ -45,38 +64,17 @@ public class Match {
     public void setLastMove(int column) {
         lastMove = column;
         board.move(lastMove); // board update and self evaluation
-        notifyAllObservers();
+        notifyAllObservers(lastMove);
     }
 
     public void attach(ObserverGame observerGame) {
         observerGames.add(observerGame);
     }
 
-    private void notifyAllObservers() {
+    private void notifyAllObservers(int lastMove) {
         for (ObserverGame observerGame : observerGames) {
-            observerGame.update(this.gameId);
+            observerGame.update(this.gameId, lastMove);
         }
-    }
-
-    /**
-     * Create a new game specifying the board dimensions, the gameMode and the two players
-     */
-    // TODO : discriminate game mode with multiple constructor
-    public Match(Mode mode, Player user1, Player user2) {
-        // TODO : how to generate an appropriate game id ?
-        this.gameId = 1;
-        this.board = new Board();
-        if (mode == Mode.MultiPlayer) {
-            this.player1 = user1;
-            this.player2 = user2;
-            this.scoreP1 = 0;
-            this.scoreP2 = 0;
-        } else {
-            this.player1 = user1;
-            this.scoreP1 = 0;
-            // TODO : here setup the AI player
-        }
-        this.timer = 0;
     }
 
     /**
@@ -165,12 +163,15 @@ public class Match {
      * Makes a move on the board in the specified column
      */
     public void move(int col) {
-        board.move(col);
+        //board.move(col);
         setLastMove(col);
     }
 
-    public List<Player> getPlayers() {
-        return Arrays.asList(player1, player2);
+    public Map<Integer, Player> getPlayers() {
+        return players;
     }
 
+    public int getTurn() {
+        return turn;
+    }
 }

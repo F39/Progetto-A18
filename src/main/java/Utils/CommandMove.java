@@ -34,7 +34,7 @@ public class CommandMove extends AbstractCommand {
         handledMatch.setLastMove(getMove());
         //TODO : Check for right turn
         User userToNotify = gameController.getUserToNotify(handledMatch, getUser());
-        gameController.getRestController().putMessage(new CommandOut(userToNotify.getUsername(), handledMatch.getGameId(), handledMatch.getMatchFlowState()));
+        //gameController.getRestController().putMessage(new CommandOut(userToNotify.getUsername(), handledMatch.getGameId(), handledMatch.getMatchFlowState()));
     }
 
     public void setGameId(int gameId) {

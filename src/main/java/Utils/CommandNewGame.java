@@ -41,13 +41,13 @@ public class CommandNewGame extends AbstractCommand {
 
     public void createNewSinglePlayerGame(Mode mode, User p1, GameController gameController) {
         Match newMatch;
-        newMatch = new Match(mode, new Player(p1), new Player(mode));
+        newMatch = new Match(mode, new Player(p1), new Player(mode), gameController.getProgressiveGameId());
         newMatch.attach(gameController);
         gameController.getMatches().put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
         //TODO : Set logic for gameId
         //TODO : check for AI player
-        gameController.getRestController().putMessage(new CommandOut(p1.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState()));
+        //gameController.getRestController().putMessage(new CommandOut(p1.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState()));
         //gameController.getRestController().putMessage(new CommandOut(p2.getUsername(),newMatch.getGameId(), newMatch.getMatchFlowState()));
     }
 }

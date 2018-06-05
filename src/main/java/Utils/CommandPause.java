@@ -25,9 +25,13 @@ public class CommandPause extends AbstractCommand {
     @Override
     public void execute(GameController gameController) {
         Match handledMatch = gameController.getMatches().get(getGameId());
-        handledMatch.setMatchFlowState(MatchFlowState.paused);
+        if(handledMatch.getMatchFlowState() == MatchFlowState.paused){
+            handledMatch.resumeGame();
+        }else if(handledMatch.getMatchFlowState() == MatchFlowState.started || handledMatch.getMatchFlowState() == MatchFlowState.running ){
+            handledMatch.pauseGame();
+        }
         //TODO : Check for right turn
-        User userToNotify = gameController.getUserToNotify(handledMatch, getUser());
-        gameController.getRestController().putMessage(new CommandOut(userToNotify.getUsername(), handledMatch.getGameId(), handledMatch.getMatchFlowState()));
+        //User userToNotify = gameController.getUserToNotify(handledMatch, getUser());
+        //gameController.getRestController().putMessage(new CommandOut(userToNotify.getUsername(), handledMatch.getGameId(), handledMatch.getMatchFlowState()));
     }
 }

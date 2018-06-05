@@ -8,12 +8,13 @@ public class CommandOut extends AbstractCommand{
 
     private int gameId;
     private MatchFlowState matchFlowState;
-    private boolean read;
+    private int move;
 
-    public CommandOut(String username, int gameId, MatchFlowState matchFlowState) {
+    public CommandOut(String username, int gameId, MatchFlowState matchFlowState, int move) {
         super(username);
         this.gameId = gameId;
         this.matchFlowState = matchFlowState;
+        this.move = move;
     }
 
     public int getGameId() {
@@ -24,8 +25,10 @@ public class CommandOut extends AbstractCommand{
         return matchFlowState;
     }
 
+    public int getMove(){ return move; }
+
     @Override
     public void execute(GameController gameController) {
-        read = true;
+
     }
 }
