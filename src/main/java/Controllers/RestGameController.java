@@ -3,8 +3,7 @@ package Controllers;
 import DatabaseManagement.User;
 import DatabaseManagement.UserRepository;
 import DatabaseManagement.UserRepositoryInt;
-import Utils.AbstractCommand;
-import Utils.CommandNewGame;
+import Utils.*;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -21,60 +20,87 @@ import java.util.List;
 @Path("/game")
 public class RestGameController implements RestControllerInt{
 
-    private UserRepositoryInt userRepository;
-    @Inject
     private GameControllerInt gameControllerInt;
     private List<AbstractCommand> commandQueue;
 
 
     public RestGameController(){
-        ConnectionSource connectionSource;
-        String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
-        String dbUser = "root";
-        String dbPass = "arcanine9";
-        try {
-            connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
-            userRepository = new UserRepository(connectionSource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        //gameControllerInt = new GameController();
+
+        gameControllerInt = new GameController(this);
+        Thread gameControllerThread = new Thread(gameControllerInt);
+        gameControllerThread.start();
+
         commandQueue = new ArrayList<>();
     }
 
     @POST
     @Path("/newgame")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response newGame (@HeaderParam("token") String token, CommandNewGame command){
-        if(token.equals(UserController.getOnline().get(token)))
-        return Response.ok().build();
-
+        if(checkAuthToken(token, command.getUsername())){
+            gameControllerInt.newGame(command);
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @POST
     @Path("/move")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response move (){
-        return Response.ok().build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response move (@HeaderParam("token") String token, CommandMove command){
+        if(checkAuthToken(token, command.getUsername())){
+            gameControllerInt.move(command);
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @POST
     @Path("/pause")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response pause (){
-        return Response.ok().build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response pause (@HeaderParam("token") String token, CommandPause command){
+        if(checkAuthToken(token, command.getUsername())){
+            gameControllerInt.pause(command);
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @POST
     @Path("/quit")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response quit (){
-        return Response.ok().build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response quit (@HeaderParam("token") String token, CommandQuit command){
+        if(checkAuthToken(token, command.getUsername())){
+            gameControllerInt.quit(command);
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
+    @POST
+    @Path("/poll")
+    public Response poll(@HeaderParam("token") String token, String username){
+        if(checkAuthToken(token, username)){
+            for (AbstractCommand command : commandQueue) {
+                if(username.equals(command.getUsername())){
+                    return Response.ok(command).build();
+                }
+            }
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
 
-    private boolean checkAuthToken(String token, User user) {
-        if()
+    private boolean checkAuthToken(String token, String username) {
+        User checkUser = UserController.getOnline().get(token);
+        if(checkUser == null){
+            return false;
+        }
+        if(username.equals(checkUser.getUsername())){
+            return true;
+        }
+        return false;
     }
 
     @Override
