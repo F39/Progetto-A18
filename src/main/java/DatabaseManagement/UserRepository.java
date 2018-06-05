@@ -22,80 +22,132 @@ public class UserRepository implements UserRepositoryInt {
     }
 
     @Override
-    public void create(User user) throws SQLException {
-        userDao.create(user);
+    public boolean create(User user){
+        try {
+            userDao.create(user);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    public void update(String[] parameters) throws SQLException {
+    public boolean update(String[] parameters){
         for (User u : userDao) {
             if (u.getUsername().equals(parameters[0])) {
                 u.setUsername(parameters[1]);
-                userDao.update(u);
+                try {
+                    userDao.update(u);
+                    return true;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+
             }
         }
+        return false;
     }
 
     @Override
-    public void delete(String[] parameters) throws SQLException {
+    public boolean delete(String[] parameters) {
         for (User u : userDao) {
             if (u.getUsername().equals(parameters[0])) {
-                userDao.delete(u);
+                try {
+                    userDao.delete(u);
+                    return true;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
         }
+        return false;
     }
 
     @Override
-    public void updateUserAuthToken(String token, String username) throws SQLException {
-        UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
-        updateBuilder.updateColumnValue(User.AUTH_TOKEN_FIELD_NAME, token);
+    public boolean updateUserAuthToken(String token, String username) {
+        try {
+            UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
+            updateBuilder.updateColumnValue(User.AUTH_TOKEN_FIELD_NAME, token);
 //        updateBuilder.where().isNull(User.AUTH_TOKEN_FIELD_NAME).and().eq(User.USERNAME_FIELD_NAME, username);
-        updateBuilder.where().eq(User.USERNAME_FIELD_NAME, username);
-        updateBuilder.update();
-    }
-
-    @Override
-    public void updateUserEmailConfirmed(User user) throws SQLException{
-        UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
-        updateBuilder.updateColumnValue(User.EMAIL_CONFIRMED_FIELD_NAME, true);
-        updateBuilder.where().eq(User.USERNAME_FIELD_NAME, user.getUsername());
-        updateBuilder.update();
-    }
-
-    @Override
-    public User getUserByEmailToken(String token) throws SQLException {
-        QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
-        queryBuilder.where().eq(User.EMAIL_TOKEN_FIELD_NAME, token);
-        PreparedQuery<User> preparedQuery = queryBuilder.prepare();
-        List<User> userList = userDao.query(preparedQuery);
-        if (!userList.isEmpty()) {
-            return userList.get(0);
+            updateBuilder.where().eq(User.USERNAME_FIELD_NAME, username);
+            updateBuilder.update();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        else return null;
     }
 
     @Override
-    public User getUserByAuthToken(String token) throws SQLException {
-        QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
-        queryBuilder.where().eq(User.AUTH_TOKEN_FIELD_NAME, token);
-        PreparedQuery<User> preparedQuery = queryBuilder.prepare();
-        List<User> userList = userDao.query(preparedQuery);
-        if (!userList.isEmpty()) {
-            return userList.get(0);
+    public boolean updateUserEmailConfirmed(User user){
+        try {
+            UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
+            updateBuilder.updateColumnValue(User.EMAIL_CONFIRMED_FIELD_NAME, true);
+            updateBuilder.where().eq(User.USERNAME_FIELD_NAME, user.getUsername());
+            updateBuilder.update();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        else return null;
+
     }
 
     @Override
-    public User checkUserCredential(String username, String password) throws SQLException {
-        QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
-        queryBuilder.where().eq(User.PASSWORD_FIELD_NAME, password).and().eq(User.USERNAME_FIELD_NAME, username).and().eq(User.EMAIL_CONFIRMED_FIELD_NAME, true);
-        PreparedQuery<User> preparedQuery = queryBuilder.prepare();
-        List<User> userList = userDao.query(preparedQuery);
-        if (!userList.isEmpty()) {
-            return userList.get(0);
+    public User getUserByEmailToken(String token){
+        try {
+            QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
+            queryBuilder.where().eq(User.EMAIL_TOKEN_FIELD_NAME, token);
+            PreparedQuery<User> preparedQuery = queryBuilder.prepare();
+            List<User> userList = null;
+            userList = userDao.query(preparedQuery);
+            if (!userList.isEmpty()) {
+                return userList.get(0);
+            }
+            else return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
-        else return null;
+    }
+
+    @Override
+    public User getUserByAuthToken(String token){
+        try {
+            QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
+            queryBuilder.where().eq(User.AUTH_TOKEN_FIELD_NAME, token);
+            PreparedQuery<User> preparedQuery = queryBuilder.prepare();
+            List<User> userList = null;
+            userList = userDao.query(preparedQuery);
+            if (!userList.isEmpty()) {
+                return userList.get(0);
+            }
+            else return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public User checkUserCredential(String username, String password){
+        try {
+            QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
+            queryBuilder.where().eq(User.PASSWORD_FIELD_NAME, password).and().eq(User.USERNAME_FIELD_NAME, username).and().eq(User.EMAIL_CONFIRMED_FIELD_NAME, true);
+            PreparedQuery<User> preparedQuery = queryBuilder.prepare();
+            List<User> userList = null;
+            userList = userDao.query(preparedQuery);
+            if (!userList.isEmpty()) {
+                return userList.get(0);
+            }
+            else return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

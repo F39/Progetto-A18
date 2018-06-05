@@ -1,12 +1,12 @@
 package DatabaseManagement;
 
-import java.sql.SQLException;
+import Utils.DBException;
 
 public interface CrudRepository {
 
-    void create(User user) throws SQLException;
-    void update(String[] parameters) throws SQLException;
-    void delete(String[] parameters) throws SQLException;
+    boolean create(User user);
+    boolean update(String[] parameters);
+    boolean delete(String[] parameters);
 
 
 }
