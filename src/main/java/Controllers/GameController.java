@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class GameController extends ObserverGame implements GameControllerInt {
@@ -20,6 +21,7 @@ public class GameController extends ObserverGame implements GameControllerInt {
     private MatchMaking matchMaker;
     private RestControllerInt restController;
     private List<AbstractCommand> commands = new ArrayList<>();
+    private int progressiveGameId;
 
     public GameController(RestGameController restController) {
         matches = new HashMap<>();
@@ -27,6 +29,7 @@ public class GameController extends ObserverGame implements GameControllerInt {
         matchMaker = new MatchMaking(this);
         Thread matchMaking = new Thread(matchMaker);
         matchMaking.start();
+        progressiveGameId = 0;
     }
 
     public void attach(ObserverConnection observer) {
@@ -41,10 +44,12 @@ public class GameController extends ObserverGame implements GameControllerInt {
 
     @Override
     public void update(int gameId) {
-//        Match updatedMatch = matches.get(gameId);
-//        MatchFlowState matchState = updatedMatch.getMatchFlowState();
-//        List<User> usersToBeNotified = matches.get(gameId).getPlayers();
-//        Command newCommand;
+        Match updatedMatch = matches.get(gameId);
+        MatchFlowState matchState = updatedMatch.getMatchFlowState();
+        Map<Integer, Player> usersToBeNotified = updatedMatch.getPlayers();
+        CommandOut notify = new CommandOut(usersToBeNotified.get(updatedMatch.getTurn()).getUser().getUsername(), gameId, matchState);
+        restController.putMessage(notify);
+
 //        switch (matchState) {
 //            case started:
 //                newCommand = new Command(matchState, usersToBeNotified, gameId);
@@ -121,7 +126,7 @@ public class GameController extends ObserverGame implements GameControllerInt {
 
     public void createNewMultiPlayerGame(User p1, User p2){
         Match newMatch;
-        newMatch = new Match(Mode.MultiPlayer, new Player(p1), new Player(p2));
+        newMatch = new Match(Mode.MultiPlayer, new Player(p1), new Player(p2), progressiveGameId++);
         newMatch.attach(this);
         this.getMatches().put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
@@ -185,5 +190,9 @@ public class GameController extends ObserverGame implements GameControllerInt {
 
     public RestControllerInt getRestController() {
         return restController;
+    }
+
+    public int getProgressiveGameId() {
+        return progressiveGameId++;
     }
 }
