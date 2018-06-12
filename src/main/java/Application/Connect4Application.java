@@ -2,6 +2,7 @@ package Application;
 
 import Controllers.GameController;
 import Controllers.GameControllerInt;
+import ServerTCP.Server;
 import Utils.CORSFilter;
 import Utils.ResourceLoader;
 import org.apache.catalina.Context;
@@ -13,24 +14,32 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+
 
 
 public class Connect4Application {
 
+    public static GameControllerInt gameController = new GameController();
+
     public static void main(String[] args) throws Exception {
         // TODO : export to config
+//        GameControllerInt gameControllerInt = new GameController();
+//        Thread gameControllerThread = new Thread(gameControllerInt);
+//        gameControllerThread.start();
+
+//        GameControllerInt gameController = new GameController();
+//        System.out.println(gameController);
+        Server server = new Server(gameController);
+        Thread threadServer = new Thread(server);
+        threadServer.start();
+
 
         Tomcat tomcat = new Tomcat();
         String port = "8080"; // Also change in index.html
         tomcat.setPort(Integer.parseInt(port));
-        String webAppDirLocation = "";
+//        String webAppDirLocation = setupWebApp();
+        String webAppDirLocation = "/root/Scrivania/Progetto-A18/src/main/resources";
         Context context = tomcat.addWebapp("", new File(webAppDirLocation).getAbsolutePath());
 
         File additionWebInfClasses = new File("target/classes");
@@ -44,6 +53,7 @@ public class Connect4Application {
 
         tomcat.start();
         tomcat.getServer().await();
+        //GameController gameController = new GameController();
     }
 
     private static ServletContainer resourceConfig() {
@@ -55,7 +65,7 @@ public class Connect4Application {
                 bind(GameController.class).to(GameControllerInt.class);
             }
         });
+        //resourceConfig.register(new ApplicationBinder());
         return new ServletContainer(resourceConfig);
     }
-
 }

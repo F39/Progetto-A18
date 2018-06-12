@@ -1,11 +1,13 @@
 package Controllers;
 
+import Application.Connect4Application;
 import DatabaseManagement.User;
 import GameLogic.MatchFlowState;
 import Utils.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -14,12 +16,12 @@ import javax.ws.rs.core.Response;
 @Path("/game")
 public class RestGameController{
 
-    @Inject
+    //    @Inject
     private GameControllerInt gameControllerInt;
 
 
     public RestGameController(){
-
+        gameControllerInt = Connect4Application.gameController;
     }
 
     @POST
