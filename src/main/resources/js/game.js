@@ -23,3 +23,18 @@ function loadGame(gameID){
     send(data);
 }
 
+function addMove(player, move){
+    for(var i=rows-1; i>=0; i--){
+        if(gameboard[i][move]===0){
+            gameboard[i][move]=player;
+            PlayerMove.cont++;
+            PlayerMove.y_coordinate = i;
+            PlayerMove.isallowed = "true";
+            return;
+        }
+
+    }
+
+    PlayerMove.isallowed = "false";
+}
+

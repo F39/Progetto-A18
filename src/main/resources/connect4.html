@@ -18,10 +18,12 @@
     <div class="board" onmousedown="MouseCoordinate(event)" onmousemove="fun(event)">
         <canvas id="boardgame"></canvas>
 
-        <script type="text/javascript" src="./js/game.js"></script>
+        
         <script type="text/javascript" src="./js/jquery.js"></script>
         <script type="text/javascript" src="./js/gameRest.js"></script>
         <script type="text/javascript" src="./js/init.js"></script>
+        <script type="text/javascript" src="./js/functionSheet.js"></script>
+        <script type="text/javascript" src="./js/game.js"></script>
         <!-- <script type="text/javascript" src="initialize.js"></script> -->
         <script>
 
@@ -59,6 +61,7 @@
                // document.getElementById("posizione").innerHTML = 'Player\t'+PlayerMove.Player+'\tCol\t'+PlayerMove.x_coordinate+'\tRow\t'+PlayerMove.y_coordinate+'\t#round\t'+PlayerMove.cont;
                 changePlayer*=-1;
                 move(PlayerMove.x_coordinate);
+                addMove(PlayerMove.Player, PlayerMove.x_coordinate);
                 // drawGame(gameboard);
                 if(PlayerMove.isallowed === "false")
                     changePlayer*=-1;
@@ -141,7 +144,7 @@
     <nav>
         <div class="buttonContainer">
             <a href="#"><input type="button" class="save" value="Save Game" name="save"></a>
-            <a href="./newgame.html"><input type="button" class="quit" value="Quit Game" name="quit"></a>
+            <a href="./newgame.html"><input type="button" class="quit" value="Quit Game" name="quit" onclick="quit()"></a>
         </div>
     </nav>
 </menu>

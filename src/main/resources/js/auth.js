@@ -28,7 +28,7 @@ function login(){
 function signup(){
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
-    var cPassword = document.getElementById("c_password").value    ;
+    var cPassword = document.getElementById("c_password").value;
     var email = document.getElementById("email").value;
 
     if(password == cPassword ){

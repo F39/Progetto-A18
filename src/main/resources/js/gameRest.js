@@ -112,6 +112,7 @@ function poll(){
             },
             error: function(){
                 alert("Something went wrong");
+                document.location.href="./index.html";
             }
              
         }
