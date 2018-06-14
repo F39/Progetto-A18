@@ -107,19 +107,19 @@ public class GameController implements GameControllerInt {
 
     private void sendNotification(Match match) {
         int lastMove = match.getLastMove();
-        if (lastMove == -1) {
-            if (match.getMatchFlowState().equals(MatchFlowState.winner1)) {
-                commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.winner, lastMove));
-                commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.looser, lastMove));
-            } else if (match.getMatchFlowState().equals(MatchFlowState.winner2)) {
-                commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.looser, lastMove));
-                commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.winner, lastMove));
-            } else {
-                commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), match.getMatchFlowState(), lastMove));
-                commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), match.getMatchFlowState(), lastMove));
-            }
-        } else {
-            commandsOut.add(new CommandOut(match.getPlayers().get(match.getTurn()).getUsername(), match.getGameId(), match.getMatchFlowState(), lastMove));
+        commandsOut.add(new CommandOut(match.getPlayers().get(match.getTurn()).getUsername(), match.getGameId(), match.getMatchFlowState(), lastMove));
+        //if (lastMove == -1) {
+        if (match.getMatchFlowState().equals(MatchFlowState.winner1)) {
+                commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.winner, -1));
+                commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.looser, -1));
+        } else if (match.getMatchFlowState().equals(MatchFlowState.winner2)) {
+                commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.looser, -1));
+                commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.winner, -1));
+        } else if (match.getMatchFlowState().equals(MatchFlowState.tie)){
+                commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
+                commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
+            //}
+        //} else {
         }
     }
 

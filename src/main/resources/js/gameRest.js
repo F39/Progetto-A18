@@ -99,15 +99,23 @@ function poll(){
                 //console.log(response);
                 if(response.move == -2 && response.gameId == 0){
                     //poll response
-                    console.log("poll: " + response.matchFlowState);
+                    //console.log("poll: " + response.matchFlowState);
                 }else if(response.move == -2 && response.gameId != 0) {
                     //game found
                     sessionStorage.gameId = response.gameId;
                     document.location.href = "./connect4.html";
                 }else if(response.move==-1){
-                    console.log("cambio di stato: " + response.matchFlowState);
+                    //console.log("cambio di stato: " + response.matchFlowState);
+                    if(response.matchFlowState == "winner"){
+
+                    }else if(response.matchFlowState == "looser"){
+
+                    }else if(response.matchFlowState == "tie"){
+
+                    }
                 }else{
-                    console.log("mossa");
+                    //console.log("mossa");
+                    addMove()
                 }
             },
             error: function(){

@@ -42,6 +42,7 @@ public class Connect4Application {
         String webAppDirLocation = "src/main/resources";
         Context context = tomcat.addWebapp("", new File(webAppDirLocation).getAbsolutePath());
 
+
         File additionWebInfClasses = new File("target/classes");
         WebResourceRoot resources = new StandardRoot(context);
         resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
