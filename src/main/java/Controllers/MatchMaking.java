@@ -24,8 +24,9 @@ public class MatchMaking implements Runnable {
     public void run() {
         int indexP1, indexP2;
         int c = 0;
+        System.out.println("Started Matchmaking thread");
         while (true) {
-            System.out.println("Thread running + " + (c++));
+
             if (pendingPlayers.size() >= 2) {
                 //System.out.println("Pending at least 2 player ");
                 while (true) {
@@ -44,7 +45,13 @@ public class MatchMaking implements Runnable {
                     }
                 }
             }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
 }
