@@ -59,15 +59,15 @@
                 //document.getElementById("mouse").innerHTML = 'Coordinata x:'+XPos+' | Coordinata y:'+YPos;
                 PlayerMove.x_coordinate = Math.floor((XPos-316)/boardGame.dim_cell);
                 // document.getElementById("posizione").innerHTML = 'Player\t'+PlayerMove.Player+'\tCol\t'+PlayerMove.x_coordinate+'\tRow\t'+PlayerMove.y_coordinate+'\t#round\t'+PlayerMove.cont;
-                changePlayer*=-1;
+                //changePlayer*=-1;
                 //console.log("Prima di move " + changePlayer);
                 move(PlayerMove.x_coordinate);
                 //console.log("Prima di addMove" + changePlayer);
-                addMove(PlayerMove.Player, PlayerMove.x_coordinate);
+                addMove(1, PlayerMove.x_coordinate);
                 // drawGame(gameboard);
                 //console.log("Prima di if " + changePlayer);
                 if(PlayerMove.isallowed === "false"){
-                    changePlayer*=-1;
+                    //changePlayer*=-1;
                 }
 
                 if(PlayerMove.isallowed === "true"){

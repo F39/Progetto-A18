@@ -30,6 +30,7 @@ function addMove(player, move){
             PlayerMove.cont++;
             PlayerMove.y_coordinate = i;
             PlayerMove.isallowed = "true";
+            drawPawn();
             return;
         }
 

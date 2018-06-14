@@ -1,128 +1,130 @@
 var restServer = "http://localhost:8080/rest";
 
-function newGame(mode){
+function newGame(mode) {
     $.ajax(
         {
             type: 'POST',
             contentType: 'application/json',
             url: restServer + '/game/newgame',
-            headers:{
-                "token" : sessionStorage.token
+            headers: {
+                "token": sessionStorage.token
             },
             data: JSON.stringify({"username": sessionStorage.username, "mode": mode}),
-            success: function(){
-                alert("success");
+            success: function () {
+                document.location.href = "./loadingPage.html";
             },
-            error: function(){
+            error: function () {
                 alert("Something went wrong");
             }
-             
+
         }
     );
 }
 
-function move(move){
+function move(move) {
     $.ajax(
         {
             type: 'POST',
             contentType: 'application/json',
             url: restServer + '/game/move',
-            headers:{
-                "token" : sessionStorage.token
+            headers: {
+                "token": sessionStorage.token
             },
             data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId, "move": move}),
-            success: function(response){
-                
+            success: function (response) {
+
             },
-            error: function(){
+            error: function () {
                 alert("Something went wrong");
             }
-             
+
         }
     );
 }
 
-function pause(){
+function pause() {
     $.ajax(
         {
             type: 'POST',
             contentType: 'application/json',
             url: restServer + '/game/pause',
-            headers:{
-                "token" : sessionStorage.token
+            headers: {
+                "token": sessionStorage.token
             },
             data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId}),
-            success: function(response){
-                
+            success: function (response) {
+
             },
-            error: function(){
+            error: function () {
                 alert("Something went wrong");
             }
-             
+
         }
     );
 }
 
-function quit(){
+function quit() {
     $.ajax(
         {
             type: 'POST',
             contentType: 'application/json',
             url: restServer + '/game/quit',
-            headers:{
-                "token" : sessionStorage.token
+            headers: {
+                "token": sessionStorage.token
             },
             data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId}),
-            success: function(response){
-               
+            success: function (response) {
+
             },
-            error: function(){
+            error: function () {
                 alert("Something went wrong");
             }
-             
+
         }
     );
 }
 
 poll();
-function poll(){
+
+function poll() {
     $.ajax(
         {
             type: 'POST',
             contentType: 'text/plain',
             url: restServer + '/game/poll',
-            headers:{
-                "token" : sessionStorage.token
+            headers: {
+                "token": sessionStorage.token
             },
             data: sessionStorage.username,
-            success: function(response){
+            success: function (response) {
                 //console.log(response);
-                if(response.move == -2 && response.gameId == 0){
+                if (response.move == -2 && response.gameId == 0) {
                     //poll response
                     //console.log("poll: " + response.matchFlowState);
-                }else if(response.move == -2 && response.gameId != 0) {
+                } else if (response.move == -2 && response.gameId != 0) {
                     //game found
                     sessionStorage.gameId = response.gameId;
                     document.location.href = "./connect4.html";
-                }else if(response.move==-1){
+                } else if (response.move == -1) {
                     //console.log("cambio di stato: " + response.matchFlowState);
-                    if(response.matchFlowState == "winner"){
+                    if (response.matchFlowState == "winner") {
 
-                    }else if(response.matchFlowState == "looser"){
+                    } else if (response.matchFlowState == "looser") {
 
-                    }else if(response.matchFlowState == "tie"){
+                    } else if (response.matchFlowState == "tie") {
 
                     }
-                }else{
+                } else {
                     //console.log("mossa");
-                    addMove()
+                    addMove(2, response.move);
+                    changePlayer = 1;
                 }
             },
-            error: function(){
+            error: function () {
                 alert("Something went wrong");
-                document.location.href="./index.html";
+                document.location.href = "./index.html";
             }
-             
+
         }
     );
     setTimeout(poll, 5000);
