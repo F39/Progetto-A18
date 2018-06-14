@@ -39,7 +39,7 @@ public class Connect4Application {
         String port = "8080"; // Also change in index.html
         tomcat.setPort(Integer.parseInt(port));
 //        String webAppDirLocation = setupWebApp();
-        String webAppDirLocation = "/root/Scrivania/Progetto-A18/src/main/resources";
+        String webAppDirLocation = "src/main/resources";
         Context context = tomcat.addWebapp("", new File(webAppDirLocation).getAbsolutePath());
 
         File additionWebInfClasses = new File("target/classes");
