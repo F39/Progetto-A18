@@ -122,8 +122,12 @@ public class UserController {
     }
 
     private boolean addUser(User user) {
-        if (userRepository.create(user)) {
-            return true;
+        try {
+            if (userRepository.create(user)) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
 

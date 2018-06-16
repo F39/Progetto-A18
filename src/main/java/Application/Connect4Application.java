@@ -16,32 +16,20 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.io.*;
 
-
-
 public class Connect4Application {
 
     public static GameControllerInt gameController = new GameController();
 
     public static void main(String[] args) throws Exception {
-        // TODO : export to config
-//        GameControllerInt gameControllerInt = new GameController();
-//        Thread gameControllerThread = new Thread(gameControllerInt);
-//        gameControllerThread.start();
-
-//        GameControllerInt gameController = new GameController();
-//        System.out.println(gameController);
         Server server = new Server(gameController);
         Thread threadServer = new Thread(server);
         threadServer.start();
 
-
         Tomcat tomcat = new Tomcat();
         String port = "8080"; // Also change in index.html
         tomcat.setPort(Integer.parseInt(port));
-//        String webAppDirLocation = setupWebApp();
         String webAppDirLocation = "src/main/resources";
         Context context = tomcat.addWebapp("", new File(webAppDirLocation).getAbsolutePath());
-
 
         File additionWebInfClasses = new File("target/classes");
         WebResourceRoot resources = new StandardRoot(context);
@@ -54,7 +42,6 @@ public class Connect4Application {
 
         tomcat.start();
         tomcat.getServer().await();
-        //GameController gameController = new GameController();
     }
 
     private static ServletContainer resourceConfig() {
@@ -66,7 +53,6 @@ public class Connect4Application {
                 bind(GameController.class).to(GameControllerInt.class);
             }
         });
-        //resourceConfig.register(new ApplicationBinder());
         return new ServletContainer(resourceConfig);
     }
 }
