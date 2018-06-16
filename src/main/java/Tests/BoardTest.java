@@ -69,10 +69,9 @@ class BoardTest {
         board.move(1,1);
         board.move(2,1);
         board.move(3,1);
-        assertEquals(1, board.scanHorizontal(0,4));
-        assertEquals(0, board.scanHorizontal(4,4));
-        assertEquals(1, board.scanHorizontal(0,3));
-        assertEquals(0, board.scanHorizontal(4,3));
+        assertEquals(0, board.scanHorizontal(5));
+        assertEquals(1, board.scanHorizontal(4));
+        assertEquals(1, board.scanHorizontal(3));
     }
 
     @Test
@@ -83,10 +82,9 @@ class BoardTest {
         board.move(0,1);
         board.move(0,1);
         board.move(0,1);
-        assertEquals(1, board.scanVertical(0,4));
-        assertEquals(0, board.scanVertical(1,4));
-        assertEquals(1, board.scanVertical(0,3));
-        assertEquals(0, board.scanVertical(1,3));
+        assertEquals(0, board.scanVertical(5));
+        assertEquals(1, board.scanVertical(4));
+        assertEquals(1, board.scanVertical(3));
     }
 
     @Test
@@ -103,10 +101,9 @@ class BoardTest {
         board.move(2,1);
         board.move(2,1);
         board.move(3,1);
-        assertEquals(1, board.scanMainDiag(3,4));
-        assertEquals(0, board.scanMainDiag(4,4));
-        assertEquals(1, board.scanMainDiag(3,3));
-        assertEquals(0, board.scanMainDiag(4,3));
+        assertEquals(0, board.scanMainDiag(5));
+        assertEquals(1, board.scanMainDiag(4));
+        assertEquals(1, board.scanMainDiag(3));
     }
 
     @Test
@@ -123,9 +120,8 @@ class BoardTest {
         board.move(1,1);
         board.move(1,1);
         board.move(0,1);
-        assertEquals(1, board.scanBackDiag(0,4));
-        assertEquals(0, board.scanBackDiag(5,4));
-        assertEquals(1, board.scanBackDiag(0,3));
-        assertEquals(0, board.scanBackDiag(5,3));
+        assertEquals(0, board.scanBackDiag(5));
+        assertEquals(1, board.scanBackDiag(4));
+        assertEquals(1, board.scanBackDiag(3));
     }
 }
