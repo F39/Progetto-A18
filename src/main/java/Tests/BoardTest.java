@@ -123,9 +123,9 @@ class BoardTest {
         board.move(1,1);
         board.move(1,1);
         board.move(0,1);
-        assertEquals(1, board.scanMainDiag(0,4));
-        assertEquals(0, board.scanMainDiag(5,4));
-        assertEquals(1, board.scanMainDiag(0,3));
-        assertEquals(0, board.scanMainDiag(5,3));
+        assertEquals(1, board.scanBackDiag(0,4));
+        assertEquals(0, board.scanBackDiag(5,4));
+        assertEquals(1, board.scanBackDiag(0,3));
+        assertEquals(0, board.scanBackDiag(5,3));
     }
 }

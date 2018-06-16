@@ -46,14 +46,15 @@ public class Board {
     }
 
     public int getLastC() {
-        if(lastC.size()>0){
+        if(lastC.size()>0)
             return lastC.get(lastC.size() - 1);
-        }
-        return 0;
+        return -1;
     }
 
     public int getLastR() {
-        return lastR.get(lastR.size() - 1);
+        if(lastR.size()>0)
+            return lastR.get(lastR.size() - 1);
+        return -1;
     }
 
     /**
