@@ -53,7 +53,7 @@ function pause() {
             },
             data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId}),
             success: function (response) {
-
+                alert("Paused");
             },
             error: function () {
                 alert("Something went wrong");

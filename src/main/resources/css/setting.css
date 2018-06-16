@@ -114,6 +114,13 @@ input.quit{
     top: 10px;
 }
 
+input.pause{
+    position: relative;
+    left: -25px;
+    width: 250px;
+    top: 5px;
+}
+
 /*
 aggiungere elenco per i bottoni, modifico lo stile solo di LI e non dei singoli bottoni
  */
