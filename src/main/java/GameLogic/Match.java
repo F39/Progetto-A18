@@ -49,10 +49,6 @@ public class Match extends Thread {
         return board;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
     public int getGameId() {
         return gameId;
     }
@@ -131,7 +127,6 @@ public class Match extends Thread {
             if (matchFlowState.equals(MatchFlowState.paused)) {
                 timeout += 100;
             }
-
             try {
                 sleep(100);
             } catch (InterruptedException e) {

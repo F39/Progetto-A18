@@ -4,10 +4,6 @@ public class CommandMove extends CommandMatch {
 
     private int move;
 
-    public CommandMove() {
-
-    }
-
     public CommandMove(String username, int gameId, int move) {
         super(username);
         this.gameId = gameId;

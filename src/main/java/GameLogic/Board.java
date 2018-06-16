@@ -74,7 +74,7 @@ public class Board {
                 board[i][column].fill(turn);
                 lastC.add(column);
                 lastR.add(i);
-                result = scan(column);
+                result = scan();
                 break;
             }
         }
@@ -97,8 +97,9 @@ public class Board {
     /**
      * Starting from the last move on the specified column, scan the board horizontally searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
      */
-    public int scanHorizontal(int c, int line) {
+    public int scanHorizontal(int line) {
         int r = getLastR();
+        int c = getLastC();
         int counter = 0, j;
         int player = board[r][c].getOccupant();
         for (j = 0; j < length; j++) { //row check
@@ -115,8 +116,9 @@ public class Board {
     /**
      * Starting from the last move on the specified column, scan the board vertically searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
      */
-    public int scanVertical(int c, int line) {
+    public int scanVertical(int line) {
         int r = getLastR();
+        int c = getLastC();
         int counter = 0, i;
         int player = board[r][c].getOccupant();
         for (i = 0; i <= r; i++) { //column check
@@ -133,8 +135,9 @@ public class Board {
     /**
      * Starting from the last move on the specified column, scan the board diagonally (/) searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
      */
-    public int scanBackDiag(int c, int line) {
+    public int scanBackDiag(int line) {
         int r = getLastR();
+        int c = getLastC();
         int counter = 0, i, j;
         int player = board[r][c].getOccupant();
         if (r - c <= 0) {
@@ -158,8 +161,9 @@ public class Board {
     /**
      * Starting from the last move on the specified column, scan the board diagonally (\) searching <line> stones inlined of the same player of the specified cell. Returns the player number in case of success, otherwise 0
      */
-    public int scanMainDiag(int c, int line) {
+    public int scanMainDiag(int line) {
         int r = getLastR();
+        int c = getLastC();
         int counter = 0, i, j;
         int player = board[r][c].getOccupant();
         if (r + c <= length - 1) {
@@ -183,20 +187,20 @@ public class Board {
     /**
      * Starting from the last move on the specified column, scan the board in all directions checking whether a player has won the match. Returns the player number in case of success, otherwise 0
      */
-    public int scan(int c) {
+    public int scan() {
         if (moveNo < 7)
             return 0;
         int scan;
-        scan = scanHorizontal(c, 4);
+        scan = scanHorizontal(4);
         if (scan != 0)
             return scan;
-        scan = scanVertical(c, 4);
+        scan = scanVertical(4);
         if (scan != 0)
             return scan;
-        scan = scanMainDiag(c, 4);
+        scan = scanMainDiag(4);
         if (scan != 0)
             return scan;
-        scan = scanBackDiag(c, 4);
+        scan = scanBackDiag(4);
         if (scan != 0)
             return scan;
         return 0;

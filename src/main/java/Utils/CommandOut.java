@@ -8,10 +8,6 @@ public class CommandOut extends AbstractCommand {
     private MatchFlowState matchFlowState;
     private int move;
 
-    public CommandOut(){
-
-    }
-
     public CommandOut(String username, int gameId, MatchFlowState matchFlowState, int move) {
         super(username);
         this.gameId = gameId;

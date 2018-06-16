@@ -43,14 +43,14 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
 
     private int forecast() {
         boolean imoved = false, jmoved = false, kmoved = false, lmoved = false;
-
+        int rincaro=3;
         for (int i = 0; i < length; i++) {
             copiedBoard = match.getBoard();
             try {
                 if (copiedBoard.getCellOccupant(height - 1, i) == 0) {
                     imoved = true;
                     copiedBoard.move(i, 2);
-                    future[i] = test(i, pesi[0]);
+                    future[i] = test(rincaro*pesi[0], 4);
                 } else
                     future[i] = -1000; // è full column
             } catch (RuntimeException e) { // mossa vincente
@@ -63,30 +63,34 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
                     if (copiedBoard.getCellOccupant(height - 1, j) == 0) {
                         jmoved = true;
                         copiedBoard.move(j, 2);
-                        future[i] += test(j, pesi[1]);
+                        future[i] += test(rincaro*pesi[1], 4);
                     }
                 } catch (Exception e) {
-                    future[i] += test(j, pesi[1]);
+                    future[i] += test(rincaro*pesi[1], 4);
                 }
                 for (int k = 0; k < length; k++) {
                     try {
                         if (copiedBoard.getCellOccupant(height - 1, k) == 0) {
                             kmoved = true;
                             copiedBoard.move(k, 2);
-                            future[i] += deepTest(k, pesi[2]);
+                            future[i] += test(rincaro*pesi[2], 4);
+                            future[i] += test(pesi[2], 3);
                         }
                     } catch (Exception e) {
-                        future[i] += deepTest(k, pesi[2]);
+                        future[i] += test(rincaro*pesi[2], 4);
+                        future[i] += test(pesi[2], 3);
                     }
                     for (int l = 0; l < length; l++) {
                         try {
                             if (copiedBoard.getCellOccupant(height - 1, l) == 0) {
                                 lmoved = true;
                                 copiedBoard.move(l, 2);
-                                future[i] += deepTest(l, pesi[3]);
+                                future[i] += test(rincaro*pesi[3], 4);
+                                future[i] += test(pesi[3], 3);
                             }
                         } catch (Exception e) {
-                            future[i] += deepTest(l, pesi[3]);
+                            future[i] += test(rincaro*pesi[3], 4);
+                            future[i] += test(pesi[3], 3);
                         }
                         if (lmoved)
                             copiedBoard.undo();
@@ -117,22 +121,12 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
         return -1;
     }
 
-    private int test(int col, int weight) {
+    private int test(int weight, int line) {
         int victoryP = 0;
-        victoryP += (copiedBoard.scanHorizontal(col, 4) != 0 ? 3 * weight : 0);
-        victoryP += (copiedBoard.scanVertical(col, 4) != 0 ? 3 * weight : 0);
-        victoryP += (copiedBoard.scanMainDiag(col, 4) != 0 ? 3 * weight : 0);
-        victoryP += (copiedBoard.scanBackDiag(col, 4) != 0 ? 3 * weight : 0);
+        victoryP += (copiedBoard.scanHorizontal(line) != 0 ? weight : 0);
+        victoryP += (copiedBoard.scanVertical(line) != 0 ? weight : 0);
+        victoryP += (copiedBoard.scanMainDiag(line) != 0 ? weight : 0);
+        victoryP += (copiedBoard.scanBackDiag(line) != 0 ? weight : 0);
         return victoryP;
     }
-
-    private int deepTest(int col, int weight) {
-        int victoryP = test(col, weight);
-        victoryP += copiedBoard.scanHorizontal(col, 3) != 0 ? weight : 0;
-        victoryP += copiedBoard.scanVertical(col, 3) != 0 ? weight : 0;
-        victoryP += copiedBoard.scanMainDiag(col, 3) != 0 ? weight : 0;
-        victoryP += copiedBoard.scanBackDiag(col, 3) != 0 ? weight : 0;
-        return victoryP;
-    }
-
 }
