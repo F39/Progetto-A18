@@ -31,12 +31,12 @@ public class UserRepository implements UserRepositoryInt {
     }
 
     @Override
-    public boolean update(String[] parameters){
+    public boolean update(User user){
         for (User u : userDao) {
-            if (u.getUsername().equals(parameters[0])) {
-                u.setUsername(parameters[1]);
+            if (u.getUsername().equals(user.getUsername())) {
+                user.setId(u.getId());
                 try {
-                    userDao.update(u);
+                    userDao.update(user);
                     return true;
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -49,9 +49,9 @@ public class UserRepository implements UserRepositoryInt {
     }
 
     @Override
-    public boolean delete(String[] parameters) {
+    public boolean delete(User user) {
         for (User u : userDao) {
-            if (u.getUsername().equals(parameters[0])) {
+            if (u.getUsername().equals(user.getUsername())) {
                 try {
                     userDao.delete(u);
                     return true;
@@ -69,7 +69,6 @@ public class UserRepository implements UserRepositoryInt {
         try {
             UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
             updateBuilder.updateColumnValue(User.AUTH_TOKEN_FIELD_NAME, token);
-//        updateBuilder.where().isNull(User.AUTH_TOKEN_FIELD_NAME).and().eq(User.USERNAME_FIELD_NAME, username);
             updateBuilder.where().eq(User.USERNAME_FIELD_NAME, username);
             updateBuilder.update();
             return true;

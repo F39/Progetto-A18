@@ -1,47 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-        <link href="./css/loginFormat.css" rel="stylesheet">
-        <link href="./css/button.css" rel="stylesheet">
-        <link rel="stylesheet" href="./css/background.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Connect4</title>
+    <link href="./css/loginFormat.css" rel="stylesheet">
+    <link href="./css/button.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/background.css">
+</head>
 
-    <body>
+<body>
 
-    <div class="login">
-        <div class="login_title">
-            <span>Connect-4</span>
+<div class="login">
+    <div class="login_title">
+        <span>Connect4</span>
+    </div>
+    <div class="login_fields">
+        <div class="login_field_User">
+            <div class="icon">
+                <img src="./img/user_icon_copy.png">
+            </div>
+            <input placeholder="Username" type="text" id="username" required>
         </div>
-        <div class="login_fields">
-            <div class="login_field_User">
-                <div class="icon">
-                    <img src="./img/user_icon_copy.png">
-                </div>
-                <input placeholder="Username" type="text" id="username" required>
+        <div class="login_field_password">
+            <div class="icon">
+                <img src="./img/lock_icon_copy.png">
             </div>
-            <div class="login_field_password">
-                <div class="icon">
-                    <img src="./img/lock_icon_copy.png">
-                </div>
-                <input placeholder="Password" type="password" id="password" required>
-            </div>
+            <input placeholder="Password" type="password" id="password" required>
         </div>
-        <div class="login_butt">
-            <div class='login_fields__submit'>
-                <input type='submit' value='Log In' id="log" onclick="login()">
-            </div>
-            <div class='login_fields__signit'>
-                <a href="./signup.html"><input type='button' value='Sign in' id="log"></a>
-            </div>
+    </div>
+    <div class="login_butt">
+        <div class='login_fields__submit'>
+            <input type='submit' value='Log In' id="log" onclick="login()">
         </div>
-
+        <div class='login_fields__signup'>
+            <a href="./signup.html"><input type='button' value='Sign Up' id="log"></a>
+        </div>
     </div>
 
-    <script src="./js/jquery.js"></script>
-    <script src="./js/auth.js"></script>
-    
+</div>
 
-    </body>
+<script src="./js/jquery.js"></script>
+<script src="./js/auth.js"></script>
+
+</body>
 </html>

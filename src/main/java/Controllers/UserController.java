@@ -40,7 +40,7 @@ public class UserController {
         ConnectionSource connectionSource;
         String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
         String dbUser = "root";
-        String dbPass = "arcanine9";
+        String dbPass = "delta";
         try {
             connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
             userRepository = new UserRepository(connectionSource);
@@ -64,8 +64,6 @@ public class UserController {
             //TODO: prendere la stringa dinamicamente
             String url = getServerURL();
             url = url + "/rest/user/confirm/";
-
-
             email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + url + confirmLink);
             return Response.status(Status.OK).build();
         }
@@ -80,12 +78,10 @@ public class UserController {
             toConfirm = userRepository.getUserByEmailToken(token);
             toConfirm.setEmail_confirmed(true);
             userRepository.updateUserEmailConfirmed(toConfirm);
-
             File f = new File("src/main/resources/emailconfirmed.html");
-
             return new FileInputStream(f);
-
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return null;
@@ -107,7 +103,6 @@ public class UserController {
 
         return Response.status(Status.BAD_REQUEST).entity("Login failed: the provided credentials are not valid ones.").build();
     }
-
 
     @POST
     @Path("/logout")

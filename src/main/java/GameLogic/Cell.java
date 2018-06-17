@@ -1,14 +1,13 @@
 package GameLogic;
+
 /**
- * Class representing a single cell of the playground. It keeps memory of the occupant and the turn it has been filled.
+ * Class representing a single cell of the playground. It keeps memory of the occupant from witch it has been filled.
  */
 public class Cell {
+
     private int occupant;
     private int x, y;
 
-    /**
-     * Create a new empty cell
-     */
     public Cell(int x, int y) {
         occupant = 0;
         this.x = x;
