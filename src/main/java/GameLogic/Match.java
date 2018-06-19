@@ -24,7 +24,7 @@ public class Match extends Thread {
     public Match(Player player1, int gameId) {
         this.gameId = gameId;
         players.put(1, player1);
-        matchFlowState = MatchFlowState.started;
+        matchFlowState = MatchFlowState.started1;
         turn = 1;
         board = new Board();
         lastMove = -1;
@@ -91,7 +91,7 @@ public class Match extends Thread {
     }
 
     public void resumeGame(Player player) {
-        matchFlowState = MatchFlowState.running;
+        matchFlowState = MatchFlowState.resumed;
     }
 
     public void pauseGame(Player player) {
