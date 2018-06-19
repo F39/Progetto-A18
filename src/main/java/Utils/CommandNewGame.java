@@ -8,6 +8,10 @@ public class CommandNewGame extends AbstractCommand {
     private Mode mode;
     private GameControllerInt gameController;
 
+    public CommandNewGame(){
+
+    }
+
     public CommandNewGame(String username, Mode mode) {
         super(username);
         this.mode = mode;

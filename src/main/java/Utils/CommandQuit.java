@@ -4,6 +4,10 @@ import GameLogic.Match;
 
 public class CommandQuit extends CommandMatch {
 
+    public CommandQuit(){
+
+    }
+
     public CommandQuit(String username, int gameId) {
         super(username);
         this.gameId = gameId;
