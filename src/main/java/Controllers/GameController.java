@@ -49,9 +49,9 @@ public class GameController implements GameControllerInt {
         newMatch.startGame();
         //TODO : Set logic for gameId
         //TODO : check for AI player
-        commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), newMatch.getMatchFlowState(), -2));
+        commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.started1, -2));
         System.out.println("Primo messaggio messo");
-        commandsOut.add(new CommandOut(p2.getUsername(), newMatch.getGameId(), newMatch.getMatchFlowState(), -2));
+        commandsOut.add(new CommandOut(p2.getUsername(), newMatch.getGameId(), MatchFlowState.started2, -2));
         System.out.println("Secondo messaggio messo");
     }
 
@@ -107,6 +107,15 @@ public class GameController implements GameControllerInt {
 
     private void sendNotification(Match match) {
         int lastMove = match.getLastMove();
+        if (match.getMatchFlowState().equals(MatchFlowState.paused)) {
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
+            commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
+            return;
+        }else if(match.getMatchFlowState().equals(MatchFlowState.resumed)){
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
+            commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
+            return;
+        }
         commandsOut.add(new CommandOut(match.getPlayers().get(match.getTurn()).getUsername(), match.getGameId(), match.getMatchFlowState(), lastMove));
         //if (lastMove == -1) {
         if (match.getMatchFlowState().equals(MatchFlowState.winner1)) {
@@ -121,7 +130,7 @@ public class GameController implements GameControllerInt {
             //}
         //} else {
         }
-    }
+}
 
     public MatchMaking getMatchMaker() {
         return matchMaker;

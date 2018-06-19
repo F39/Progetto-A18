@@ -49,8 +49,8 @@ public class UserController {
         }
 
         email = new Email();
-
-        Thread onlineCheckerThread = new Thread(new OnlineChecker());
+        onlineChecker = new OnlineChecker();
+        Thread onlineCheckerThread = new Thread(onlineChecker);
         onlineCheckerThread.start();
     }
 
