@@ -121,6 +121,31 @@ input.pause{
     top: 5px;
 }
 
+#pauseview{
+    position: absolute;
+    top:80px;
+    width: 2000px;
+    height: 500px;
+    background:aliceblue;
+    opacity: 0.8;
+    display: none;
+    cursor: not-allowed;
+   
+
+}
+
+label[for="pauseview"]{
+    display: inline-block;
+    position: relative;
+    top: 50px;
+    left: 600px;
+    line-height: 40px;
+    font-size: 2.3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: none;
+}
+
 /*
 aggiungere elenco per i bottoni, modifico lo stile solo di LI e non dei singoli bottoni
  */
