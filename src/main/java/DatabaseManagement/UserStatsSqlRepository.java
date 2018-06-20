@@ -92,6 +92,56 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
+    public boolean addUserWin(User user) {
+        UserStats userStats = getUserStats(user);
+        if (userStats != null){
+            userStats.addWin();
+            return update(userStats);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addUserTie(User user) {
+        UserStats userStats = getUserStats(user);
+        if (userStats != null){
+            userStats.addTie();
+            return update(userStats);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addUserDefeat(User user) {
+        UserStats userStats = getUserStats(user);
+        if (userStats != null){
+            userStats.addDefeat();
+            return update(userStats);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addUserGame(User user) {
+        UserStats userStats = getUserStats(user);
+        if (userStats != null){
+            userStats.addGame();
+            return update(userStats);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addUserPoints(User user, int points) {
+        UserStats userStats = getUserStats(user);
+        if (userStats != null){
+            userStats.addPoints(points);
+            return update(userStats);
+        }
+        return false;
+    }
+
+    @Override
     public boolean create(UserStats userStats) {
         try {
             statsDao.create(userStats);

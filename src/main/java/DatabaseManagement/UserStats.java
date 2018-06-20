@@ -43,10 +43,6 @@ public class UserStats {
         return user;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public void setUser(User user) {
         this.user = user;
     }
@@ -57,39 +53,39 @@ public class UserStats {
         return games;
     }
 
-    public void setGames(int games) {
-        this.games = games;
+    public void addGame() {
+        this.games += 1;
     }
 
     public int getWins() {
         return wins;
     }
 
-    public void setWins(int wins) {
-        this.wins = wins;
+    public void addWin() {
+        this.wins += 1;
     }
 
     public int getTies() {
         return ties;
     }
 
-    public void setTies(int ties) {
-        this.ties = ties;
+    public void addTie() {
+        this.ties += 1;
     }
 
     public int getDefeats() {
         return defeats;
     }
 
-    public void setDefeats(int defeats) {
-        this.defeats = defeats;
+    public void addDefeat() {
+        this.defeats += 1;
     }
 
     public int getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
+    public void addPoints(int points) {
+        this.points += points;
     }
 }

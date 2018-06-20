@@ -39,6 +39,7 @@ public class GameController implements GameControllerInt {
         //TODO : Set logic for gameId
         //TODO : check for AI player
         commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.started1, -2));
+
 //        commandsOut.add(new CommandOut(p2.getUsername(), newMatch.getGameId(), newMatch.getMatchFlowState(), -1));
     }
 

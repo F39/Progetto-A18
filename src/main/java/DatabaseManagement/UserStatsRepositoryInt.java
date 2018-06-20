@@ -16,4 +16,14 @@ public interface UserStatsRepositoryInt extends CrudRepository<UserStats> {
 
     UserStats resetUserStats(User user);
 
+    boolean addUserWin(User user);
+
+    boolean addUserTie(User user);
+
+    boolean addUserDefeat(User user);
+
+    boolean addUserGame(User user);
+
+    boolean addUserPoints(User user, int points);
+
 }
