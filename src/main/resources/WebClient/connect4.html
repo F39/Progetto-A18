@@ -157,6 +157,12 @@
 <input type="checkbox" name="Menu" id="menu" onclick="BlockCursor()">
 <menu>
     <nav>
+        <img src="./img/X.png" style="width:20px;height:20px;" onclick="closeMenu()">
+        <script>
+            function closeMenu(){
+                document.getElementById("menu").click();
+            }
+        </script>
         <div class="buttonContainer">
             <a href="#"><input type="button" class="save" value="Save Game" name="save"></a>
             <a href="#"><input type="button" class="pause" value="Pause Game" name="pause" id="pausebutton" onclick="pause()"></a>

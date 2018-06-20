@@ -94,7 +94,7 @@ nav {
 
 .buttonContainer{
     position: relative;
-    top: -5px;
+    top: -15px;
     left: 0px;
     width: 200px;
     right: 0;
@@ -130,7 +130,7 @@ input.pause{
     opacity: 0.8;
     display: none;
     cursor: not-allowed;
-   
+
 
 }
 
@@ -145,6 +145,14 @@ label[for="pauseview"]{
     text-transform: uppercase;
     cursor: none;
 }
+
+img{
+    position: relative;
+    left: 140px;
+    top: -15px;
+    cursor: pointer;
+}
+
 
 /*
 aggiungere elenco per i bottoni, modifico lo stile solo di LI e non dei singoli bottoni
