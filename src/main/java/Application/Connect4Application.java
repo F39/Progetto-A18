@@ -28,7 +28,7 @@ public class Connect4Application {
         Tomcat tomcat = new Tomcat();
         String port = "8080"; // Also change in index.html
         tomcat.setPort(Integer.parseInt(port));
-        String webAppDirLocation = "src/main/resources";
+        String webAppDirLocation = "src/main/resources/WebClient";
         Context context = tomcat.addWebapp("", new File(webAppDirLocation).getAbsolutePath());
 
         File additionWebInfClasses = new File("target/classes");

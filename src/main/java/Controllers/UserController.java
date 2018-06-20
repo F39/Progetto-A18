@@ -16,13 +16,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 @Singleton
@@ -36,15 +34,18 @@ public class UserController {
     private final static long threshold = 60;
 
     public UserController() {
-        // TODO : export to config
+        // TODO : export to Config
+        Properties dbConnectionProps;
         ConnectionSource connectionSource;
-        String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
-        String dbUser = "root";
-        String dbPass = "delta";
         try {
-            connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
+            dbConnectionProps = new Properties();
+            FileInputStream in = new FileInputStream("src/main/resources/Config/db_config.properties");
+            dbConnectionProps.load(in);
+            in.close();
+            String databaseConnectionString = dbConnectionProps.getProperty("databaseURL") + dbConnectionProps.getProperty("databaseHost") + dbConnectionProps.getProperty("databaseName");
+            connectionSource = new JdbcConnectionSource(databaseConnectionString, dbConnectionProps.getProperty("databaseUser"), dbConnectionProps.getProperty("databasePassword"));
             userRepository = new UserRepository(connectionSource);
-        } catch (SQLException e) {
+        } catch (SQLException|IOException e) {
             e.printStackTrace();
         }
 

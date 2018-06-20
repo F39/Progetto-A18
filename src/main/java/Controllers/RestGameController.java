@@ -5,9 +5,7 @@ import DatabaseManagement.User;
 import GameLogic.MatchFlowState;
 import Utils.*;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -16,7 +14,6 @@ import javax.ws.rs.core.Response;
 @Path("/game")
 public class RestGameController{
 
-    //    @Inject
     private GameControllerInt gameControllerInt;
 
 

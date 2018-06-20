@@ -15,14 +15,16 @@
 
 <div class="back">
 
-    <div class="board" onmousedown="MouseCoordinate(event)" onmousemove="hoverMove(event)">
+    <div class="board" onmousedown="MouseCoordinate(event)" onmousemove="fun(event)">
         <canvas id="boardgame"></canvas>
 
         
         <script type="text/javascript" src="./js/jquery.js"></script>
         <script type="text/javascript" src="./js/gameRest.js"></script>
         <script type="text/javascript" src="./js/init.js"></script>
+        <!--<script type="text/javascript" src="./js/functionSheet.js"></script> -->
         <script type="text/javascript" src="./js/game.js"></script>
+        <!-- <script type="text/javascript" src="initialize.js"></script> -->
         <script>
 
             var tX = 0;
@@ -30,7 +32,7 @@
             var y_abs = PlayerMove.y_coordinate * boardGame.dim_cell + boardGame.dim_cell / 2;
 
 
-            var changePlayer = 1;
+            var changePlayer ="1";
 
             newGameSetup();
 
@@ -57,39 +59,51 @@
                 //document.getElementById("mouse").innerHTML = 'Coordinata x:'+XPos+' | Coordinata y:'+YPos;
                 PlayerMove.x_coordinate = Math.floor((XPos-316)/boardGame.dim_cell);
                 // document.getElementById("posizione").innerHTML = 'Player\t'+PlayerMove.Player+'\tCol\t'+PlayerMove.x_coordinate+'\tRow\t'+PlayerMove.y_coordinate+'\t#round\t'+PlayerMove.cont;
-               
+                //changePlayer*=-1;
+                //console.log("Prima di move " + changePlayer);
+                move(PlayerMove.x_coordinate);
+                //console.log("Prima di addMove" + changePlayer);
+                addMove(1, PlayerMove.x_coordinate);
+                // drawGame(gameboard);
+                //console.log("Prima di if " + changePlayer);
+                if(PlayerMove.isallowed === "false"){
+                    //changePlayer*=-1;
+                }
 
-                if(sessionStorage.turn == changePlayer){
-                    move(PlayerMove.x_coordinate);
-                    addMove(sessionStorage.turn, PlayerMove.x_coordinate);          
+                if(PlayerMove.isallowed === "true"){
+                    //console.log("Prima di drawPawn " + changePlayer);
+                    DrawPawn();
+                    //console.log("Dopo drawPawn " + changePlayer);
                 }
 
 
             }
 
 
-            function hoverMove(event) {
-                if(sessionStorage.turn == changePlayer){
-                    tX = event.pageX;
-                    if(tX!==XPos) {
-                        document.getElementById("mousee").innerHTML = tX;
-                        ctx.beginPath();
-                        ctx.rect(0, 0, board.width, 50);
-                        ctx.fillStyle = "aliceblue";
-                        ctx.fill();
-                        ctx.beginPath();
-                        var tmove = Math.floor((tX - 316) / boardGame.dim_cell);
-                        ctx.arc((tmove * boardGame.dim_cell) + boardGame.dim_cell / 2, 25, 22, 0, 2 * Math.PI);
-                        ctx.fillStyle = PlayerMove.disc;
-                        ctx.fill();
-                        ctx.stroke();
-                    }
-                }              
+            function fun(event) {
+                tX = event.pageX;
+                if(tX!==XPos) {
+                    document.getElementById("mousee").innerHTML = tX;
+                    ctx.beginPath();
+                    ctx.rect(0, 0, board.width, 50);
+                    ctx.fillStyle = "aliceblue";
+                    ctx.fill();
+                    ctx.beginPath();
+                    var tmove = Math.floor((tX - 316) / boardGame.dim_cell);
+                    ctx.arc((tmove * boardGame.dim_cell) + boardGame.dim_cell / 2, 25, 22, 0, 2 * Math.PI);
+                    ctx.fillStyle = PlayerMove.disc;
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
             }
 
 
 
             function DrawPawn() {
+                //console.log("drawPawn " + changePlayer);
+
+                //console.log("drawPawn " + PlayerMove.Player);
                 ctx.beginPath();
                 ctx.arc((PlayerMove.x_coordinate * boardGame.dim_cell) + boardGame.dim_cell / 2, (PlayerMove.y_coordinate * boardGame.dim_cell) + boardGame.dim_cell / 2 +80, 22, 0, 2 * Math.PI, false);
                 ctx.fillStyle = PlayerMove.Player.toString();
@@ -104,17 +118,19 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
                 ctx.stroke();
- 
-                if(changePlayer==2) {
+
+                if(changePlayer==1) {
+
                     PlayerMove.Player = "#8b1414";
                     PlayerMove.disc = "#9e1a1a";
                     PlayerMove.stroke = "#6a0606";
-
+                    //console.log("drawPawn " + changePlayer + " " + PlayerMove.Player);
                 }
                 else {
                     PlayerMove.Player = "#14245d";
                     PlayerMove.disc = "#1d2f7c";
                     PlayerMove.stroke = "#0e1c51";
+                    //console.log("drawPawn " + changePlayer + " " + PlayerMove.Player);
                 }
 
             }
@@ -139,30 +155,12 @@
     </div>
 </div>
 <label for="menu">Menu</label>
-<div id="pauseview"><label for="pauseview">PAUSED</label></div>
-<script>
-    function isPause(event){
-        //alert("Paused");
-        var displaypaused = document.getElementById("pauseview").style.display;
-        if(document.getElementById("pauseview").style.display==="block"){
-            document.getElementById("pausebutton").value="Pause Game";
-            document.getElementById("pauseview").style.display="none";
-        }
-        else{
-            document.getElementById("pauseview").style.display = "block";
-            document.getElementById("pausebutton").value="Unpause Game";
-        }
-            
-        
-
-    }
-</script>
 <input type="checkbox" name="Menu" id="menu" onclick="BlockCursor()">
 <menu>
     <nav>
         <div class="buttonContainer">
             <a href="#"><input type="button" class="save" value="Save Game" name="save"></a>
-            <a href="#"><input type="button" class="pause" value="Pause Game" name="pause" id="pausebutton" onclick="pause()"></a>
+            <a href="#"><input type="button" class="pause" value="Pause Game" name="pause" onclick="pause()"></a>
             <a href="./newgame.html"><input type="button" class="quit" value="Quit Game" name="quit" onclick="quit()"></a>
         </div>
     </nav>

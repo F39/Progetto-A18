@@ -53,7 +53,7 @@ function pause() {
             },
             data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId}),
             success: function (response) {
-                //alert("Paused");
+                alert("Paused");
             },
             error: function () {
                 alert("Something went wrong");
@@ -104,11 +104,6 @@ function poll() {
                 } else if (response.move == -2 && response.gameId != 0) {
                     //game found
                     sessionStorage.gameId = response.gameId;
-                    if (response.matchFlowState == "started1"){
-                        sessionStorage.turn = 1;
-                    }else if(response.matchFlowState == "started2"){
-                        sessionStorage.turn = 2;
-                    }
                     document.location.href = "./connect4.html";
                 } else if (response.move == -1) {
                     //console.log("cambio di stato: " + response.matchFlowState);
@@ -118,15 +113,11 @@ function poll() {
 
                     } else if (response.matchFlowState == "tie") {
 
-                    } else if (response.matchFlowState == "paused"){
-                        isPause();
-                    } else if (response.matchFlowState == "resumed"){
-                        isPause();
-                    } 
+                    }
                 } else {
                     //console.log("mossa");
-                    var enemyTurn = sessionStorage.turn - Math.pow(-1,sessionStorage.turn);
-                    addMove(enemyTurn, response.move);
+                    addMove(2, response.move);
+                    changePlayer = 1;
                 }
             },
             error: function () {
@@ -136,5 +127,5 @@ function poll() {
 
         }
     );
-    setTimeout(poll, 1000);
+    setTimeout(poll, 5000);
 }
