@@ -1,7 +1,7 @@
 package Tests;
 
 import DatabaseManagement.User;
-import DatabaseManagement.UserRepository;
+import DatabaseManagement.UserSqlRepository;
 import DatabaseManagement.UserRepositoryInt;
 import Utils.CORSFilter;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -83,7 +83,7 @@ public class UserControllerTest {
         // delete test user from db
         try {
             ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
-            UserRepositoryInt userRepository = new UserRepository(connectionSource);
+            UserRepositoryInt userRepository = new UserSqlRepository(connectionSource);
             userRepository.delete(user);
             connectionSource.close();
         } catch (SQLException | IOException e) {
@@ -114,7 +114,7 @@ public class UserControllerTest {
 
         try {
             ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
-            UserRepositoryInt userRepository = new UserRepository(connectionSource);
+            UserRepositoryInt userRepository = new UserSqlRepository(connectionSource);
             userRepository.update(user);
             connectionSource.close();
         } catch (SQLException | IOException e) {

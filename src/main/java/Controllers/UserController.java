@@ -1,7 +1,7 @@
 package Controllers;
 
 import DatabaseManagement.User;
-import DatabaseManagement.UserRepository;
+import DatabaseManagement.UserSqlRepository;
 import DatabaseManagement.UserRepositoryInt;
 import GameLogic.Player;
 import Utils.Email;
@@ -34,7 +34,6 @@ public class UserController {
     private final static long threshold = 60;
 
     public UserController() {
-        // TODO : export to Config
         Properties dbConnectionProps;
         ConnectionSource connectionSource;
         try {
@@ -44,8 +43,8 @@ public class UserController {
             in.close();
             String databaseConnectionString = dbConnectionProps.getProperty("databaseURL") + dbConnectionProps.getProperty("databaseHost") + dbConnectionProps.getProperty("databaseName");
             connectionSource = new JdbcConnectionSource(databaseConnectionString, dbConnectionProps.getProperty("databaseUser"), dbConnectionProps.getProperty("databasePassword"));
-            userRepository = new UserRepository(connectionSource);
-        } catch (SQLException|IOException e) {
+            userRepository = new UserSqlRepository(connectionSource);
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
 
@@ -81,8 +80,7 @@ public class UserController {
             userRepository.updateUserEmailConfirmed(toConfirm);
             File f = new File("src/main/resources/emailconfirmed.html");
             return new FileInputStream(f);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return null;
@@ -102,28 +100,21 @@ public class UserController {
             return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
         }
 
-        return Response.status(Status.BAD_REQUEST).entity("Login failed: the provided credentials are not valid ones.").build();
+        return Response.status(Status.BAD_REQUEST).entity("Login failed: provided credentials are not valid.").build();
     }
 
     @POST
     @Path("/logout")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response logout(User user) {
-        // TODO : Set token as null
         online.remove(user.getToken());
-
         userRepository.updateUserAuthToken(null, user.getUsername());
-
         return Response.ok().build();
     }
 
     private boolean addUser(User user) {
-        try {
-            if (userRepository.create(user)) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (userRepository.create(user)) {
+            return true;
         }
         return false;
 

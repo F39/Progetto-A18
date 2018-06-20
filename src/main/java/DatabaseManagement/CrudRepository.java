@@ -1,13 +1,11 @@
 package DatabaseManagement;
 
-import java.sql.SQLException;
+public interface CrudRepository<T> {
 
-public interface CrudRepository {
+    boolean create(T object);
 
-    boolean create(User user) throws SQLException;
+    boolean update(T object);
 
-    boolean update(User user) throws SQLException;
-
-    boolean delete(User user) throws SQLException;
+    boolean delete(T object);
 
 }

@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class UserRepository implements UserRepositoryInt {
+public class UserSqlRepository implements UserRepositoryInt {
 
     private Dao<User, Integer> userDao;
 
-    public UserRepository(ConnectionSource connectionSource) throws SQLException {
+    public UserSqlRepository(ConnectionSource connectionSource) throws SQLException {
         this.userDao = DaoManager.createDao(connectionSource, User.class);
     }
 
@@ -98,24 +98,6 @@ public class UserRepository implements UserRepositoryInt {
         try {
             QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
             queryBuilder.where().eq(User.EMAIL_TOKEN_FIELD_NAME, token);
-            PreparedQuery<User> preparedQuery = queryBuilder.prepare();
-            List<User> userList = null;
-            userList = userDao.query(preparedQuery);
-            if (!userList.isEmpty()) {
-                return userList.get(0);
-            }
-            else return null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public User getUserByAuthToken(String token){
-        try {
-            QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
-            queryBuilder.where().eq(User.AUTH_TOKEN_FIELD_NAME, token);
             PreparedQuery<User> preparedQuery = queryBuilder.prepare();
             List<User> userList = null;
             userList = userDao.query(preparedQuery);

@@ -16,7 +16,6 @@ public class RestGameController{
 
     private GameControllerInt gameControllerInt;
 
-
     public RestGameController(){
         gameControllerInt = Connect4Application.gameController;
     }
@@ -85,7 +84,6 @@ public class RestGameController{
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
-
     private boolean checkAuthToken(String token, String username) {
         User checkUser = UserController.getOnline().get(token).getUser();
         if(checkUser == null){
@@ -96,6 +94,5 @@ public class RestGameController{
         }
         return false;
     }
-
 
 }
