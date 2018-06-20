@@ -1,5 +1,6 @@
 package Controllers;
 
+import DatabaseManagement.User;
 import DatabaseManagement.UserStatsSqlRepository;
 import DatabaseManagement.UserStats;
 import DatabaseManagement.UserStatsRepositoryInt;
@@ -43,8 +44,9 @@ public class RestStatsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserStats (@HeaderParam("token") String token, @PathParam("userId") String userId){
         int id = Integer.parseInt(userId);
-        if(checkAuthToken(token, id)){
-            UserStats userStats = userStatsRepository.getUserStats(id);
+        User user;
+        if((user = checkAuthToken(token, id)) != null){
+            UserStats userStats = userStatsRepository.getUserStats(user);
             if (userStats != null) {
                 return Response.ok(userStats).build();
             }
@@ -57,8 +59,9 @@ public class RestStatsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserWins (@HeaderParam("token") String token, @PathParam("userId") String userId){
         int id = Integer.parseInt(userId);
-        if(checkAuthToken(token, id)){
-            Integer wins = userStatsRepository.getUserWins(id);
+        User user;
+        if((user = checkAuthToken(token, id)) != null){
+            Integer wins = userStatsRepository.getUserWins(user);
             if(wins != null){
                 return Response.ok(new JSONObject("{\"wins\":\"" + wins +"\"}").toString()).build();
             }
@@ -71,8 +74,9 @@ public class RestStatsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserDefeats (@HeaderParam("token") String token, @PathParam("userId") String userId){
         int id = Integer.parseInt(userId);
-        if(checkAuthToken(token, id)){
-            Integer defeats = userStatsRepository.getUserDefeats(id);
+        User user;
+        if((user = checkAuthToken(token, id)) != null){
+            Integer defeats = userStatsRepository.getUserDefeats(user);
             if (defeats != null){
                 return Response.ok(new JSONObject("{\"defeats\":\"" + defeats +"\"}").toString()).build();
             }
@@ -85,8 +89,9 @@ public class RestStatsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserTies (@HeaderParam("token") String token, @PathParam("userId") String userId){
         int id = Integer.parseInt(userId);
-        if(checkAuthToken(token, id)){
-            Integer ties = userStatsRepository.getUserTies(id);
+        User user;
+        if((user = checkAuthToken(token, id)) != null){
+            Integer ties = userStatsRepository.getUserTies(user);
             if(ties != null){
                 return Response.ok(new JSONObject("{\"ties\":\"" + ties +"\"}").toString()).build();
             }
@@ -99,8 +104,9 @@ public class RestStatsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserPoints (@HeaderParam("token") String token, @PathParam("userId") String userId){
         int id = Integer.parseInt(userId);
-        if(checkAuthToken(token, id)){
-            Integer points = userStatsRepository.getUserPoints(id);
+        User user;
+        if((user = checkAuthToken(token, id)) != null){
+            Integer points = userStatsRepository.getUserPoints(user);
             if(points != null){
                 return Response.ok(new JSONObject("{\"points\":\"" + points +"\"}").toString()).build();
             }
@@ -113,8 +119,9 @@ public class RestStatsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserGames (@HeaderParam("token") String token, @PathParam("userId") String userId){
         int id = Integer.parseInt(userId);
-        if(checkAuthToken(token, id)){
-            int games = userStatsRepository.getUserGames(id);
+        User user;
+        if((user = checkAuthToken(token, id)) != null){
+            int games = userStatsRepository.getUserGames(user);
             return Response.ok(new JSONObject("{\"games\":\"" + games +"\"}").toString()).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
@@ -123,18 +130,25 @@ public class RestStatsController {
     @GET
     @Path("/{userId}/reset")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response resetUserStats (@HeaderParam("token") String token, @PathParam("userId") String userId){
+    public Response resetStats (@HeaderParam("token") String token, @PathParam("userId") String userId){
         int id = Integer.parseInt(userId);
-        if(checkAuthToken(token, id)){
-            UserStats newUserStats = userStatsRepository.resetUserStats(id);
+        User user;
+        if((user = checkAuthToken(token, id)) != null){
+            UserStats newUserStats = userStatsRepository.resetUserStats(user);
             return Response.ok(newUserStats).build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
-    // TODO : to be implemented
-    private boolean checkAuthToken(String token, int userId) {
-        return false;
+    private User checkAuthToken(String token, int userId) {
+        User checkUser = UserController.getOnline().get(token).getUser();
+        if(checkUser == null){
+            return null;
+        }
+        if(userId == checkUser.getId()){
+            return checkUser;
+        }
+        return null;
     }
 
 }

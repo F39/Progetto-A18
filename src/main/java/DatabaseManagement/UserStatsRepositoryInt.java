@@ -2,18 +2,18 @@ package DatabaseManagement;
 
 public interface UserStatsRepositoryInt extends CrudRepository<UserStats> {
 
-    UserStats getUserStats(int userId);
+    UserStats getUserStats(User user);
 
-    Integer getUserWins(int userId);
+    Integer getUserWins(User user);
 
-    Integer getUserTies(int userId);
+    Integer getUserTies(User user);
 
-    Integer getUserDefeats(int userId);
+    Integer getUserDefeats(User user);
 
-    Integer getUserPoints(int userId);
+    Integer getUserPoints(User user);
 
-    Integer getUserGames(int userId);
+    Integer getUserGames(User user);
 
-    UserStats resetUserStats(int userId);
+    UserStats resetUserStats(User user);
 
 }

@@ -16,7 +16,7 @@ public class UserStats {
     @DatabaseField(generatedId = true)
     private Integer id;
     @DatabaseField(canBeNull = false, foreign = true, columnName = USER_ID_FIELD_NAME)
-    private int userId;
+    private User user;
     @DatabaseField(columnName = GAMES_FIELD_NAME)
     private int games;
     @DatabaseField(columnName = WINS_FIELD_NAME)
@@ -30,8 +30,8 @@ public class UserStats {
 
     public UserStats(){}
 
-    public UserStats(int userId) {
-        this.userId = userId;
+    public UserStats(User user) {
+        this.user = user;
         this.games = 0;
         this.wins = 0;
         this.ties = 0;
@@ -39,7 +39,17 @@ public class UserStats {
         this.points = 0;
     }
 
-    public int getUserId() { return userId; }
+    public User getUser() {
+        return user;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Integer getId() { return id; }
 

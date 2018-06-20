@@ -1,8 +1,6 @@
 package Controllers;
 
-import DatabaseManagement.User;
-import DatabaseManagement.UserSqlRepository;
-import DatabaseManagement.UserRepositoryInt;
+import DatabaseManagement.*;
 import GameLogic.Player;
 import Utils.Email;
 import Utils.EmailAdapter;
@@ -28,6 +26,7 @@ import java.util.UUID;
 public class UserController {
 
     private UserRepositoryInt userRepository;
+    private UserStatsRepositoryInt userStatsRepository;
     private EmailAdapter email;
     private static Map<String, Player> online = new HashMap<>(); // map sessions to relative users
     private OnlineChecker onlineChecker;
@@ -44,6 +43,7 @@ public class UserController {
             String databaseConnectionString = dbConnectionProps.getProperty("databaseURL") + dbConnectionProps.getProperty("databaseHost") + dbConnectionProps.getProperty("databaseName");
             connectionSource = new JdbcConnectionSource(databaseConnectionString, dbConnectionProps.getProperty("databaseUser"), dbConnectionProps.getProperty("databasePassword"));
             userRepository = new UserSqlRepository(connectionSource);
+            userStatsRepository = new UserStatsSqlRepository(connectionSource);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +78,7 @@ public class UserController {
             toConfirm = userRepository.getUserByEmailToken(token);
             toConfirm.setEmail_confirmed(true);
             userRepository.updateUserEmailConfirmed(toConfirm);
-            File f = new File("src/main/resources/emailconfirmed.html");
+            File f = new File("src/main/resources/WebClient/emailconfirmed.html");
             return new FileInputStream(f);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -114,10 +114,10 @@ public class UserController {
 
     private boolean addUser(User user) {
         if (userRepository.create(user)) {
-            return true;
+            UserStats userStats = new UserStats(user);
+            return userStatsRepository.create(userStats);
         }
         return false;
-
     }
 
     private String generateAuthToken() {

@@ -18,10 +18,10 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
-    public UserStats getUserStats(int userId) {
+    public UserStats getUserStats(User user) {
         try {
             QueryBuilder<UserStats, Integer> queryBuilder = statsDao.queryBuilder();
-            queryBuilder.where().eq(UserStats.USER_ID_FIELD_NAME, userId);
+            queryBuilder.where().eq(UserStats.USER_ID_FIELD_NAME, user);
             PreparedQuery<UserStats> preparedQuery = queryBuilder.prepare();
             List<UserStats> userStatsList = null;
             userStatsList = statsDao.query(preparedQuery);
@@ -36,8 +36,8 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
-    public Integer getUserWins(int userId) {
-        UserStats userStats = getUserStats(userId);
+    public Integer getUserWins(User user) {
+        UserStats userStats = getUserStats(user);
         if (userStats != null){
             return userStats.getWins();
         }
@@ -45,8 +45,8 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
-    public Integer getUserTies(int userId) {
-        UserStats userStats = getUserStats(userId);
+    public Integer getUserTies(User user) {
+        UserStats userStats = getUserStats(user);
         if (userStats != null){
             return userStats.getTies();
         }
@@ -54,8 +54,8 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
-    public Integer getUserDefeats(int userId) {
-        UserStats userStats = getUserStats(userId);
+    public Integer getUserDefeats(User user) {
+        UserStats userStats = getUserStats(user);
         if (userStats != null){
             return userStats.getDefeats();
         }
@@ -63,8 +63,8 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
-    public Integer getUserPoints(int userId) {
-        UserStats userStats = getUserStats(userId);
+    public Integer getUserPoints(User user) {
+        UserStats userStats = getUserStats(user);
         if (userStats != null){
             return userStats.getPoints();
         }
@@ -72,8 +72,8 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
-    public Integer getUserGames(int userId) {
-        UserStats userStats = getUserStats(userId);
+    public Integer getUserGames(User user) {
+        UserStats userStats = getUserStats(user);
         if (userStats != null){
             return userStats.getGames();
         }
@@ -81,10 +81,10 @@ public class UserStatsSqlRepository implements UserStatsRepositoryInt {
     }
 
     @Override
-    public UserStats resetUserStats(int userId) {
-        UserStats userStats = getUserStats(userId);
+    public UserStats resetUserStats(User user) {
+        UserStats userStats = getUserStats(user);
         if(delete(userStats)){
-            UserStats newUserStats = new UserStats(userId);
+            UserStats newUserStats = new UserStats(user);
             create(newUserStats);
             return newUserStats;
         }
