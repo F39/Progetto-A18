@@ -139,7 +139,7 @@
     </div>
 </div>
 <label for="menu">Menu</label>
-<div id="pauseview"><label for="pauseview">PAUSED</label></div>
+<div id="pauseview"><label for="pauseview" onclick="pause()">PAUSED</label></div>
 <script>
     function isPause(event){
         //alert("Paused");
@@ -152,9 +152,6 @@
             document.getElementById("pauseview").style.display = "block";
             document.getElementById("pausebutton").value="Unpause Game";
         }
-            
-        
-
     }
 </script>
 <input type="checkbox" name="Menu" id="menu" onclick="BlockCursor()">

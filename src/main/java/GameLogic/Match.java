@@ -77,7 +77,7 @@ public class Match extends Thread {
         }
         turn -= Math.pow(-1, turn);
         if (aiStrategyInt != null) {
-            aiStrategyInt.move();
+            lastMove = aiStrategyInt.move();
             turn -= Math.pow(-1, turn);
         }
     }

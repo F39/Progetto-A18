@@ -32,7 +32,7 @@ public class CommandNewGame extends AbstractCommand {
         } else if (mode == Mode.StrategyNForecasting) {
             gameController.createNewSinglePlayerGame(Mode.StrategyNForecasting, player);
         } else {
-            gameController.createNewSinglePlayerGame(Mode.StrategyNForecasting, player);
+            gameController.createNewSinglePlayerGame(Mode.StrategyRandom, player);
         }
     }
 
