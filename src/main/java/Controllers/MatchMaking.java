@@ -23,15 +23,12 @@ public class MatchMaking implements Runnable {
     @Override
     public void run() {
         int indexP1, indexP2;
-        int c = 0;
         System.out.println("Started Matchmaking thread");
         while (true) {
 
             if (pendingPlayers.size() >= 2) {
-                //System.out.println("Pending at least 2 player ");
                 while (true) {
                     // TODO : define a better match-making algorithm
-
                     indexP1 = ThreadLocalRandom.current().nextInt(0, pendingPlayers.size());
                     indexP2 = ThreadLocalRandom.current().nextInt(0, pendingPlayers.size());
                     if (indexP1 != indexP2) {

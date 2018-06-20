@@ -4,12 +4,16 @@ public interface UserStatsRepositoryInt extends CrudRepository<UserStats> {
 
     UserStats getUserStats(int userId);
 
-    int getUserWins(int userId);
+    Integer getUserWins(int userId);
 
-    int getUserTies(int userId);
+    Integer getUserTies(int userId);
 
-    int getUserDefeats(int userId);
+    Integer getUserDefeats(int userId);
 
-    int getUserPoints(int userId);
+    Integer getUserPoints(int userId);
+
+    Integer getUserGames(int userId);
+
+    UserStats resetUserStats(int userId);
 
 }

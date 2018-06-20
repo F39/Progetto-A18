@@ -7,72 +7,79 @@ import com.j256.ormlite.table.DatabaseTable;
 public class UserStats {
 
     public static final String USER_ID_FIELD_NAME = "userId";
-    public static final String PARTITE_FIELD_NAME = "partite";
-    public static final String VITTORIE_FIELD_NAME = "vittorie";
-    public static final String SCONFITTE_FIELD_NAME = "sconfitte";
-    public static final String PUNTI_FIELD_NAME = "punti";
+    public static final String GAMES_FIELD_NAME = "games";
+    public static final String WINS_FIELD_NAME = "wins";
+    public static final String DEFEATS_FIELD_NAME = "defeats";
+    public static final String POINTS_FIELD_NAME = "points";
+    public static final String TIES_FIELD_NAME = "ties";
 
-    @DatabaseField(canBeNull = false, foreign = true)
+    @DatabaseField(generatedId = true)
+    private Integer id;
+    @DatabaseField(canBeNull = false, foreign = true, columnName = USER_ID_FIELD_NAME)
     private int userId;
-    @DatabaseField
-    private int partite;
-    @DatabaseField
-    private int vittorie;
-    @DatabaseField
-    private int pareggi;
-    @DatabaseField
-    private int sconfitte;
-    @DatabaseField
-    private int punti;
+    @DatabaseField(columnName = GAMES_FIELD_NAME)
+    private int games;
+    @DatabaseField(columnName = WINS_FIELD_NAME)
+    private int wins;
+    @DatabaseField(columnName = TIES_FIELD_NAME)
+    private int ties;
+    @DatabaseField(columnName = DEFEATS_FIELD_NAME)
+    private int defeats;
+    @DatabaseField(columnName = POINTS_FIELD_NAME)
+    private int points;
 
     public UserStats(){}
 
     public UserStats(int userId) {
-
-        this.partite = 0;
-        this.vittorie = 0;
-        this.pareggi = 0;
-        this.sconfitte = 0;
-        this.punti = 0;
+        this.userId = userId;
+        this.games = 0;
+        this.wins = 0;
+        this.ties = 0;
+        this.defeats = 0;
+        this.points = 0;
     }
 
-    public int getPartite() {
-        return partite;
+    public int getUserId() { return userId; }
+
+    public Integer getId() { return id; }
+
+    public int getGames() {
+        return games;
     }
 
-    public void setPartite(int partite) {
-        this.partite = partite;
+    public void setGames(int games) {
+        this.games = games;
     }
 
-    public int getVittorie() {
-        return vittorie;
+    public int getWins() {
+        return wins;
     }
 
-    public void setVittorie(int vittorie) {
-        this.vittorie = vittorie;
+    public void setWins(int wins) {
+        this.wins = wins;
     }
 
-    public int getPareggi() {
-        return pareggi;
+    public int getTies() {
+        return ties;
     }
 
-    public void setPareggi(int pareggi) {
-        this.pareggi = pareggi;
+    public void setTies(int ties) {
+        this.ties = ties;
     }
 
-    public int getSconfitte() {
-        return sconfitte;
+    public int getDefeats() {
+        return defeats;
     }
 
-    public void setSconfitte(int sconfitte) {
-        this.sconfitte = sconfitte;
+    public void setDefeats(int defeats) {
+        this.defeats = defeats;
     }
 
-    public int getPunti() {
-        return punti;
+    public int getPoints() {
+        return points;
     }
 
-    public void setPunti(int punti) {
-        this.punti = punti;
+    public void setPoints(int points) {
+        this.points = points;
     }
 }

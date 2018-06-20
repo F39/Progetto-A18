@@ -97,7 +97,7 @@ public class UserController {
             userRepository.updateUserAuthToken(newToken, user.getUsername());
             user.setToken(newToken);
             online.put(newToken, new Player(user));
-            return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
+            return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
         }
 
         return Response.status(Status.BAD_REQUEST).entity("Login failed: provided credentials are not valid.").build();
