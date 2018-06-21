@@ -6,7 +6,7 @@ import Utils.*;
 
 import java.util.List;
 
-public interface GameControllerInt extends Runnable{
+public interface GameControllerInt extends Runnable {
 
     void newGame(CommandNewGame command);
 

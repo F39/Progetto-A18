@@ -13,7 +13,6 @@ public class User {
     public static final String EMAIL_CONFIRMED_FIELD_NAME = "email_confirmed";
     public static final String EMAIL_TOKEN_FIELD_NAME = "email_token";
 
-
     @DatabaseField(generatedId = true)
     private Integer id;
     @DatabaseField(unique = true, columnName = USERNAME_FIELD_NAME)
@@ -83,19 +82,12 @@ public class User {
         this.password = password;
     }
 
-    public boolean isEmail_confirmed() {
-        return email_confirmed;
-    }
-
     public void setEmail_confirmed(boolean email_confirmed) {
         this.email_confirmed = email_confirmed;
-    }
-
-    public String getEmail_token() {
-        return email_token;
     }
 
     public void setEmail_token(String email_token) {
         this.email_token = email_token;
     }
+
 }

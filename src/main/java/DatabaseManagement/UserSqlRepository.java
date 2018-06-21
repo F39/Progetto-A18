@@ -20,7 +20,7 @@ public class UserSqlRepository implements UserRepositoryInt {
     }
 
     @Override
-    public boolean create(User user){
+    public boolean create(User user) {
         try {
             userDao.create(user);
             return true;
@@ -31,7 +31,7 @@ public class UserSqlRepository implements UserRepositoryInt {
     }
 
     @Override
-    public boolean update(User user){
+    public boolean update(User user) {
         for (User u : userDao) {
             if (u.getUsername().equals(user.getUsername())) {
                 user.setId(u.getId());
@@ -79,7 +79,7 @@ public class UserSqlRepository implements UserRepositoryInt {
     }
 
     @Override
-    public boolean updateUserEmailConfirmed(User user){
+    public boolean updateUserEmailConfirmed(User user) {
         try {
             UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
             updateBuilder.updateColumnValue(User.EMAIL_CONFIRMED_FIELD_NAME, true);
@@ -90,11 +90,10 @@ public class UserSqlRepository implements UserRepositoryInt {
             e.printStackTrace();
             return false;
         }
-
     }
 
     @Override
-    public User getUserByEmailToken(String token){
+    public User getUserByEmailToken(String token) {
         try {
             QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
             queryBuilder.where().eq(User.EMAIL_TOKEN_FIELD_NAME, token);
@@ -103,8 +102,7 @@ public class UserSqlRepository implements UserRepositoryInt {
             userList = userDao.query(preparedQuery);
             if (!userList.isEmpty()) {
                 return userList.get(0);
-            }
-            else return null;
+            } else return null;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -112,7 +110,7 @@ public class UserSqlRepository implements UserRepositoryInt {
     }
 
     @Override
-    public User checkUserCredential(String username, String password){
+    public User checkUserCredential(String username, String password) {
         try {
             QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
             queryBuilder.where().eq(User.PASSWORD_FIELD_NAME, password).and().eq(User.USERNAME_FIELD_NAME, username).and().eq(User.EMAIL_CONFIRMED_FIELD_NAME, true);
@@ -121,8 +119,7 @@ public class UserSqlRepository implements UserRepositoryInt {
             userList = userDao.query(preparedQuery);
             if (!userList.isEmpty()) {
                 return userList.get(0);
-            }
-            else return null;
+            } else return null;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

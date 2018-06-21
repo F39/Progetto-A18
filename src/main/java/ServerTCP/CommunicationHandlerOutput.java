@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
-public class CommunicationHandlerOutput implements Runnable{
+public class CommunicationHandlerOutput implements Runnable {
     private Socket socket;
     private ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
     private GameControllerInt gameControllerInt;
@@ -22,9 +22,9 @@ public class CommunicationHandlerOutput implements Runnable{
     @Override
     public void run() {
         List<AbstractCommand> commands = gameControllerInt.getCommandsOut();
-        while(true){
+        while (true) {
 
-            if(gameControllerInt.getCommandsOut().size() > 0){
+            if (gameControllerInt.getCommandsOut().size() > 0) {
                 try {
                     objectOutputStream.writeObject(commands.get(0));
                     gameControllerInt.deleteCommandOut(commands.get(0));

@@ -9,12 +9,13 @@ import java.net.Socket;
 
 public class CommunicationHandlerInput implements Runnable {
     private Socket socket;
-    private ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+    private ObjectInputStream objectInputStream;
     private GameControllerInt gameControllerInt;
 
     public CommunicationHandlerInput(Socket socket, GameControllerInt gameControllerInt) throws IOException {
         this.socket = socket;
         this.gameControllerInt = gameControllerInt;
+        this.objectInputStream = new ObjectInputStream(socket.getInputStream());
     }
 
     @Override

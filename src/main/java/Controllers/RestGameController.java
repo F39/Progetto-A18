@@ -12,19 +12,19 @@ import javax.ws.rs.core.Response;
 
 @Singleton
 @Path("/game")
-public class RestGameController{
+public class RestGameController {
 
     private GameControllerInt gameControllerInt;
 
-    public RestGameController(){
+    public RestGameController() {
         gameControllerInt = Connect4Application.gameController;
     }
 
     @POST
     @Path("/newgame")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response newGame (@HeaderParam("token") String token, CommandNewGame command){
-        if(checkAuthToken(token, command.getUsername())){
+    public Response newGame(@HeaderParam("token") String token, CommandNewGame command) {
+        if (checkAuthToken(token, command.getUsername())) {
             gameControllerInt.newGame(command);
             return Response.ok().build();
         }
@@ -34,8 +34,8 @@ public class RestGameController{
     @POST
     @Path("/move")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response move (@HeaderParam("token") String token, CommandMove command){
-        if(checkAuthToken(token, command.getUsername())){
+    public Response move(@HeaderParam("token") String token, CommandMove command) {
+        if (checkAuthToken(token, command.getUsername())) {
             gameControllerInt.move(command);
             return Response.ok().build();
         }
@@ -45,8 +45,8 @@ public class RestGameController{
     @POST
     @Path("/pause")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response pause (@HeaderParam("token") String token, CommandPause command){
-        if(checkAuthToken(token, command.getUsername())){
+    public Response pause(@HeaderParam("token") String token, CommandPause command) {
+        if (checkAuthToken(token, command.getUsername())) {
             gameControllerInt.pause(command);
             return Response.ok().build();
         }
@@ -56,8 +56,8 @@ public class RestGameController{
     @POST
     @Path("/quit")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response quit (@HeaderParam("token") String token, CommandQuit command){
-        if(checkAuthToken(token, command.getUsername())){
+    public Response quit(@HeaderParam("token") String token, CommandQuit command) {
+        if (checkAuthToken(token, command.getUsername())) {
             gameControllerInt.quit(command);
             return Response.ok().build();
         }
@@ -67,12 +67,12 @@ public class RestGameController{
     @POST
     @Path("/poll")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response poll(@HeaderParam("token") String token, String username){
-        if(checkAuthToken(token, username)){
+    public Response poll(@HeaderParam("token") String token, String username) {
+        if (checkAuthToken(token, username)) {
             UserController.getOnline().get(token).poll();
             AbstractCommand response;
             for (AbstractCommand command : gameControllerInt.getCommandsOut()) {
-                if(username.equals(command.getUsername())){
+                if (username.equals(command.getUsername())) {
                     response = command;
                     gameControllerInt.deleteCommandOut(command);
                     return Response.ok(response).build();
@@ -86,10 +86,10 @@ public class RestGameController{
 
     private boolean checkAuthToken(String token, String username) {
         User checkUser = UserController.getOnline().get(token).getUser();
-        if(checkUser == null){
+        if (checkUser == null) {
             return false;
         }
-        if(username.equals(checkUser.getUsername())){
+        if (username.equals(checkUser.getUsername())) {
             return true;
         }
         return false;

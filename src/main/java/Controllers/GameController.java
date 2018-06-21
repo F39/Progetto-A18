@@ -63,20 +63,15 @@ public class GameController implements GameControllerInt {
         Match newMatch = new Match(p1, mode, progressiveGameId++);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
-        //TODO : Set logic for gameId
-        //TODO : check for AI player
-        commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.started1, -2));
+        CommandOut commandOut = new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.started1, -2);
+        commandsOut.add(commandOut);
         userStatsRepository.addUserGame(p1.getUser());
-//        commandsOut.add(new CommandOut(p2.getUsername(), newMatch.getGameId(), newMatch.getMatchFlowState(), -1));
     }
-
 
     public void createNewMultiPlayerGame(Player p1, Player p2) {
         Match newMatch = new Match(p1, p2, progressiveGameId++);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
-        //TODO : Set logic for gameId
-        //TODO : check for AI player
         commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.started1, -2));
         userStatsRepository.addUserGame(p1.getUser());
         commandsOut.add(new CommandOut(p2.getUsername(), newMatch.getGameId(), MatchFlowState.started2, -2));
@@ -140,7 +135,7 @@ public class GameController implements GameControllerInt {
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
             return;
-        }else if(match.getMatchFlowState().equals(MatchFlowState.resumed)){
+        } else if (match.getMatchFlowState().equals(MatchFlowState.resumed)) {
             Logger.log(String.format("Match %s resumed.", match.getGameId()));
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
@@ -157,13 +152,13 @@ public class GameController implements GameControllerInt {
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.winner, -1));
             userStatsRepository.addUserDefeat(match.getPlayers().get(1).getUser());
             userStatsRepository.addUserWin(match.getPlayers().get(2).getUser());
-        } else if (match.getMatchFlowState().equals(MatchFlowState.tie)){
+        } else if (match.getMatchFlowState().equals(MatchFlowState.tie)) {
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
             userStatsRepository.addUserTie(match.getPlayers().get(1).getUser());
             userStatsRepository.addUserTie(match.getPlayers().get(2).getUser());
         }
-}
+    }
 
     public MatchMaking getMatchMaker() {
         return matchMaker;

@@ -57,13 +57,11 @@ public class UserController {
     @POST
     @Path("/signup")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response signUp(User user) {
+    public Response signUp(@HeaderParam("host") String host, User user) {
         String confirmLink = generateAuthToken();
         user.setEmail_token(confirmLink);
         if (addUser(user)) {
-            //TODO: prendere la stringa dinamicamente
-            String url = getServerURL();
-            url = url + "/rest/user/confirm/";
+            String url = host + "/rest/user/confirm/";
             email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + url + confirmLink);
             return Response.status(Status.OK).build();
         }
@@ -91,7 +89,6 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(User user) {
-
         if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
             String newToken = generateAuthToken();
             userRepository.updateUserAuthToken(newToken, user.getUsername());
@@ -99,7 +96,6 @@ public class UserController {
             online.put(newToken, new Player(user));
             return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
         }
-
         return Response.status(Status.BAD_REQUEST).entity("Login failed: provided credentials are not valid.").build();
     }
 
@@ -123,10 +119,6 @@ public class UserController {
     private String generateAuthToken() {
         UUID authToken = UUID.randomUUID();
         return authToken.toString();
-    }
-
-    private String getServerURL() {
-        return "http://localhost:8080";
     }
 
     public static Map<String, Player> getOnline() {

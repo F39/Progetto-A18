@@ -1,12 +1,16 @@
-package ServerTCP;//package ServerTCP;
-//
-//import java.io.IOException;
-//
-//public class ServerMain {
-//
-//    Server server = new Server(gameController);
-//
-//    public ServerMain() throws IOException {
-//
-//    }
-//}
+package ServerTCP;
+
+import Controllers.GameController;
+
+public class ServerMain {
+
+    public static void main(String[] args) {
+
+        GameController gameController = new GameController();
+        Server server = new Server(gameController);
+        Thread serverThread = new Thread(server);
+        serverThread.start();
+
+    }
+
+}
