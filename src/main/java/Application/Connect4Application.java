@@ -47,12 +47,12 @@ public class Connect4Application {
     private static ServletContainer resourceConfig() {
         ResourceConfig resourceConfig = new ResourceConfig(new ResourceLoader().getClasses());
         resourceConfig.register(new CORSFilter());
-        resourceConfig.register(new AbstractBinder() {
+        /*resourceConfig.register(new AbstractBinder() {
             @Override
             protected void configure() {
                 bind(GameController.class).to(GameControllerInt.class);
             }
-        });
+        });*/
         return new ServletContainer(resourceConfig);
     }
 }

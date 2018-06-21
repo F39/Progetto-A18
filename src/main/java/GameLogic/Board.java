@@ -78,6 +78,7 @@ public class Board {
                 break;
             }
         }
+        //TODO : put this before or exit if result != 0
         if (moveNo == length * height) {
             result = -1;
         }
@@ -188,21 +189,37 @@ public class Board {
      * Starting from the last move on the specified column, scan the board in all directions checking whether a player has won the match. Returns the player number in case of success, otherwise 0
      */
     public int scan() {
-        if (moveNo < 7)
+        if (moveNo < 7){
             return 0;
+        }
         int scan;
         scan = scanHorizontal(4);
-        if (scan != 0)
+        if (scan != 0){
             return scan;
+        }
         scan = scanVertical(4);
-        if (scan != 0)
+        if (scan != 0) {
             return scan;
+        }
         scan = scanMainDiag(4);
-        if (scan != 0)
+        if (scan != 0){
             return scan;
+        }
         scan = scanBackDiag(4);
-        if (scan != 0)
+        if (scan != 0){
             return scan;
+        }
         return 0;
+    }
+    @Override
+    public String toString() {
+        String boardString = "";
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < length; j++) {
+                boardString += board[i][j].getOccupant();
+            }
+            boardString += "\n";
+        }
+        return boardString;
     }
 }

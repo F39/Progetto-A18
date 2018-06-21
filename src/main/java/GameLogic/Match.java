@@ -58,27 +58,42 @@ public class Match extends Thread {
     }
 
     public Map<Integer, Player> getPlayers() {
+        if(aiStrategyInt != null){
+
+        }
         return players;
     }
 
     public void move(int move) {
+        int result;
         timeout = System.currentTimeMillis();
         moved = true;
         lastMove = move;
-        int result = board.move(move, turn);
+        result = board.move(move, turn);
+        checkResult(result);
+
+        turn -= Math.pow(-1, turn);
+        if (aiStrategyInt != null && matchFlowState != MatchFlowState.winner1 && matchFlowState != MatchFlowState.winner2 && matchFlowState != MatchFlowState.tie ) {
+            lastMove = aiStrategyInt.move();
+            result = board.move(lastMove, turn);
+            checkResult(result);
+            turn -= Math.pow(-1, turn);
+        }
+    }
+
+    private void checkResult(int result) {
         if (result == 1) {
             matchFlowState = MatchFlowState.winner1;
+            return;
         } else if (result == 2) {
             matchFlowState = MatchFlowState.winner2;
+            return;
         } else if (result == -1) {
             matchFlowState = MatchFlowState.tie;
+            return;
         } else {
             matchFlowState = MatchFlowState.running;
-        }
-        turn -= Math.pow(-1, turn);
-        if (aiStrategyInt != null) {
-            lastMove = aiStrategyInt.move();
-            turn -= Math.pow(-1, turn);
+            return;
         }
     }
 
@@ -135,7 +150,10 @@ public class Match extends Thread {
         }
     }
 
-//    private MatchFlowState whoWin(MatchEndState matchEndState){
+    public AIStrategyInt getAiStrategyInt() {
+        return aiStrategyInt;
+    }
+    //    private MatchFlowState whoWin(MatchEndState matchEndState){
 //        MatchFlowState matchFlowState;
 //        if(turn == 1){
 //            if(matchEndState.equals(MatchEndState.move)){

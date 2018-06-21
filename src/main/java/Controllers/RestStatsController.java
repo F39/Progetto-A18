@@ -115,7 +115,7 @@ public class RestStatsController {
     }
 
     @GET
-    @Path("/{userId}/points")
+    @Path("/{userId}/games")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserGames(@HeaderParam("token") String token, @PathParam("userId") String userId) {
         int id = Integer.parseInt(userId);

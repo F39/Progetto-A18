@@ -44,8 +44,8 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
     private int forecast() {
         boolean imoved = false, jmoved = false, kmoved = false, lmoved = false;
         int rincaro=3;
+        copiedBoard = match.getBoard();
         for (int i = 0; i < length; i++) {
-            copiedBoard = match.getBoard();
             try {
                 if (copiedBoard.getCellOccupant(height - 1, i) == 0) {
                     imoved = true;
@@ -92,21 +92,25 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
                             future[i] += test(rincaro*pesi[3], 4);
                             future[i] += test(pesi[3], 3);
                         }
-                        if (lmoved)
+                        if (lmoved){
                             copiedBoard.undo();
-                        lmoved = false;
+                            lmoved = false;
+                        }
                     }
-                    if (kmoved)
+                    if (kmoved){
                         copiedBoard.undo();
-                    kmoved = false;
+                        kmoved = false;
+                    }
                 }
-                if (jmoved)
+                if (jmoved){
                     copiedBoard.undo();
-                jmoved = false;
+                    jmoved = false;
+                }
             }
-            if (imoved)
+            if (imoved){
                 copiedBoard.undo();
-            imoved = false;
+                imoved = false;
+            }
         }
         int max = -2000;
         for (int i = 0; i < length; i++) {

@@ -1,6 +1,7 @@
 package Utils;
 
 import Controllers.RestGameController;
+import Controllers.RestStatsController;
 import Controllers.UserController;
 
 import javax.ws.rs.core.Application;
@@ -16,6 +17,7 @@ public class ResourceLoader extends Application {
         // register root resource
         classes.add(UserController.class);
         classes.add(RestGameController.class);
+        classes.add(RestStatsController.class);
         return classes;
     }
 }

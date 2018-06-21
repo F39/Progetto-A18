@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./css/board.css">
 </head>
 <body>
-<div id="mousee">mouse</div>
+<!-- <div id="mousee">mouse</div> -->
 
 
 <div class="back">
@@ -23,6 +23,17 @@
         <script type="text/javascript" src="./js/gameRest.js"></script>
         <script type="text/javascript" src="./js/init.js"></script>
         <script type="text/javascript" src="./js/game.js"></script>
+        <script>
+            window.onload = function(){
+                if(sessionStorage.noRefresh == 1){
+                    alert("Invalid game");
+                    document.location.href = "./index.html";
+                }
+                if(sessionStorage.noRefresh == 0){
+                    sessionStorage.noRefresh = 1;
+                }
+            }
+        </script>
         <script>
 
             var tX = 0;
@@ -63,7 +74,7 @@
                     move(PlayerMove.x_coordinate);
                     addMove(sessionStorage.turn, PlayerMove.x_coordinate);          
                 }
-
+                
 
             }
 
@@ -72,7 +83,7 @@
                 if(sessionStorage.turn == changePlayer){
                     tX = event.pageX;
                     if(tX!==XPos) {
-                        document.getElementById("mousee").innerHTML = tX;
+                        //document.getElementById("mousee").innerHTML = tX;
                         ctx.beginPath();
                         ctx.rect(0, 0, board.width, 50);
                         ctx.fillStyle = "aliceblue";

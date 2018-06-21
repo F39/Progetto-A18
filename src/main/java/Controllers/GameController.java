@@ -116,7 +116,11 @@ public class GameController implements GameControllerInt {
                     handledMatch = matches.get(((CommandMatch) toExecute).getGameId());
                     ((CommandMatch) toExecute).setMatch(handledMatch);
                     toExecute.execute();
-                    sendNotification(handledMatch);
+                    if(handledMatch.getAiStrategyInt() == null){
+                        sendNotification(handledMatch);
+                    }else{
+                        sendNotificationSinglePlayer(handledMatch);
+                    }
                 }
                 commandsIn.remove(0);
             }
@@ -128,6 +132,37 @@ public class GameController implements GameControllerInt {
         }
     }
 
+    private void sendNotificationSinglePlayer(Match match) {
+        int lastMove = match.getLastMove();
+        if (match.getMatchFlowState().equals(MatchFlowState.paused)) {
+            Logger.log(String.format("Match %s paused.", match.getGameId()));
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
+            return;
+        }else if(match.getMatchFlowState().equals(MatchFlowState.resumed)){
+            Logger.log(String.format("Match %s resumed.", match.getGameId()));
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
+            return;
+        }
+        if(match.getMatchFlowState() != MatchFlowState.winner1){
+            commandsOut.add(new CommandOut(match.getPlayers().get(match.getTurn()).getUsername(), match.getGameId(), match.getMatchFlowState(), lastMove));
+        }
+        if (match.getMatchFlowState().equals(MatchFlowState.winner1)) {
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.winner, -1));
+            userStatsRepository.addUserWin(match.getPlayers().get(1).getUser());
+            matches.remove(match.getGameId());
+            System.out.println(matches.size());
+        } else if (match.getMatchFlowState().equals(MatchFlowState.winner2)) {
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.looser, -1));;
+            userStatsRepository.addUserDefeat(match.getPlayers().get(1).getUser());
+            matches.remove(match.getGameId());
+        } else if (match.getMatchFlowState().equals(MatchFlowState.tie)){
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
+            userStatsRepository.addUserTie(match.getPlayers().get(1).getUser());
+            matches.remove(match.getGameId());
+        }
+    }
+
+    @SuppressWarnings("")
     private void sendNotification(Match match) {
         int lastMove = match.getLastMove();
         if (match.getMatchFlowState().equals(MatchFlowState.paused)) {
@@ -147,16 +182,19 @@ public class GameController implements GameControllerInt {
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.looser, -1));
             userStatsRepository.addUserWin(match.getPlayers().get(1).getUser());
             userStatsRepository.addUserDefeat(match.getPlayers().get(2).getUser());
+            matches.remove(match.getGameId());
         } else if (match.getMatchFlowState().equals(MatchFlowState.winner2)) {
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.looser, -1));
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.winner, -1));
             userStatsRepository.addUserDefeat(match.getPlayers().get(1).getUser());
             userStatsRepository.addUserWin(match.getPlayers().get(2).getUser());
+            matches.remove(match.getGameId());
         } else if (match.getMatchFlowState().equals(MatchFlowState.tie)) {
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
             userStatsRepository.addUserTie(match.getPlayers().get(1).getUser());
             userStatsRepository.addUserTie(match.getPlayers().get(2).getUser());
+            matches.remove(match.getGameId());
         }
     }
 

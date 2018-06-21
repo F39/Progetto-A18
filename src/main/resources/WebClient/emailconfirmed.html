@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
+    <link rel="stylesheet" href="./css/Sfondo_style.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            margin: 0;
+            font-family: "Helvetica", "Verdana", "Roboto", sans-serif;
+        }
+        .field{
+            opacity: 1;
+            border-radius: 10px;
+            top: 20px;
+            width: 300px;
+            border-top: 2px solid black;
+            height: 75px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: auto;
+            bottom: 0;
+            padding: 100px 40px 40px 40px;
+            background: #262626;
+            background: linear-gradient(45deg, #262626 0%, #1f222e 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#35394a', endColorstr='#1f222e',GradientType=1 );
+        }
+        label{
+            font-size: 20px;
+            text-transform: uppercase;
+            color: #ff4300;
+            position: relative;
+            padding: 10px 50px;
+            border-radius: 50px;
+            border: 2px solid #ff4300;
+            left: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="field">
+    <label id="confirmed" onclick="document.location.href = './index.html'">Email Confirmed!</label>
+</div>
 
-    </head>
-
-    <body>
-
-        <h1>Email confirmed!</h1>
-    </body>
+</body>
 </html>
