@@ -1,5 +1,7 @@
 package ClientTCP;
 
+import GameLogic.Board;
+import GameLogic.MatchFlowState;
 import Utils.CommandOut;
 
 import java.io.IOException;
@@ -10,7 +12,8 @@ public class ClientMain {
 
     public static void main(String[] args) {
         try {
-            Client client = new Client();
+            Board board = new Board();
+            Client client = new Client(board);
             InputHandler inputHandler = new InputHandler(client, "console" + args[0]);
             System.out.println("Connect 4");
             Thread read = new Thread(client);
@@ -18,21 +21,49 @@ public class ClientMain {
             read.start();
             write.start();
             boolean refresh = false;
-
             CommandOut message;
+
             while (true) {
                 refresh = false;
                 if (client.getMessagesIn().size() > 0) {
                     message = client.getMessagesIn().get(0);
-                    if (message.getMove() == -1 && message.getGameId() == 0) {
-                        //poll response
-                    } else if (message.getMove() == -2 && message.getGameId() != -1) {
+                    if (message.getMove() == -2 && message.getGameId() != -1) {
                         inputHandler.setGameId(message.getGameId());
-
+                        int myTurn = message.getMatchFlowState() == MatchFlowState.started1 ? 1 : 2;
+                        inputHandler.setMyTurn(myTurn);
+                        inputHandler.setTurn(1);
+                        System.out.println("Game started");
+                        System.out.println(board);
                     } else if (message.getMove() == -1) {
                         //Cambio di stato
+                        inputHandler.setMatchFlowState(message.getMatchFlowState());
+                        switch(message.getMatchFlowState()){
+                            case paused:{
+                                System.out.println("Paused");
+                                break;
+                            }
+                            case resumed:{
+                                System.out.println("Resumed");
+                                break;
+                            }
+                            case winner:{
+                                System.out.println("You Win!");
+                                break;
+                            }
+                            case looser:{
+                                System.out.println("You Lose!");
+                                break;
+                            }
+                            case tie:{
+                                System.out.println("Tied!");
+                                break;
+                            }
+                        }
                     } else {
-                        //mossa
+                        board.move(message.getMove(), inputHandler.getTurn());
+                        int turn = (int) (inputHandler.getTurn() - Math.pow(-1, inputHandler.getTurn()));
+                        inputHandler.setTurn(turn);
+                        System.out.println(board);
                     }
                     client.getMessagesIn().remove(0);
                     refresh = true;
@@ -45,8 +76,11 @@ public class ClientMain {
                 if (refresh) {
                     printBoard();
                 }
+                Thread.sleep(100);
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 

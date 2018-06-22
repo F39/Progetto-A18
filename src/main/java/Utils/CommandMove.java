@@ -14,6 +14,12 @@ public class CommandMove extends CommandMatch {
         this.move = move;
     }
 
+    public CommandMove(CommandMove message) {
+        super(message.getUsername());
+        this.gameId = message.getGameId();
+        this.move = message.getMove();
+    }
+
     public int getMove() {
         return move;
     }

@@ -100,6 +100,23 @@ public class UserController {
     }
 
     @POST
+    @Path("/loginTCP")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response loginTCP(User user) {
+        if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
+            String newToken = generateAuthToken();
+            userRepository.updateUserAuthToken(newToken, user.getUsername());
+            user.setToken(newToken);
+            Player player = new Player(user);
+            player.setHasToPoll(false);
+            online.put(newToken, player);
+            return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
+        }
+        return Response.status(Status.BAD_REQUEST).entity("Login failed: provided credentials are not valid.").build();
+    }
+
+    @POST
     @Path("/logout")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response logout(User user) {
@@ -127,8 +144,10 @@ public class UserController {
 
     public static void removeOfflinePlayers() {
         for (Player player : online.values()) {
-            if (System.currentTimeMillis() - player.getLastPoll() > threshold * 1000) {
-                online.remove(player);
+            if(player.hasToPoll()){
+                if (System.currentTimeMillis() - player.getLastPoll() > threshold * 1000) {
+                    online.remove(player);
+                }
             }
         }
     }

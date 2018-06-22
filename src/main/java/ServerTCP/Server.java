@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Server implements Runnable {
 
@@ -15,13 +17,15 @@ public class Server implements Runnable {
     private ArrayList<CommunicationHandlerInput> connectionsInput;
     private ArrayList<CommunicationHandlerOutput> connectionsOutput;
     private GameControllerInt gameControllerInt;
+    private Map<Socket, String> connectionMap;
 
     public Server(GameControllerInt gameController) {
         this.gameControllerInt = gameController;
         try {
-            this.serverSocket = new ServerSocket(9000, 10, InetAddress.getLocalHost());
+            this.serverSocket = new ServerSocket(9000, 10, InetAddress.getByName("localhost"));
             this.connectionsOutput = new ArrayList<>();
             this.connectionsInput = new ArrayList<>();
+            this.connectionMap = new HashMap<>();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,15 +43,18 @@ public class Server implements Runnable {
             try {
                 Socket socket = serverSocket.accept();
                 Logger.log("Connection started");
-                communicationHandlerInput = new CommunicationHandlerInput(socket, gameControllerInt);
-                communicationHandlerOutput = new CommunicationHandlerOutput(socket, gameControllerInt);
+                communicationHandlerOutput = new CommunicationHandlerOutput(socket, gameControllerInt, connectionMap);
+                communicationHandlerInput = new CommunicationHandlerInput(socket, gameControllerInt, connectionMap);
                 Thread threadIn = new Thread(communicationHandlerInput);
                 Thread threadOut = new Thread(communicationHandlerOutput);
                 threadIn.start();
                 threadOut.start();
-                connectionsInput.add(communicationHandlerInput);
                 connectionsOutput.add(communicationHandlerOutput);
+                connectionsInput.add(communicationHandlerInput);
+                Thread.sleep(100);
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

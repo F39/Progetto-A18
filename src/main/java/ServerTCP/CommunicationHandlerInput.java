@@ -1,19 +1,25 @@
 package ServerTCP;
 
 import Controllers.GameControllerInt;
+import Controllers.UserController;
+import DatabaseManagement.UserRepositoryInt;
 import Utils.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommunicationHandlerInput implements Runnable {
     private Socket socket;
     private ObjectInputStream objectInputStream;
     private GameControllerInt gameControllerInt;
+    private Map<Socket, String> connectionMap;
 
-    public CommunicationHandlerInput(Socket socket, GameControllerInt gameControllerInt) throws IOException {
+    public CommunicationHandlerInput(Socket socket, GameControllerInt gameControllerInt, Map connectionMap) throws IOException {
         this.socket = socket;
+        this.connectionMap = connectionMap;
         this.gameControllerInt = gameControllerInt;
         this.objectInputStream = new ObjectInputStream(socket.getInputStream());
     }
@@ -24,13 +30,18 @@ public class CommunicationHandlerInput implements Runnable {
         try{
             while(( message = (AbstractCommand) objectInputStream.readObject()) != null){
                 if(message instanceof CommandNewGame){
-                    gameControllerInt.newGame((CommandNewGame) message);
+                    CommandNewGame command = new CommandNewGame((CommandNewGame) message);
+                    connectionMap.put(socket, command.getUsername());
+                    gameControllerInt.newGame(command);
                 }else if(message instanceof CommandMove){
-                    gameControllerInt.move((CommandMove) message);
+                    CommandMove command = new CommandMove((CommandMove) message);
+                    gameControllerInt.move(command);
                 }else if(message instanceof CommandPause){
-                    gameControllerInt.pause((CommandPause) message);
+                    CommandPause command = new CommandPause((CommandPause) message);
+                    gameControllerInt.pause(command);
                 }else if(message instanceof CommandQuit){
-                    gameControllerInt.quit((CommandQuit) message);
+                    CommandQuit command = new CommandQuit((CommandQuit) message);
+                    gameControllerInt.quit(command);
                 }
 
             }

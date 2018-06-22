@@ -1,11 +1,12 @@
 package GameLogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Class representing a playground. It keeps memory of the cells it is made of.
  */
-public class Board {
+public class Board implements Serializable {
     private int moveNo;
     private final int height = 6, length = 7;
     private ArrayList<Integer> lastC, lastR;
@@ -46,13 +47,13 @@ public class Board {
     }
 
     public int getLastC() {
-        if(lastC.size()>0)
+        if (lastC.size() > 0)
             return lastC.get(lastC.size() - 1);
         return -1;
     }
 
     public int getLastR() {
-        if(lastR.size()>0)
+        if (lastR.size() > 0)
             return lastR.get(lastR.size() - 1);
         return -1;
     }
@@ -189,12 +190,12 @@ public class Board {
      * Starting from the last move on the specified column, scan the board in all directions checking whether a player has won the match. Returns the player number in case of success, otherwise 0
      */
     public int scan() {
-        if (moveNo < 7){
+        if (moveNo < 7) {
             return 0;
         }
         int scan;
         scan = scanHorizontal(4);
-        if (scan != 0){
+        if (scan != 0) {
             return scan;
         }
         scan = scanVertical(4);
@@ -202,24 +203,26 @@ public class Board {
             return scan;
         }
         scan = scanMainDiag(4);
-        if (scan != 0){
+        if (scan != 0) {
             return scan;
         }
         scan = scanBackDiag(4);
-        if (scan != 0){
+        if (scan != 0) {
             return scan;
         }
         return 0;
     }
+
     @Override
     public String toString() {
         String boardString = "";
-        for (int i = 0; i < height; i++) {
+        for (int i = height-1; i >= 0; i--) {
             for (int j = 0; j < length; j++) {
-                boardString += board[i][j].getOccupant();
+                boardString += board[i][j].getOccupant() == 1 ? "X " : board[i][j].getOccupant() == 2 ? "O " : "_ ";
             }
             boardString += "\n";
         }
         return boardString;
     }
+
 }

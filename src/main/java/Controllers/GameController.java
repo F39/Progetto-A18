@@ -60,6 +60,7 @@ public class GameController implements GameControllerInt {
     }
 
     public void createNewSinglePlayerGame(Mode mode, Player p1) {
+        Logger.log("Create new single player game");
         Match newMatch = new Match(p1, mode, progressiveGameId++);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
@@ -69,6 +70,7 @@ public class GameController implements GameControllerInt {
     }
 
     public void createNewMultiPlayerGame(Player p1, Player p2) {
+        Logger.log("Create new multi player game");
         Match newMatch = new Match(p1, p2, progressiveGameId++);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
@@ -80,26 +82,30 @@ public class GameController implements GameControllerInt {
 
     @Override
     public void newGame(CommandNewGame command) {
+        Logger.log("Received new game command");
         commandsIn.add(command);
     }
 
     @Override
     public void move(CommandMove command) {
+        Logger.log("Received new move command");
         commandsIn.add(command);
     }
 
     @Override
     public void pause(CommandPause command) {
+        Logger.log("Received new pause command");
         commandsIn.add(command);
     }
 
     @Override
     public void quit(CommandQuit command) {
+        Logger.log("Received new quit command");
         commandsIn.add(command);
     }
 
     @Override
-    public void deleteCommandOut(AbstractCommand command) {
+    public synchronized void deleteCommandOut(AbstractCommand command) {
         commandsOut.remove(command);
     }
 
@@ -112,13 +118,16 @@ public class GameController implements GameControllerInt {
                 if (toExecute instanceof CommandNewGame) {
                     ((CommandNewGame) toExecute).setGameController(this);
                     toExecute.execute();
+                    Logger.log("New game command successfully executed");
                 } else {
                     handledMatch = matches.get(((CommandMatch) toExecute).getGameId());
                     ((CommandMatch) toExecute).setMatch(handledMatch);
                     toExecute.execute();
-                    if(handledMatch.getAiStrategyInt() == null){
+                    Logger.log("Match command successfully executed");
+                    Logger.log("Sending notification to clients");
+                    if (handledMatch.getAiStrategyInt() == null) {
                         sendNotification(handledMatch);
-                    }else{
+                    } else {
                         sendNotificationSinglePlayer(handledMatch);
                     }
                 }
@@ -135,15 +144,15 @@ public class GameController implements GameControllerInt {
     private void sendNotificationSinglePlayer(Match match) {
         int lastMove = match.getLastMove();
         if (match.getMatchFlowState().equals(MatchFlowState.paused)) {
-            Logger.log(String.format("Match %s paused.", match.getGameId()));
+            Logger.log(String.format("Waiting for game resume, match id %s", match.getGameId()));
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
             return;
-        }else if(match.getMatchFlowState().equals(MatchFlowState.resumed)){
+        } else if (match.getMatchFlowState().equals(MatchFlowState.resumed)) {
             Logger.log(String.format("Match %s resumed.", match.getGameId()));
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
             return;
         }
-        if(match.getMatchFlowState() != MatchFlowState.winner1){
+        if (match.getMatchFlowState() != MatchFlowState.winner1) {
             commandsOut.add(new CommandOut(match.getPlayers().get(match.getTurn()).getUsername(), match.getGameId(), match.getMatchFlowState(), lastMove));
         }
         if (match.getMatchFlowState().equals(MatchFlowState.winner1)) {
@@ -152,10 +161,11 @@ public class GameController implements GameControllerInt {
             matches.remove(match.getGameId());
             System.out.println(matches.size());
         } else if (match.getMatchFlowState().equals(MatchFlowState.winner2)) {
-            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.looser, -1));;
+            commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.looser, -1));
+            ;
             userStatsRepository.addUserDefeat(match.getPlayers().get(1).getUser());
             matches.remove(match.getGameId());
-        } else if (match.getMatchFlowState().equals(MatchFlowState.tie)){
+        } else if (match.getMatchFlowState().equals(MatchFlowState.tie)) {
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), match.getMatchFlowState(), -1));
             userStatsRepository.addUserTie(match.getPlayers().get(1).getUser());
             matches.remove(match.getGameId());
@@ -202,7 +212,7 @@ public class GameController implements GameControllerInt {
         return matchMaker;
     }
 
-    public List<AbstractCommand> getCommandsOut() {
+    public synchronized List<AbstractCommand> getCommandsOut() {
         return commandsOut;
     }
 

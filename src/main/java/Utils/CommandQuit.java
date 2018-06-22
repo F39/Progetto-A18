@@ -13,6 +13,11 @@ public class CommandQuit extends CommandMatch {
         this.gameId = gameId;
     }
 
+    public CommandQuit(CommandQuit message) {
+        super(message.getUsername());
+        this.gameId = message.getGameId();
+    }
+
     public void setMatch(Match match) {
         this.match = match;
     }

@@ -3,7 +3,9 @@ package Utils;
 import Controllers.UserController;
 import GameLogic.Player;
 
-public abstract class AbstractCommand {
+import java.io.Serializable;
+
+public abstract class AbstractCommand implements Serializable {
 
     private String username;
     Player player;

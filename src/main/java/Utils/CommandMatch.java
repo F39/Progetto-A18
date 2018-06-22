@@ -2,7 +2,7 @@ package Utils;
 
 import GameLogic.Match;
 
-public abstract class CommandMatch extends AbstractCommand {
+public abstract class CommandMatch extends AbstractCommand  {
 
     Match match;
     int gameId;

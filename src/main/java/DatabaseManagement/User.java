@@ -3,8 +3,10 @@ package DatabaseManagement;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 @DatabaseTable(tableName = "user")
-public class User {
+public class User implements Serializable {
 
     public static final String USERNAME_FIELD_NAME = "username";
     public static final String EMAIL_FIELD_NAME = "email";

@@ -13,6 +13,11 @@ public class CommandPause extends CommandMatch {
         this.gameId = gameId;
     }
 
+    public CommandPause(CommandPause message) {
+        super(message.getUsername());
+        this.gameId = message.getGameId();
+    }
+
     @Override
     public void execute() {
         if (match.getMatchFlowState() == MatchFlowState.paused) {

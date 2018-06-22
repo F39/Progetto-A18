@@ -1,5 +1,6 @@
 package ClientTCP;
 
+import GameLogic.Board;
 import Utils.AbstractCommand;
 import Utils.CommandOut;
 
@@ -13,17 +14,28 @@ import java.util.List;
 
 public class Client implements Runnable{
     private List<AbstractCommand> messagesOut;
-    private List<CommandOut> messagesIn = new ArrayList<>();
-    private Socket socket = new Socket(InetAddress.getLocalHost(), 9000);
-    private ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-    private ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+    private List<CommandOut> messagesIn;
+    private Socket socket;
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
+    private Board board;
 
-    public Client() throws IOException {
+    public Client(Board board) throws IOException {
+        messagesOut = new ArrayList<>();
+        messagesIn = new ArrayList<>();
+        socket = new Socket(InetAddress.getByName("localhost"), 9000);
+        objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
+        this.board = board;
 
     }
 
     public List<AbstractCommand> getMessagesOut() {
         return messagesOut;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
     public List<CommandOut> getMessagesIn() {

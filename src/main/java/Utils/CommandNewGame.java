@@ -12,6 +12,11 @@ public class CommandNewGame extends AbstractCommand {
 
     }
 
+    public CommandNewGame(CommandNewGame commandNewGame){
+        super(commandNewGame.getUsername());
+        this.mode = commandNewGame.mode;
+    }
+
     public CommandNewGame(String username, Mode mode) {
         super(username);
         this.mode = mode;

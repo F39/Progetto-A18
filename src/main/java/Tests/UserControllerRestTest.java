@@ -16,7 +16,10 @@ public class UserControllerRestTest implements Runnable {
         try {
             tomcat.start();
             tomcat.getServer().await();
+            Thread.sleep(100);
         } catch (LifecycleException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
