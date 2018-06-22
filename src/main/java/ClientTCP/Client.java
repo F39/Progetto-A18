@@ -20,10 +20,10 @@ public class Client implements Runnable{
     private ObjectOutputStream objectOutputStream;
     private Board board;
 
-    public Client(Board board) throws IOException {
+    public Client(Board board, String serverIp) throws IOException {
         messagesOut = new ArrayList<>();
         messagesIn = new ArrayList<>();
-        socket = new Socket(InetAddress.getByName("localhost"), 9000);
+        socket = new Socket(serverIp, 9000);
         objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         this.board = board;
