@@ -41,7 +41,8 @@ public class Match extends Thread {
         if (mode.equals(Mode.StrategyRandom)) {
             aiStrategyInt = new AIStrategyRandom();
         } else if (mode.equals(Mode.StrategyNForecasting)) {
-            aiStrategyInt = new AIStrategy4StepForecasting(this, 4, -3, 2, -1);
+            //aiStrategyInt = new AIStrategy4StepForecasting(this, 4, -3, 2, -1);
+            aiStrategyInt = new AIStrategy4StepForecasting(this, 5, -4, 3, -1);
         }
     }
 

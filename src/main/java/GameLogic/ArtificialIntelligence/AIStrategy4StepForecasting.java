@@ -22,10 +22,11 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
     @Override
     public int move() {
         int guess;
-        if (copiedBoard.getMoveNo() <= 2) {
-            if ((guess = (int) (Math.random() * 3 + copiedBoard.getLastC() - 1)) < 0)
+        if (copiedBoard.getMoveNo() <= 4) {
+            guess = (int) (Math.random() * 3 + copiedBoard.getLastC() - 1);
+            if (guess < 0)
                 guess++;
-            else if ((guess = (int) (Math.random() * 3 + copiedBoard.getLastC() - 1)) > copiedBoard.getLength() - 1)
+            else if (guess > length - 1)
                 guess--;
             return guess; //prime due mosse
         } else {
@@ -62,7 +63,7 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
                 try {
                     if (copiedBoard.getCellOccupant(height - 1, j) == 0) {
                         jmoved = true;
-                        copiedBoard.move(j, 2);
+                        copiedBoard.move(j, 1);
                         future[i] += test(rincaro*pesi[1], 4);
                     }
                 } catch (Exception e) {
@@ -84,7 +85,7 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
                         try {
                             if (copiedBoard.getCellOccupant(height - 1, l) == 0) {
                                 lmoved = true;
-                                copiedBoard.move(l, 2);
+                                copiedBoard.move(l, 1);
                                 future[i] += test(rincaro*pesi[3], 4);
                                 future[i] += test(pesi[3], 3);
                             }
