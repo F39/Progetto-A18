@@ -30,10 +30,9 @@ public class InputHandler implements Runnable{
     private int turn;
     private MatchFlowState matchFlowState;
 
-    public InputHandler(Client client, String username){
+    public InputHandler(Client client){
          inStream = new BufferedReader(new InputStreamReader(System.in));
          this.client = client;
-         this.username = username;
          this.logged = false;
     }
 

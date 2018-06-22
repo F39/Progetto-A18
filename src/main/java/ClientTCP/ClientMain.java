@@ -13,8 +13,8 @@ public class ClientMain {
     public static void main(String[] args) {
         try {
             Board board = new Board();
-            Client client = new Client(board);
-            InputHandler inputHandler = new InputHandler(client, "console" + args[0]);
+            Client client = new Client(board, args[0]);
+            InputHandler inputHandler = new InputHandler(client);
             System.out.println("Connect 4");
             Thread read = new Thread(client);
             Thread write = new Thread(inputHandler);
