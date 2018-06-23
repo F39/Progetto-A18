@@ -162,7 +162,6 @@ public class GameController implements GameControllerInt {
             System.out.println(matches.size());
         } else if (match.getMatchFlowState().equals(MatchFlowState.winner2)) {
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.looser, -1));
-            ;
             userStatsRepository.addUserDefeat(match.getPlayers().get(1).getUser());
             matches.remove(match.getGameId());
         } else if (match.getMatchFlowState().equals(MatchFlowState.tie)) {
@@ -172,7 +171,6 @@ public class GameController implements GameControllerInt {
         }
     }
 
-    @SuppressWarnings("")
     private void sendNotification(Match match) {
         int lastMove = match.getLastMove();
         if (match.getMatchFlowState().equals(MatchFlowState.paused)) {
