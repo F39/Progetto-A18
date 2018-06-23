@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,10 +32,6 @@ public class Server implements Runnable {
         }
     }
 
-//    public ArrayList<Socket> getConnections() {
-//        return connections;
-//    }
-
     @Override
     public void run() {
         CommunicationHandlerInput communicationHandlerInput;
@@ -45,18 +42,18 @@ public class Server implements Runnable {
                 Logger.log("Connection started");
                 communicationHandlerOutput = new CommunicationHandlerOutput(socket, gameControllerInt, connectionMap);
                 communicationHandlerInput = new CommunicationHandlerInput(socket, gameControllerInt, connectionMap);
-                Thread threadIn = new Thread(communicationHandlerInput);
                 Thread threadOut = new Thread(communicationHandlerOutput);
+                Thread threadIn = new Thread(communicationHandlerInput);
                 threadIn.start();
                 threadOut.start();
                 connectionsOutput.add(communicationHandlerOutput);
                 connectionsInput.add(communicationHandlerInput);
                 Thread.sleep(100);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            }
+            catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
             }
         }
     }
+
 }

@@ -2,7 +2,6 @@ package ServerTCP;
 
 import Controllers.GameControllerInt;
 import Utils.AbstractCommand;
-import Utils.CommandOut;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -37,7 +36,6 @@ public class CommunicationHandlerOutput implements Runnable {
                         if(command.getUsername().equals(username)){
                             objectOutputStream.writeObject(command);
                             iterator.remove();
-                            //gameControllerInt.deleteCommandOut(command);
                         }
                     }
                 } catch (IOException e) {

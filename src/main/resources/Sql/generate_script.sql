@@ -1,6 +1,6 @@
 CREATE DATABASE forza4;
 USE forza4;
-CREATE TABLE user (
+CREATE TABLE users (
   id int(11) NOT NULL AUTO_INCREMENT,
   username varchar(255) DEFAULT NULL,
   email varchar(255) DEFAULT NULL,

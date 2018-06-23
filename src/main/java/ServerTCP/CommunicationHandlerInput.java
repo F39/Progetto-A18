@@ -1,14 +1,13 @@
 package ServerTCP;
 
 import Controllers.GameControllerInt;
-import Controllers.UserController;
-import DatabaseManagement.UserRepositoryInt;
+import Logger.Logger;
 import Utils.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.HashMap;
+import java.net.SocketException;
 import java.util.Map;
 
 public class CommunicationHandlerInput implements Runnable {
@@ -27,28 +26,32 @@ public class CommunicationHandlerInput implements Runnable {
     @Override
     public void run() {
         AbstractCommand message;
-        try{
-            while(( message = (AbstractCommand) objectInputStream.readObject()) != null){
-                if(message instanceof CommandNewGame){
+        try {
+            while ((message = (AbstractCommand) objectInputStream.readObject()) != null) {
+                if (message instanceof CommandNewGame) {
                     CommandNewGame command = new CommandNewGame((CommandNewGame) message);
                     connectionMap.put(socket, command.getUsername());
                     gameControllerInt.newGame(command);
-                }else if(message instanceof CommandMove){
+                } else if (message instanceof CommandMove) {
                     CommandMove command = new CommandMove((CommandMove) message);
                     gameControllerInt.move(command);
-                }else if(message instanceof CommandPause){
+                } else if (message instanceof CommandPause) {
                     CommandPause command = new CommandPause((CommandPause) message);
                     gameControllerInt.pause(command);
-                }else if(message instanceof CommandQuit){
+                } else if (message instanceof CommandQuit) {
                     CommandQuit command = new CommandQuit((CommandQuit) message);
                     gameControllerInt.quit(command);
                 }
 
             }
             socket.close();
-        }catch(IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SocketException socketException) {
+            if (socketException.toString().contains("Socket closed") || socketException.toString().contains("Connection reset") || socketException.toString().contains("Broken pipe")) {
+                Logger.log("Socket connection closed");
+            } else {
+                socketException.printStackTrace();
+            }
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

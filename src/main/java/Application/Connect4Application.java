@@ -10,11 +10,10 @@ import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import java.io.*;
+import java.io.File;
 
 public class Connect4Application {
 
@@ -47,12 +46,6 @@ public class Connect4Application {
     private static ServletContainer resourceConfig() {
         ResourceConfig resourceConfig = new ResourceConfig(new ResourceLoader().getClasses());
         resourceConfig.register(new CORSFilter());
-        /*resourceConfig.register(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(GameController.class).to(GameControllerInt.class);
-            }
-        });*/
         return new ServletContainer(resourceConfig);
     }
 }

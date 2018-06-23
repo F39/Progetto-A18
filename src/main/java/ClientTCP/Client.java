@@ -7,27 +7,27 @@ import Utils.CommandOut;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client implements Runnable{
+public class Client implements Runnable {
     private List<AbstractCommand> messagesOut;
     private List<CommandOut> messagesIn;
     private Socket socket;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
     private Board board;
+    private boolean quitFlag;
 
-    public Client(Board board, String serverIp) throws IOException {
+    public Client(Board board, String serverIp, int port) throws IOException {
         messagesOut = new ArrayList<>();
         messagesIn = new ArrayList<>();
-        socket = new Socket(serverIp, 9000);
+        socket = new Socket(serverIp, port);
         objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         this.board = board;
-
+        this.quitFlag = false;
     }
 
     public List<AbstractCommand> getMessagesOut() {
@@ -42,14 +42,6 @@ public class Client implements Runnable{
         return messagesIn;
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public ObjectInputStream getObjectInputStream() {
-        return objectInputStream;
-    }
-
     public ObjectOutputStream getObjectOutputStream() {
         return objectOutputStream;
     }
@@ -57,15 +49,31 @@ public class Client implements Runnable{
     @Override
     public void run() {
         CommandOut message;
-        try{
-            while(( message = (CommandOut) objectInputStream.readObject()) != null){
+        try {
+            while ((message = (CommandOut) objectInputStream.readObject()) != null) {
                 messagesIn.add(message);
             }
-            socket.close();
-        }catch(IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        finally {
+            if(socket.isConnected()){
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
+
+    public boolean isQuitFlag() {
+        return quitFlag;
+    }
+
+    public void setQuitFlag(boolean flag) {
+        this.quitFlag = flag;
+    }
+
 }
