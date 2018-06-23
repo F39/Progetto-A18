@@ -6,12 +6,15 @@ import Utils.CommandMove;
 import Utils.CommandNewGame;
 import Utils.CommandPause;
 import Utils.CommandQuit;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.Console;
@@ -25,19 +28,15 @@ public class InputHandler implements Runnable {
     private Client client;
     private String username, httpHost;
     private int gameId;
-    private boolean logged;
     private int myTurn;
     private int turn;
     private MatchFlowState matchFlowState;
     private int port;
     private Console cnsl;
-    private boolean inGame;
 
-    public InputHandler(Client client, String httpHost, int port) {
+    InputHandler(Client client, String httpHost, int port) {
         inStream = new BufferedReader(new InputStreamReader(System.in));
         this.client = client;
-        this.logged = false;
-        this.inGame = false;
         this.httpHost = httpHost;
         this.port = port;
         this.cnsl = System.console();
@@ -48,12 +47,12 @@ public class InputHandler implements Runnable {
         String temp;
         while (true) {
             try {
-                if (!logged) {
+                if (!client.isLogged()) {
                     System.out.println("username:");
                     username = inStream.readLine();
                     char[] password = cnsl.readPassword("password:\n");
-                    String payLoadLogin = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, String.valueOf(password));
 
+                    String payLoadLogin = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, String.valueOf(password));
                     try {
                         URI address = new URI("http", null, httpHost, port, "/rest/user/loginTCP", null, null);
                         HttpUriRequest request = new HttpPost(address);
@@ -63,13 +62,21 @@ public class InputHandler implements Runnable {
                         ((HttpPost) request).setEntity(se);
                         HttpResponse response = HttpClientBuilder.create().build().execute(request);
                         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                            logged = true;
-                            System.out.println("Login successfully");
+                            HttpEntity entity = response.getEntity();
+                            String responseString = EntityUtils.toString(entity, "UTF-8");
+                            JSONObject jsonResponse = new JSONObject(responseString);
+                            client.setToken(jsonResponse.getString("token"));
+                            client.setLogged(true);
+                            System.out.println("Login successful!");
                             System.out.print(">> ");
+                        }
+                        else {
+                            System.out.println("Wrong credentials!");
                         }
                     } catch (IOException | URISyntaxException e) {
                         e.printStackTrace();
                     }
+                    client.setUsername(username);
                 } else {
                     temp = inStream.readLine();
                     switch (temp.split(" ")[0]) {
@@ -91,12 +98,21 @@ public class InputHandler implements Runnable {
                             client.getMessagesOut().add(new CommandPause(username, gameId));
                             break;
                         }
+                        case "logout": {
+                            if (client.isInGame()) {
+                                System.out.println("You lose!");
+                                client.getMessagesOut().add(new CommandQuit(username, gameId));
+                            }
+                            client.setQuitFlag(true);
+                            break;
+                        }
                         case "quit": {
+                            client.setInGame(false);
                             client.getMessagesOut().add(new CommandQuit(username, gameId));
                             break;
                         }
                         case "exit": {
-                            if (inGame) {
+                            if (client.isInGame()) {
                                 System.out.println("You lose!");
                                 client.getMessagesOut().add(new CommandQuit(username, gameId));
                             }
@@ -111,10 +127,6 @@ public class InputHandler implements Runnable {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void setInGame(boolean inGame) {
-        this.inGame = inGame;
     }
 
     public void setGameId(int gameId) {
