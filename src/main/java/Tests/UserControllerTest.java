@@ -3,6 +3,7 @@ package Tests;
 import DatabaseManagement.User;
 import DatabaseManagement.UserSqlRepository;
 import DatabaseManagement.UserRepositoryInt;
+import DatabaseManagement.UserStatsSqlRepository;
 import Utils.CORSFilter;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
@@ -24,30 +25,35 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.servlet.ServletException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.sql.SQLException;
+import java.util.Base64;
+import java.util.Properties;
 
 import static org.testng.Assert.*;
 
 public class UserControllerTest {
 
     private User user;
-    private String databaseUrl = "jdbc:mysql://localhost:3306/forza4";
-    private String dbUser = "root";
-    private String dbPass = "delta";
     private Tomcat tomcat;
-
+    private final String defaultPassword = "superpassword";
     @BeforeClass
     void beforeAll() {
         // create test user
         user = new User();
         user.setUsername("testUser");
         user.setEmail("mail@test.com");
-        user.setPassword("superpassword");
+        user.setPassword(defaultPassword);
 
         // run app server
         try {
@@ -81,8 +87,15 @@ public class UserControllerTest {
         }
 
         // delete test user from db
+        Properties dbConnectionProps;
+        ConnectionSource connectionSource;
         try {
-            ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
+            dbConnectionProps = new Properties();
+            FileInputStream in = new FileInputStream("src/main/resources/Config/db_config.properties");
+            dbConnectionProps.load(in);
+            in.close();
+            String databaseConnectionString = dbConnectionProps.getProperty("databaseURL") + dbConnectionProps.getProperty("databaseHost") + dbConnectionProps.getProperty("databaseName");
+            connectionSource = new JdbcConnectionSource(databaseConnectionString, dbConnectionProps.getProperty("databaseUser"), dbConnectionProps.getProperty("databasePassword"));
             UserRepositoryInt userRepository = new UserSqlRepository(connectionSource);
             userRepository.delete(user);
             connectionSource.close();
@@ -110,12 +123,24 @@ public class UserControllerTest {
 
     @Test(priority = 2)
     public void testLogin() {
-        this.user.setEmail_confirmed(true);
+
 
         try {
-            ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl, dbUser, dbPass);
+            Properties dbConnectionProps;
+            ConnectionSource connectionSource;
+            dbConnectionProps = new Properties();
+            FileInputStream in = new FileInputStream("src/main/resources/Config/db_config.properties");
+            dbConnectionProps.load(in);
+            in.close();
+            String databaseConnectionString = dbConnectionProps.getProperty("databaseURL") + dbConnectionProps.getProperty("databaseHost") + dbConnectionProps.getProperty("databaseName");
+            connectionSource = new JdbcConnectionSource(databaseConnectionString, dbConnectionProps.getProperty("databaseUser"), dbConnectionProps.getProperty("databasePassword"));
             UserRepositoryInt userRepository = new UserSqlRepository(connectionSource);
-            userRepository.update(user);
+
+            byte[] salt = userRepository.getSalt(this.user.getUsername());
+            User tempUser= encryption(this.user, salt);
+            tempUser.setEmail_confirmed(true);
+            userRepository.update(tempUser);
+            this.user.setPassword(defaultPassword);
             connectionSource.close();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -155,6 +180,23 @@ public class UserControllerTest {
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    public User encryption(User user, byte[] salt){
+        try {
+            KeySpec spec = new PBEKeySpec(user.getPassword().toCharArray(), salt, 65536, 128);
+            SecretKeyFactory f = null;
+            f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = f.generateSecret(spec).getEncoded();
+            Base64.Encoder enc = Base64.getEncoder();
+            user.setPassword(enc.encodeToString(hash));
+            user.setSalt(enc.encodeToString(salt));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
 }
