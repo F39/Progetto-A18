@@ -22,7 +22,7 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
     @Override
     public int move() {
         int guess;
-        if (copiedBoard.getMoveNo() <= 4) {
+        if (copiedBoard.getMoveNo() <= 2) {
             guess = (int) (Math.random() * 3 + copiedBoard.getLastC() - 1);
             if (guess < 0)
                 guess++;
@@ -44,71 +44,58 @@ public class AIStrategy4StepForecasting implements AIStrategyInt {
 
     private int forecast() {
         boolean imoved = false, jmoved = false, kmoved = false, lmoved = false;
-        int rincaro=3;
+        int rincaro = 4;
         copiedBoard = match.getBoard();
         for (int i = 0; i < length; i++) {
-            try {
-                if (copiedBoard.getCellOccupant(height - 1, i) == 0) {
-                    imoved = true;
-                    copiedBoard.move(i, 2);
-                    future[i] = test(rincaro*pesi[0], 4);
-                } else
-                    future[i] = -1000; // è full column
-            } catch (RuntimeException e) { // mossa vincente
-                if (imoved)
-                    copiedBoard.undo();
-                return i;
-            }
-            for (int j = 0; j < length; j++) {
-                try {
-                    if (copiedBoard.getCellOccupant(height - 1, j) == 0) {
-                        jmoved = true;
-                        copiedBoard.move(j, 1);
-                        future[i] += test(rincaro*pesi[1], 4);
+            if (copiedBoard.getCellOccupant(height - 1, i) == 0) {
+                imoved = true;
+                copiedBoard.move(i, 2);
+                future[i] = test(rincaro * pesi[0], 4);
+                if (future[i] != 0) { // mossa vincente: interrompi
+                    if (imoved) {
+                        copiedBoard.undo();
+                        imoved = false;
                     }
-                } catch (Exception e) {
-                    future[i] += test(rincaro*pesi[1], 4);
+                    return i;
+                }
+            } else
+                future[i] = -1000; // è full column
+            for (int j = 0; j < length; j++) {
+                if (copiedBoard.getCellOccupant(height - 1, j) == 0) {
+                    jmoved = true;
+                    copiedBoard.move(j, 1);
+                    future[i] += test(rincaro * pesi[1], 4);
                 }
                 for (int k = 0; k < length; k++) {
-                    try {
-                        if (copiedBoard.getCellOccupant(height - 1, k) == 0) {
-                            kmoved = true;
-                            copiedBoard.move(k, 2);
-                            future[i] += test(rincaro*pesi[2], 4);
-                            future[i] += test(pesi[2], 3);
-                        }
-                    } catch (Exception e) {
-                        future[i] += test(rincaro*pesi[2], 4);
+                    if (copiedBoard.getCellOccupant(height - 1, k) == 0) {
+                        kmoved = true;
+                        copiedBoard.move(k, 2);
+                        future[i] += test(rincaro * pesi[2], 4);
                         future[i] += test(pesi[2], 3);
                     }
                     for (int l = 0; l < length; l++) {
-                        try {
-                            if (copiedBoard.getCellOccupant(height - 1, l) == 0) {
-                                lmoved = true;
-                                copiedBoard.move(l, 1);
-                                future[i] += test(rincaro*pesi[3], 4);
-                                future[i] += test(pesi[3], 3);
-                            }
-                        } catch (Exception e) {
-                            future[i] += test(rincaro*pesi[3], 4);
+                        if (copiedBoard.getCellOccupant(height - 1, l) == 0) {
+                            lmoved = true;
+                            copiedBoard.move(l, 1);
+                            future[i] += test(rincaro * pesi[3], 4);
                             future[i] += test(pesi[3], 3);
                         }
-                        if (lmoved){
+                        if (lmoved) {
                             copiedBoard.undo();
                             lmoved = false;
                         }
                     }
-                    if (kmoved){
+                    if (kmoved) {
                         copiedBoard.undo();
                         kmoved = false;
                     }
                 }
-                if (jmoved){
+                if (jmoved) {
                     copiedBoard.undo();
                     jmoved = false;
                 }
             }
-            if (imoved){
+            if (imoved) {
                 copiedBoard.undo();
                 imoved = false;
             }
