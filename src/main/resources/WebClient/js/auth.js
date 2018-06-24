@@ -13,6 +13,7 @@ function login(){
             data: JSON.stringify({"username": username, "password": password}),
             success: function(response){
                 sessionStorage.username=username;
+                sessionStorage.userId=response.userId;
                 console.log(response.token);
                 sessionStorage.token=response.token;          
                 document.location.href="./newgame.html";

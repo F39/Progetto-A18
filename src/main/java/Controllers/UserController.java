@@ -10,17 +10,19 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import org.json.JSONObject;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 @Singleton
 @Path("/user")
@@ -62,7 +64,7 @@ public class UserController {
         String confirmLink = generateAuthToken();
         user.setEmail_token(confirmLink);
         if (addUser(user)) {
-            String url = host + "/rest/user/confirm/";
+            String url = "http://" + host + "/rest/user/confirm/";
             email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + url + confirmLink);
             return Response.status(Status.OK).build();
         }
@@ -75,11 +77,15 @@ public class UserController {
     public InputStream confirmEmail(@PathParam("token") String token) {
         User toConfirm;
         try {
-            toConfirm = userRepository.getUserByEmailToken(token);
-            toConfirm.setEmail_confirmed(true);
-            userRepository.updateUserEmailConfirmed(toConfirm);
-            File f = new File("src/main/resources/WebClient/emailconfirmed.html");
-            return new FileInputStream(f);
+            if((toConfirm = userRepository.getUserByEmailToken(token)) != null ){
+                toConfirm.setEmail_confirmed(true);
+                userRepository.updateUserEmailConfirmed(toConfirm);
+                File f = new File("src/main/resources/WebClient/emailconfirmed.html");
+                return new FileInputStream(f);
+            }else{
+                File f = new File("src/main/resources/WebClient/emailnotconfirmed.html");
+                return new FileInputStream(f);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -91,14 +97,19 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(User user) {
-        if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
-            String newToken = generateAuthToken();
-            userRepository.updateUserAuthToken(newToken, user.getUsername());
-            user.setToken(newToken);
-            online.put(newToken, new Player(user));
-            Logger.log(String.format("User %s logged in successfully", user.getUsername()));
-            return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
+        byte[] salt;
+        if((salt = userRepository.getSalt(user.getUsername())) !=null){
+            user = encryption(user,salt);
+            if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
+                String newToken = generateAuthToken();
+                userRepository.updateUserAuthToken(newToken, user.getUsername());
+                user.setToken(newToken);
+                online.put(newToken, new Player(user));
+                Logger.log(String.format("User %s logged in successfully", user.getUsername()));
+                return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
+            }
         }
+
         return Response.status(Status.BAD_REQUEST).entity("Login failed: provided credentials are not valid.").build();
     }
 
@@ -107,15 +118,19 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginTCP(User user) {
-        if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
-            String newToken = generateAuthToken();
-            userRepository.updateUserAuthToken(newToken, user.getUsername());
-            user.setToken(newToken);
-            Player player = new Player(user);
-            player.setHasToPoll(false);
-            online.put(newToken, player);
-            Logger.log(String.format("User %s logged in successfully", user.getUsername()));
-            return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
+        byte[] salt;
+        if((salt = userRepository.getSalt(user.getUsername())) !=null){
+            user = encryption(user,salt);
+            if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
+                String newToken = generateAuthToken();
+                userRepository.updateUserAuthToken(newToken, user.getUsername());
+                user.setToken(newToken);
+                Player player = new Player(user);
+                player.setHasToPoll(false);
+                online.put(newToken, player);
+                Logger.log(String.format("User %s logged in successfully", user.getUsername()));
+                return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
+            }
         }
         return Response.status(Status.BAD_REQUEST).entity("Login failed: provided credentials are not valid.").build();
     }
@@ -131,6 +146,7 @@ public class UserController {
     }
 
     private boolean addUser(User user) {
+        user = encryption(user);
         if (userRepository.create(user)) {
             UserStats userStats = new UserStats(user);
             return userStatsRepository.create(userStats);
@@ -151,11 +167,35 @@ public class UserController {
         for (Player player : online.values()) {
             if(player.hasToPoll()){
                 if (System.currentTimeMillis() - player.getLastPoll() > threshold * 1000) {
-                    online.remove(player);
+                    online.values().remove(player);
                     Logger.log(String.format("Removed offline player %s ", player.getUsername()));
                 }
             }
         }
+    }
+
+    public User encryption(User user){
+        byte[] salt = new byte[16];
+        Random random = new Random();
+        random.nextBytes(salt);
+        encryption(user, salt);
+        return user;
+    }
+    public User encryption(User user, byte[] salt){
+        try {
+            KeySpec spec = new PBEKeySpec(user.getPassword().toCharArray(), salt, 65536, 128);
+            SecretKeyFactory f = null;
+            f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = f.generateSecret(spec).getEncoded();
+            Base64.Encoder enc = Base64.getEncoder();
+            user.setPassword(enc.encodeToString(hash));
+            user.setSalt(enc.encodeToString(salt));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
 }

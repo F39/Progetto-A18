@@ -33,6 +33,12 @@ function addMove(player, move){
             PlayerMove.x_coordinate = move;
             DrawPawn();
             changePlayer -= Math.pow(-1,changePlayer);
+            if(sessionStorage.turn == changePlayer){
+                document.getElementById("currentTurn").innerHTML = "Your Turn";
+            }else{
+                document.getElementById("currentTurn").innerHTML = "Enemy Turn";
+            }
+            
             return;
         }
 

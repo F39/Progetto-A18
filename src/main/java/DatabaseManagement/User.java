@@ -4,8 +4,9 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-@DatabaseTable(tableName = "user")
+@DatabaseTable(tableName = "users")
 public class User implements Serializable {
 
     public static final String USERNAME_FIELD_NAME = "username";
@@ -14,6 +15,7 @@ public class User implements Serializable {
     public static final String AUTH_TOKEN_FIELD_NAME = "auth_token";
     public static final String EMAIL_CONFIRMED_FIELD_NAME = "email_confirmed";
     public static final String EMAIL_TOKEN_FIELD_NAME = "email_token";
+    public static final String SALT_FIELD_NAME = "salt";
 
     @DatabaseField(generatedId = true)
     private Integer id;
@@ -29,6 +31,8 @@ public class User implements Serializable {
     private boolean email_confirmed;
     @DatabaseField(columnName = EMAIL_TOKEN_FIELD_NAME)
     private String email_token;
+    @DatabaseField(columnName = SALT_FIELD_NAME)
+    private String salt;
 
     public User() {
     }
@@ -43,6 +47,7 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
     }
+
 
     public String getToken() {
         return token;
@@ -92,4 +97,11 @@ public class User implements Serializable {
         this.email_token = email_token;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 }
