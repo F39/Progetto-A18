@@ -13,7 +13,7 @@ CREATE TABLE users (
   UNIQUE KEY username (username),
   UNIQUE KEY email (email)
 );
-INSERT INTO forza4.user
+INSERT INTO forza4.users
 (username,
 email,
 password,
