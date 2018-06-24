@@ -34,6 +34,7 @@ public class UserController {
     private static Map<String, Player> online = new HashMap<>(); // map sessions to relative users
     private OnlineChecker onlineChecker;
     private final static long threshold = 60;
+    private Logger logger;
 
     public UserController() {
         Properties dbConnectionProps;
@@ -55,6 +56,8 @@ public class UserController {
         onlineChecker = new OnlineChecker();
         Thread onlineCheckerThread = new Thread(onlineChecker);
         onlineCheckerThread.start();
+
+        logger = Logger.getInstance();
     }
 
     @POST
@@ -68,7 +71,7 @@ public class UserController {
             email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + url + confirmLink);
             return Response.status(Status.OK).build();
         }
-        Logger.log("Signup procedure completed successfully");
+        logger.log("Signup procedure completed successfully");
         return Response.status(Status.BAD_REQUEST).build();
     }
 
@@ -105,7 +108,7 @@ public class UserController {
                 userRepository.updateUserAuthToken(newToken, user.getUsername());
                 user.setToken(newToken);
                 online.put(newToken, new Player(user));
-                Logger.log(String.format("User %s logged in successfully", user.getUsername()));
+                logger.log(String.format("User %s logged in successfully", user.getUsername()));
                 return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
             }
         }
@@ -128,7 +131,7 @@ public class UserController {
                 Player player = new Player(user);
                 player.setHasToPoll(false);
                 online.put(newToken, player);
-                Logger.log(String.format("User %s logged in successfully", user.getUsername()));
+                logger.log(String.format("User %s logged in successfully", user.getUsername()));
                 return Response.ok(new JSONObject("{\"token\":\"" + user.getToken() + "\", \"userId\":\"" + user.getId() + "\"}").toString(), MediaType.APPLICATION_JSON).build();
             }
         }
@@ -141,7 +144,7 @@ public class UserController {
     public Response logout(User user) {
         online.remove(user.getToken());
         userRepository.updateUserAuthToken(null, user.getUsername());
-        Logger.log(String.format("User %s logged out successfully", user.getUsername()));
+        logger.log(String.format("User %s logged out successfully", user.getUsername()));
         return Response.ok().build();
     }
 
@@ -168,7 +171,7 @@ public class UserController {
             if(player.hasToPoll()){
                 if (System.currentTimeMillis() - player.getLastPoll() > threshold * 1000) {
                     online.values().remove(player);
-                    Logger.log(String.format("Removed offline player %s ", player.getUsername()));
+                    Logger.getInstance().log(String.format("Removed offline player %s ", player.getUsername()));
                 }
             }
         }

@@ -29,8 +29,10 @@ public class GameController implements GameControllerInt {
     private List<AbstractCommand> commandsOut = new ArrayList<>();
     private int progressiveGameId;
     private UserStatsRepositoryInt userStatsRepository;
+    private Logger logger;
 
     public GameController() {
+        logger = Logger.getInstance();
         matches = new HashMap<>();
         progressiveGameId = 1;
 
@@ -38,10 +40,10 @@ public class GameController implements GameControllerInt {
         Thread matchMaking = new Thread(matchMaker);
         matchMaking.start();
 
-        Logger.log("Starting game controller thread");
+        logger.log("Starting game controller thread");
         Thread gameControllerThread = new Thread(this);
         gameControllerThread.start();
-        Logger.log("Game controller thread successfully started");
+        logger.log("Game controller thread successfully started");
 
         Properties dbConnectionProps;
         ConnectionSource connectionSource;
@@ -60,7 +62,7 @@ public class GameController implements GameControllerInt {
     }
 
     public void createNewSinglePlayerGame(Mode mode, Player p1) {
-        Logger.log("Create new single player game");
+        logger.log("Create new single player game");
         Match newMatch = new Match(p1, mode, progressiveGameId++);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
@@ -70,7 +72,7 @@ public class GameController implements GameControllerInt {
     }
 
     public void createNewMultiPlayerGame(Player p1, Player p2) {
-        Logger.log("Create new multi player game");
+        logger.log("Create new multi player game");
         Match newMatch = new Match(p1, p2, progressiveGameId++);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
@@ -82,25 +84,25 @@ public class GameController implements GameControllerInt {
 
     @Override
     public void newGame(CommandNewGame command) {
-        Logger.log("Received new game command");
+        logger.log("Received new game command");
         commandsIn.add(command);
     }
 
     @Override
     public void move(CommandMove command) {
-        Logger.log("Received new move command");
+        logger.log("Received new move command");
         commandsIn.add(command);
     }
 
     @Override
     public void pause(CommandPause command) {
-        Logger.log("Received new pause command");
+        logger.log("Received new pause command");
         commandsIn.add(command);
     }
 
     @Override
     public void quit(CommandQuit command) {
-        Logger.log("Received new quit command");
+        logger.log("Received new quit command");
         commandsIn.add(command);
     }
 
@@ -118,13 +120,13 @@ public class GameController implements GameControllerInt {
                 if (toExecute instanceof CommandNewGame) {
                     ((CommandNewGame) toExecute).setGameController(this);
                     toExecute.execute();
-                    Logger.log("New game command successfully executed");
+                    logger.log("New game command successfully executed");
                 } else {
                     handledMatch = matches.get(((CommandMatch) toExecute).getGameId());
                     ((CommandMatch) toExecute).setMatch(handledMatch);
                     toExecute.execute();
-                    Logger.log("Match command successfully executed");
-                    Logger.log("Sending notification to clients");
+                    logger.log("Match command successfully executed");
+                    logger.log("Sending notification to clients");
                     if (handledMatch.getAiStrategyInt() == null) {
                         sendNotification(handledMatch);
                     } else {
@@ -144,11 +146,11 @@ public class GameController implements GameControllerInt {
     private void sendNotificationSinglePlayer(Match match) {
         int lastMove = match.getLastMove();
         if (match.getMatchFlowState().equals(MatchFlowState.paused)) {
-            Logger.log(String.format("Waiting for game resume, match id %s", match.getGameId()));
+            logger.log(String.format("Waiting for game resume, match id %s", match.getGameId()));
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
             return;
         } else if (match.getMatchFlowState().equals(MatchFlowState.resumed)) {
-            Logger.log(String.format("Match %s resumed.", match.getGameId()));
+            logger.log(String.format("Match %s resumed.", match.getGameId()));
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
             return;
         }
@@ -174,12 +176,12 @@ public class GameController implements GameControllerInt {
     private void sendNotification(Match match) {
         int lastMove = match.getLastMove();
         if (match.getMatchFlowState().equals(MatchFlowState.paused)) {
-            Logger.log(String.format("Match %s paused.", match.getGameId()));
+            logger.log(String.format("Match %s paused.", match.getGameId()));
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.paused, -1));
             return;
         } else if (match.getMatchFlowState().equals(MatchFlowState.resumed)) {
-            Logger.log(String.format("Match %s resumed.", match.getGameId()));
+            logger.log(String.format("Match %s resumed.", match.getGameId()));
             commandsOut.add(new CommandOut(match.getPlayers().get(1).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
             commandsOut.add(new CommandOut(match.getPlayers().get(2).getUsername(), match.getGameId(), MatchFlowState.resumed, -1));
             return;

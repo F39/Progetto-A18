@@ -15,12 +15,14 @@ public class CommunicationHandlerInput implements Runnable {
     private ObjectInputStream objectInputStream;
     private GameControllerInt gameControllerInt;
     private Map<Socket, String> connectionMap;
+    private Logger logger;
 
     public CommunicationHandlerInput(Socket socket, GameControllerInt gameControllerInt, Map connectionMap) throws IOException {
         this.socket = socket;
         this.connectionMap = connectionMap;
         this.gameControllerInt = gameControllerInt;
         this.objectInputStream = new ObjectInputStream(socket.getInputStream());
+        logger = Logger.getInstance();
     }
 
     @Override
@@ -47,7 +49,7 @@ public class CommunicationHandlerInput implements Runnable {
             socket.close();
         } catch (SocketException socketException) {
             if (socketException.toString().contains("Socket closed") || socketException.toString().contains("Connection reset") || socketException.toString().contains("Broken pipe")) {
-                Logger.log("Socket connection closed");
+                logger.log("Socket connection closed");
             } else {
                 socketException.printStackTrace();
             }

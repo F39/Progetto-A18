@@ -19,9 +19,11 @@ public class Server implements Runnable {
     private ArrayList<CommunicationHandlerOutput> connectionsOutput;
     private GameControllerInt gameControllerInt;
     private Map<Socket, String> connectionMap;
+    private Logger logger;
 
     public Server(GameControllerInt gameController) {
         this.gameControllerInt = gameController;
+        logger = Logger.getInstance();
         try {
             this.serverSocket = new ServerSocket(9000, 10, InetAddress.getByName("localhost"));
             this.connectionsOutput = new ArrayList<>();
@@ -39,7 +41,7 @@ public class Server implements Runnable {
         while (true) {
             try {
                 Socket socket = serverSocket.accept();
-                Logger.log("Connection started");
+                logger.log("Connection started");
                 communicationHandlerOutput = new CommunicationHandlerOutput(socket, gameControllerInt, connectionMap);
                 communicationHandlerInput = new CommunicationHandlerInput(socket, gameControllerInt, connectionMap);
                 Thread threadOut = new Thread(communicationHandlerOutput);

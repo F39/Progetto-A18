@@ -20,7 +20,7 @@ public final class Logger {
         }
     }
 
-    public static void log(String message){
+    public void log(String message){
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         String logString = "[ " + stackTraceElements[2].getClassName() + " - " + stackTraceElements[2].getMethodName() + " - " + stackTraceElements[2].getLineNumber() + " ] - " + dateFormat.format(cal.getTime()) + " : " + message;
         System.out.println(logString);

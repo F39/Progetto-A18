@@ -11,10 +11,12 @@ public class MatchMaking implements Runnable {
 
     private List<Player> pendingPlayers;
     private GameController gameController;
+    private Logger logger;
 
     public MatchMaking(GameController gameController) {
         this.gameController = gameController;
         this.pendingPlayers = new ArrayList<>();
+        logger = Logger.getInstance();
     }
 
     public void putPendingUsers(Player player) {
@@ -24,7 +26,7 @@ public class MatchMaking implements Runnable {
     @Override
     public void run() {
         int indexP1, indexP2;
-        Logger.log("Started Matchmaking thread");
+        logger.log("Started Matchmaking thread");
         while (true) {
             if (pendingPlayers.size() >= 2) {
                 while (true) {
@@ -36,7 +38,7 @@ public class MatchMaking implements Runnable {
                         gameController.createNewMultiPlayerGame(p1, p2);
                         pendingPlayers.remove(p1);
                         pendingPlayers.remove(p2);
-                        Logger.log(String.format("Matched a new game: %s and %s will play.", p1.getUsername(), p2.getUsername()));
+                        logger.log(String.format("Matched a new game: %s and %s will play.", p1.getUsername(), p2.getUsername()));
                         break;
                     }
                 }
