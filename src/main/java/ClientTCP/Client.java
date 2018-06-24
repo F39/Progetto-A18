@@ -112,4 +112,7 @@ public class Client implements Runnable {
         this.inGame = inGame;
     }
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 }

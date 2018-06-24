@@ -51,7 +51,7 @@ public class InputHandler implements Runnable {
                     System.out.println("username:");
                     username = inStream.readLine();
                     char[] password = cnsl.readPassword("password:\n");
-
+                    //String password = inStream.readLine();
                     String payLoadLogin = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, String.valueOf(password));
                     try {
                         URI address = new URI("http", null, httpHost, port, "/rest/user/loginTCP", null, null);
