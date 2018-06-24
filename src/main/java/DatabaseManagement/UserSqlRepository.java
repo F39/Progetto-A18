@@ -8,6 +8,7 @@ import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -102,6 +103,24 @@ public class UserSqlRepository implements UserRepositoryInt {
             userList = userDao.query(preparedQuery);
             if (!userList.isEmpty()) {
                 return userList.get(0);
+            } else return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public byte[] getSalt(String username) {
+        try {
+            QueryBuilder<User, Integer> queryBuilder = userDao.queryBuilder();
+            queryBuilder.where().eq(User.USERNAME_FIELD_NAME, username);
+            PreparedQuery<User> preparedQuery = queryBuilder.prepare();
+            List<User> userList = null;
+            userList = userDao.query(preparedQuery);
+            if (!userList.isEmpty()) {
+                Base64.Decoder dec = Base64.getDecoder();
+                return dec.decode(userList.get(0).getSalt());
             } else return null;
         } catch (SQLException e) {
             e.printStackTrace();

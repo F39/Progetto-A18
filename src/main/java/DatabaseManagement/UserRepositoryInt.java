@@ -11,4 +11,5 @@ public interface UserRepositoryInt extends CrudRepository<User> {
 
     User getUserByEmailToken(String token);
 
+    byte[] getSalt(String username);
 }

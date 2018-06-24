@@ -27,7 +27,8 @@
             window.onload = function(){
                 if(sessionStorage.noRefresh == 1){
                     alert("Invalid game");
-                    document.location.href = "./index.html";
+                    quit();
+                    document.location.href = "./newgame.html";
                 }
                 if(sessionStorage.noRefresh == 0){
                     sessionStorage.noRefresh = 1;
@@ -155,17 +156,32 @@
     function isPause(event){
         //alert("Paused");
         var displaypaused = document.getElementById("pauseview").style.display;
-        if(document.getElementById("pauseview").style.display==="block"){
+        if(displaypaused==="block"){
             document.getElementById("pausebutton").value="Pause Game";
-            document.getElementById("pauseview").style.display="none";
+            displaypaused="none";
         }
         else{
+            document.getElementById("pauseview").innerHTML = "PAUSED";
             document.getElementById("pauseview").style.display = "block";
             document.getElementById("pausebutton").value="Unpause Game";
         }
     }
 </script>
-<input type="checkbox" name="Menu" id="menu" onclick="BlockCursor()">
+<div class="spanWin">
+    <span for="spanWin" id="EndMatch" onclick="document.location.href='./singlestat.html'"></span>
+    <script>
+            function endOfMatch(winlose) {
+                document.getElementById("EndMatch").innerHTML = winlose;
+                document.getElementById("pauseview").innerHTML = "";
+                document.getElementById("pauseview").style.display = "block";
+            }
+    
+            //endOfMatch("You Win!");
+    
+    
+    </script>
+</div>
+<input type="checkbox" name="Menu" id="menu" onclick="">
 <menu>
     <nav>
         <img src="./img/X.png" style="width:20px;height:20px;" onclick="closeMenu()">
@@ -181,5 +197,14 @@
         </div>
     </nav>
 </menu>
+<label id="time">Time: </label>
+<label id="currentTurn"></label>
+<script>
+    if(sessionStorage.turn == changePlayer){
+        document.getElementById("currentTurn").innerHTML = "Your Turn";
+    }else{
+        document.getElementById("currentTurn").innerHTML = "Enemy Turn";
+    }
+</script>
 </body>
 </html>

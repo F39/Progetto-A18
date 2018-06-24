@@ -61,6 +61,7 @@ public class ClientMain {
                     message = client.getMessagesIn().get(0);
                     if (message.getMove() == -2 && message.getGameId() != -1) {
                         // new game
+                        client.setBoard(board);
                         inputHandler.setGameId(message.getGameId());
                         int myTurn = message.getMatchFlowState() == MatchFlowState.started1 ? 1 : 2;
                         inputHandler.setMyTurn(myTurn);

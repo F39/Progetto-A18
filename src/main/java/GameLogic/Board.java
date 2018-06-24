@@ -75,7 +75,9 @@ public class Board implements Serializable {
                 board[i][column].fill(turn);
                 lastC.add(column);
                 lastR.add(i);
-                result = scan();
+                if((result = scan())!= 0){
+                    return result;
+                }
                 break;
             }
         }

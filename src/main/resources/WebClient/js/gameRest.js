@@ -22,6 +22,12 @@ function newGame(mode) {
 }
 
 function move(move) {
+    if(move < 0){
+        move = 0;
+    }
+    if(move > 6){
+        move = 6;
+    }
     $.ajax(
         {
             type: 'POST',
@@ -109,19 +115,18 @@ function poll() {
                     }else if(response.matchFlowState == "started2"){
                         sessionStorage.turn = 2;
                     }
+                    
                     sessionStorage.noRefresh = 0;
                     document.location.href = "./connect4.html";
+                    
                 } else if (response.move == -1) {
                     //console.log("cambio di stato: " + response.matchFlowState);
                     if (response.matchFlowState == "winner") {
-                        //load stats page 
-                        alert("Figa se sei forte");
+                        endOfMatch("You Win!")
                     } else if (response.matchFlowState == "looser") {
-                        //load stats page
-                        alert("Figa se sei scarso");
+                        endOfMatch("You Lose!")
                     } else if (response.matchFlowState == "tie") {
-                        //load stats page
-                        alert("Eh niente");
+                        endOfMatch("Tie!")
                     } else if (response.matchFlowState == "paused"){
                         isPause();
                     } else if (response.matchFlowState == "resumed"){
