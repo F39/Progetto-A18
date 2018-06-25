@@ -101,6 +101,7 @@ public class GameController implements GameControllerInt {
             userStatsRepository.addUserGame(p2.getUser());
         }else{
             commandsOut.add(new CommandOut(p2.getUsername(), gameId, MatchFlowState.refused, -2));
+            matches.remove(gameId);
         }
     }
 

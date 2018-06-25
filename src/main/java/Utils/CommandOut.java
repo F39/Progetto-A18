@@ -50,6 +50,14 @@ public class CommandOut extends AbstractCommand {
         return mode;
     }
 
+    public String getOpponentUsername() {
+        return opponentUsername;
+    }
+
+    public void setOpponentUsername(String opponentUsername) {
+        this.opponentUsername = opponentUsername;
+    }
+
     @Override
     public void execute() {
 

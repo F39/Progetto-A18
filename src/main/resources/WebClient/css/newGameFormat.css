@@ -141,6 +141,23 @@ input.gbck{
     width: 200px;
 }
 
+input.acceptButton{
+    position: relative;
+    top: 200px;
+    left: 5px;
+    width: 200px;
+    display: none;
+
+}
+
+input.decline{
+    position: relative;
+    top: 210px;
+    left: 5px;
+    width: 200px;
+    display: none;
+}
+
 input.logout{
     position: relative;
     top: 30px;
@@ -179,4 +196,20 @@ input.mod2{
     }
 }
 
+#reqmess{
+    position: relative;
+    top: 100px;
+}
 
+label[for="reqmess"]{
+    display: block;
+    border: 2px solid #1f222e;
+    position: absolute;
+    right: 50px;
+    top: 20px;
+    line-height: 40px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    pointer-events: none;
+}

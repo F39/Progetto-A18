@@ -157,8 +157,7 @@
 <div id="pauseview"><label for="pauseview" onclick="pause()">PAUSED</label></div>
 <script>
     function isPause(event){
-        //alert("Paused");
-        document.getElementById("pauseview").innerHTML = "PAUSED";
+    
         var displaypaused = document.getElementById("pauseview").style.display;
         if(document.getElementById("pauseview").style.display==="block"){
             document.getElementById("pausebutton").value="Pause Game";
@@ -166,7 +165,6 @@
             isPaused = false;
         }
         else{
-            document.getElementById("pauseview").innerHTML = "PAUSED";
             document.getElementById("pauseview").style.display = "block";
             document.getElementById("pausebutton").value="Unpause Game";
             isPaused = true;

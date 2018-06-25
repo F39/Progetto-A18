@@ -56,24 +56,30 @@ function newGameWithFriend(mode){
     );
 }
 
-function accept(accepted){
+function Accept(accepted){       
     $.ajax(
         {
             type: 'POST',
             contentType: 'application/json',
-            url: restServer + '/game/newgame',
+            url: restServer + '/game/accept',
             headers: {
                 "token": sessionStorage.token
             },
-            data: JSON.stringify({"username": sessionStorage.username, "opponentUsername": opponentUsername, "accepted": accepted}),
+            data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId,"opponentUsername": sessionStorage.opponentUsername, "accepted": accepted}),
             success: function () {
                 if(sessionStorage.mode == 0){
                     sessionStorage.timer = 60;
                 }else if(sessionStorage.mode == 4){
                     sessionStorage.timer = 10;
                 }
+
+                if(accepted == 1){
+                    
+                }else{
+                    DeclineReq();
+                }
                  
-                document.location.href = "./loadingPage.html";
+                
             },
             error: function () {
                 alert("Something went wrong");
@@ -172,12 +178,19 @@ function poll() {
                 } else if (response.move == -2 && response.gameId != 0) {
                     //game found
                     sessionStorage.gameId = response.gameId;
-                    console.log(response.mode);
+
                     if(response.mode == "MultiPlayer"){
                         sessionStorage.timer = 60;
-                        console.log("invito ricevuto");
+                        document.getElementById("textReq").innerHTML = "Multiplayer " + response.opponentUsername;
+                        sessionStorage.opponentUsername = response.opponentUsername;
+                        sessionStorage.gameId = response.gameId;
+                        NewReq();
                     }else if(response.mode == "MultiPlayerTurbo"){
                         sessionStorage.timer = 10;
+                        document.getElementById("textReq").innerHTML = "Multiplayer Turbo " + response.opponentUsername;
+                        sessionStorage.opponentUsername = response.opponentUsername;
+                        sessionStorage.gameId = response.gameId;
+                        NewReq();
                     }else if (response.matchFlowState == "started1"){
                         sessionStorage.turn = 1;
                         sessionStorage.noRefresh = 0;

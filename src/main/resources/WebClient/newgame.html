@@ -13,6 +13,9 @@
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     </head>
     <body>
+            <script src = "./js/jquery.js"></script>
+            <script src = "./js/auth.js"></script>
+            <script src = "./js/gameRest.js"></script>        
 
     <ul id="home_icon">
         <li id="home_icon"><a href="#"><i class="fa fa-gift" aria-hidden="true"></i></a></li>
@@ -40,13 +43,25 @@
 
             <input type="button" value="Stats" class="button2" onclick="document.location.href='./singlestat.html'" >
             <input type="button" value="Log out" class="logout" onclick="logout()">
+
+            <div id="reqmess"><label for="reqmess" id="textReq"></label></div>
+            <input type="button" value="accept" class="acceptButton" id="Y" onclick="Accept(1)">
+            <input type="button" value="decline" class="decline" id ="N" onclick="Accept(0)">
         </div>
     </div>
+    <script>
+            function NewReq(){
+                document.getElementById("Y").style.display="block";
+                document.getElementById("N").style.display="block";
+            }
+            function DeclineReq(){
+                document.getElementById("Y").style.display="none";
+                document.getElementById("N").style.display="none";
+                document.getElementById("textReq").innerHTML = "";
+            }
 
-    <script src = "./js/jquery.js"></script>
-    <script src = "./js/auth.js"></script>
-    <script src = "./js/gameRest.js"></script>
-
+    </script>
+    
     
 
 
