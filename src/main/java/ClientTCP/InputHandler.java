@@ -88,6 +88,7 @@ public class InputHandler implements Runnable {
                             if (myTurn == turn && matchFlowState != MatchFlowState.paused) {
                                 client.getMessagesOut().add(new CommandMove(username, gameId, Integer.parseInt(temp.split(" ")[1])));
                                 client.getBoard().move(Integer.parseInt(temp.split(" ")[1]), myTurn);
+                                System.out.println(client.getBoard());
                                 turn -= Math.pow(-1, turn);
                             } else {
                                 System.out.println("Wait your turn");
