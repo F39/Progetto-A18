@@ -84,7 +84,7 @@ public class GameController implements GameControllerInt {
 
     public void createNewMultiPlayerGameWithFriend(Player p1, Player p2, Mode mode) {
         logger.log("Create new multi player game with friend");
-        Match newMatch = new Match(p1, p2, progressiveGameId++, mode);
+        Match newMatch = new Match(p2, p1, progressiveGameId++, mode);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
         //commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.invite1, -2, p2.getUsername()));
