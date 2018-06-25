@@ -185,12 +185,14 @@ function poll() {
                         document.getElementById("textReq").innerHTML = "Multiplayer " + response.opponentUsername;
                         sessionStorage.opponentUsername = response.opponentUsername;
                         sessionStorage.gameId = response.gameId;
+                        sessionStorage.mode = response.mode;
                         NewReq();
                     }else if(response.mode == "MultiPlayerTurbo"){
                         sessionStorage.timer = 10;
                         document.getElementById("textReq").innerHTML = "Multiplayer Turbo " + response.opponentUsername;
                         sessionStorage.opponentUsername = response.opponentUsername;
                         sessionStorage.gameId = response.gameId;
+                        sessionStorage.mode = response.mode;
                         NewReq();
                     }else if (response.matchFlowState == "started1"){
                         sessionStorage.turn = 1;
