@@ -71,9 +71,9 @@ public class GameController implements GameControllerInt {
         userStatsRepository.addUserGame(p1.getUser());
     }
 
-    public void createNewMultiPlayerGame(Player p1, Player p2) {
+    public void createNewMultiPlayerGame(Player p1, Player p2, Mode mode) {
         logger.log("Create new multi player game");
-        Match newMatch = new Match(p1, p2, progressiveGameId++);
+        Match newMatch = new Match(p1, p2, progressiveGameId++, mode);
         matches.put(newMatch.getGameId(), newMatch);
         newMatch.startGame();
         commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.started1, -2));
@@ -81,6 +81,31 @@ public class GameController implements GameControllerInt {
         commandsOut.add(new CommandOut(p2.getUsername(), newMatch.getGameId(), MatchFlowState.started2, -2));
         userStatsRepository.addUserGame(p2.getUser());
     }
+
+    public void createNewMultiPlayerGameWithFriend(Player p1, Player p2, Mode mode) {
+        logger.log("Create new multi player game with friend");
+        Match newMatch = new Match(p1, p2, progressiveGameId++, mode);
+        matches.put(newMatch.getGameId(), newMatch);
+        newMatch.startGame();
+        //commandsOut.add(new CommandOut(p1.getUsername(), newMatch.getGameId(), MatchFlowState.invite1, -2, p2.getUsername()));
+        //userStatsRepository.addUserGame(p1.getUser());
+        commandsOut.add(new CommandOut(p2.getUsername(), newMatch.getGameId(), mode, -2, p1.getUsername()));
+        //userStatsRepository.addUserGame(p2.getUser());
+    }
+
+    public void acceptGame(Player p1, Player p2, int gameId) {
+        commandsOut.add(new CommandOut(p1.getUsername(), gameId, MatchFlowState.started1, -2));
+        userStatsRepository.addUserGame(p1.getUser());
+        commandsOut.add(new CommandOut(p2.getUsername(), gameId, MatchFlowState.started2, -2));
+        userStatsRepository.addUserGame(p2.getUser());
+    }
+
+    @Override
+    public void accept(CommandAcceptMatch command) {
+        logger.log("Received accept match command");
+        commandsIn.add(command);
+    }
+
 
     @Override
     public void newGame(CommandNewGame command) {
@@ -119,6 +144,10 @@ public class GameController implements GameControllerInt {
                 AbstractCommand toExecute = commandsIn.get(0);
                 if (toExecute instanceof CommandNewGame) {
                     ((CommandNewGame) toExecute).setGameController(this);
+                    toExecute.execute();
+                    logger.log("New game command successfully executed");
+                } else if (toExecute instanceof  CommandAcceptMatch) {
+                    ((CommandAcceptMatch) toExecute).setGameController(this);
                     toExecute.execute();
                     logger.log("New game command successfully executed");
                 } else {

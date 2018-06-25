@@ -23,6 +23,7 @@
         <script type="text/javascript" src="./js/gameRest.js"></script>
         <script type="text/javascript" src="./js/init.js"></script>
         <script type="text/javascript" src="./js/game.js"></script>
+        <script type="text/javascript" src="./js/timer.js"></script>
         <script>
             window.onload = function(){
                 if(sessionStorage.noRefresh == 1){
@@ -31,6 +32,7 @@
                     document.location.href = "./newgame.html";
                 }
                 if(sessionStorage.noRefresh == 0){
+                    startTimer();
                     sessionStorage.noRefresh = 1;
                 }
             }

@@ -35,8 +35,10 @@ function addMove(player, move){
             changePlayer -= Math.pow(-1,changePlayer);
             if(sessionStorage.turn == changePlayer){
                 document.getElementById("currentTurn").innerHTML = "Your Turn";
+                timer = sessionStorage.timer;
             }else{
                 document.getElementById("currentTurn").innerHTML = "Enemy Turn";
+                timer = sessionStorage.timer;
             }
             
             return;

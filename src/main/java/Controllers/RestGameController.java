@@ -11,6 +11,8 @@ import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 @Path("/game")
@@ -34,6 +36,19 @@ public class RestGameController {
             return Response.ok().build();
         }
         logger.log("Invalid new game request received");
+        return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
+    @POST
+    @Path("/accept")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response accept(@HeaderParam("token") String token, CommandAcceptMatch command){
+        if (checkAuthToken(token, command.getUsername())) {
+            logger.log("Accept request received");
+            gameControllerInt.accept(command);
+            return Response.ok().build();
+        }
+        logger.log("Invalid accept request received");
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -96,13 +111,17 @@ public class RestGameController {
     }
 
     private boolean checkAuthToken(String token, String username) {
-        User checkUser = UserController.getOnline().get(token).getUser();
-        if (checkUser == null) {
-            return false;
+        List<String> tokens = new ArrayList<>(UserController.getOnline().keySet());
+        if(tokens.contains(token)){
+            User checkUser = UserController.getOnline().get(token).getUser();
+            if (checkUser == null) {
+                return false;
+            }
+            if (username.equals(checkUser.getUsername())) {
+                return true;
+            }
         }
-        if (username.equals(checkUser.getUsername())) {
-            return true;
-        }
+
         logger.log("Invalid token request received");
         return false;
     }

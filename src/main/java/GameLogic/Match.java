@@ -19,7 +19,7 @@ public class Match extends Thread {
     private long timeout;
     private AIStrategyInt aiStrategyInt;
 
-    private final long threshold = 60;
+    private long threshold;
 
     public Match(Player player1, int gameId) {
         this.gameId = gameId;
@@ -29,11 +29,17 @@ public class Match extends Thread {
         board = new Board();
         lastMove = -1;
         moved = false;
+        timeout=System.currentTimeMillis();
     }
 
-    public Match(Player player1, Player player2, int gameId) {
+    public Match(Player player1, Player player2, int gameId, Mode mode) {
         this(player1, gameId);
         players.put(2, player2);
+        if(mode == Mode.MultiPlayerTurbo){
+            threshold = 10;
+        }else{
+            threshold = 60;
+        }
     }
 
     public Match(Player player1, Mode mode, int gameId) {
@@ -115,12 +121,12 @@ public class Match extends Thread {
     }
 
     public void quitGame(Player player) {
-        matchFlowState = MatchFlowState.quitted;
-        if (turn == 1) {
+        if(players.get(1).getUsername() == player.getUsername()){
             matchFlowState = MatchFlowState.winner2;
-        } else {
+        }else{
             matchFlowState = MatchFlowState.winner1;
         }
+
     }
 
     public int getLastMove() {
@@ -133,11 +139,18 @@ public class Match extends Thread {
 
     @Override
     public void run() {
-        while (matchFlowState.equals(MatchFlowState.quitted)) {
+        timeout = System.currentTimeMillis();
+        while (!matchFlowState.equals(MatchFlowState.quitted)) {
             if ((matchFlowState.equals(MatchFlowState.winner1)) || (matchFlowState.equals(MatchFlowState.winner2)) || (matchFlowState.equals(MatchFlowState.tie))) {
                 break;
             }
             if (System.currentTimeMillis() - timeout > threshold * 1000) {
+                if (turn == 1) {
+                    matchFlowState = MatchFlowState.winner2;
+                } else {
+                    matchFlowState = MatchFlowState.winner1;
+                }
+
                 break;
             }
             if (matchFlowState.equals(MatchFlowState.paused)) {

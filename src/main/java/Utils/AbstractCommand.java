@@ -15,21 +15,22 @@ public abstract class AbstractCommand implements Serializable {
 
     public AbstractCommand(String username) {
         this.username = username;
+        player = findPlayer(username);
+
+    }
+
+    public Player findPlayer(String username) {
         for (Player userOnline : UserController.getOnline().values()) {
             if (username.equals(userOnline.getUsername())) {
-                player = userOnline;
+                return userOnline;
             }
         }
-
+        return null;
     }
 
     public void setUsername(String username) {
         this.username = username;
-        for (Player userOnline : UserController.getOnline().values()) {
-            if (username.equals(userOnline.getUsername())) {
-                player = userOnline;
-            }
-        }
+        player = findPlayer(username);
     }
 
     public String getUsername() {

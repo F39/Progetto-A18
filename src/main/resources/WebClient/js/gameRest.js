@@ -11,6 +11,67 @@ function newGame(mode) {
             },
             data: JSON.stringify({"username": sessionStorage.username, "mode": mode}),
             success: function () {
+                if(mode == 0){
+                    sessionStorage.timer = 60;
+                }else if(mode == 4){
+                    sessionStorage.timer = 10;
+                }
+                 
+                document.location.href = "./loadingPage.html";
+            },
+            error: function () {
+                alert("Something went wrong");
+            }
+
+        }
+    );
+}
+
+function newGameWithFriend(mode){
+    //var opponentUsername = document.getElementById("opponentUsername").value;
+    $.ajax(
+        {
+            type: 'POST',
+            contentType: 'application/json',
+            url: restServer + '/game/newgame',
+            headers: {
+                "token": sessionStorage.token
+            },
+            data: JSON.stringify({"username": sessionStorage.username, "mode": mode, "opponentUsername": opponentUsername}),
+            success: function () {
+                if(mode == 0){
+                    sessionStorage.timer = 60;
+                }else if(mode == 4){
+                    sessionStorage.timer = 10;
+                }
+                 
+                document.location.href = "./loadingPage.html";
+            },
+            error: function () {
+                alert("Something went wrong");
+            }
+
+        }
+    );
+}
+
+function accept(){
+    $.ajax(
+        {
+            type: 'POST',
+            contentType: 'application/json',
+            url: restServer + '/game/newgame',
+            headers: {
+                "token": sessionStorage.token
+            },
+            data: JSON.stringify({"username": sessionStorage.username, "opponentUsername": opponentUsername}),
+            success: function () {
+                if(sessionStorage.mode == 0){
+                    sessionStorage.timer = 60;
+                }else if(sessionStorage.mode == 4){
+                    sessionStorage.timer = 10;
+                }
+                 
                 document.location.href = "./loadingPage.html";
             },
             error: function () {
@@ -110,14 +171,21 @@ function poll() {
                 } else if (response.move == -2 && response.gameId != 0) {
                     //game found
                     sessionStorage.gameId = response.gameId;
-                    if (response.matchFlowState == "started1"){
+                    if(response.mode == "MultiPlayer"){
+                        sessionStorage.mode = 0;
+                    }else if(response.mode == "MultiPlayerTurbo"){
+                        sessionStorage.mode = 4;                    ;
+                    }else if (response.matchFlowState == "started1"){
                         sessionStorage.turn = 1;
+                        sessionStorage.noRefresh = 0;
+                    document.location.href = "./connect4.html";
                     }else if(response.matchFlowState == "started2"){
                         sessionStorage.turn = 2;
+                        sessionStorage.noRefresh = 0;
+                    document.location.href = "./connect4.html";
                     }
                     
-                    sessionStorage.noRefresh = 0;
-                    document.location.href = "./connect4.html";
+                    
                     
                 } else if (response.move == -1) {
                     //console.log("cambio di stato: " + response.matchFlowState);

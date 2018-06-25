@@ -1,18 +1,21 @@
 package Utils;
 
 import Controllers.GameControllerInt;
+import Controllers.UserController;
 import GameLogic.Mode;
+import GameLogic.Player;
 
 public class CommandNewGame extends AbstractCommand {
 
     private Mode mode;
     private GameControllerInt gameController;
+    private String opponentUsername;
 
-    public CommandNewGame(){
+    public CommandNewGame() {
 
     }
 
-    public CommandNewGame(CommandNewGame commandNewGame){
+    public CommandNewGame(CommandNewGame commandNewGame) {
         super(commandNewGame.getUsername());
         this.mode = commandNewGame.mode;
     }
@@ -30,10 +33,21 @@ public class CommandNewGame extends AbstractCommand {
         return mode;
     }
 
+    public String getOpponentUsername() {
+        return opponentUsername;
+    }
+
+    public void setOpponentUsername(String opponentUsername) {
+        this.opponentUsername = opponentUsername;
+    }
+
     @Override
     public void execute() {
-        if (mode == Mode.MultiPlayer) {
-            gameController.getMatchMaker().putPendingUsers(player);
+        if(opponentUsername != null){
+            Player opponentPlayer = findPlayer(opponentUsername);
+            gameController.createNewMultiPlayerGameWithFriend(player, opponentPlayer, mode);
+        } else if (mode == Mode.MultiPlayer || mode == Mode.MultiPlayerTurbo) {
+            gameController.getMatchMaker().putPendingUsers(player, mode);
         } else if (mode == Mode.StrategyNForecasting) {
             gameController.createNewSinglePlayerGame(Mode.StrategyNForecasting, player);
         } else {

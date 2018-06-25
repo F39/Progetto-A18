@@ -24,4 +24,11 @@ public interface GameControllerInt extends Runnable {
 
     void createNewSinglePlayerGame(Mode mode, Player player);
 
+    void createNewMultiPlayerGame(Player p1, Player p2, Mode mode);
+
+    void createNewMultiPlayerGameWithFriend(Player p1, Player p2, Mode mode);
+
+    void accept(CommandAcceptMatch command);
+
+    void acceptGame(Player p1, Player p2, int gameId);
 }

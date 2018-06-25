@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Mode {
-    MultiPlayer(0), StrategyRandom(1), StrategyNForecasting(2), test(3);
+    MultiPlayer(0), StrategyRandom(1), StrategyNForecasting(2), test(3), MultiPlayerTurbo(4);
 
     private final int value;
     private static Map<Integer, Mode> map = new HashMap<>();

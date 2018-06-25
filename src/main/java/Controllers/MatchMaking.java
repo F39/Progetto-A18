@@ -1,26 +1,26 @@
 package Controllers;
 
+import GameLogic.Mode;
 import GameLogic.Player;
 import Logger.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MatchMaking implements Runnable {
 
-    private List<Player> pendingPlayers;
+    private Map<Player, Mode> pendingPlayers;
     private GameController gameController;
     private Logger logger;
 
     public MatchMaking(GameController gameController) {
         this.gameController = gameController;
-        this.pendingPlayers = new ArrayList<>();
+        this.pendingPlayers = new HashMap<>();
         logger = Logger.getInstance();
     }
 
-    public void putPendingUsers(Player player) {
-        this.pendingPlayers.add(player);
+    public void putPendingUsers(Player player, Mode mode) {
+        this.pendingPlayers.put(player, mode);
     }
 
     @Override
@@ -32,14 +32,18 @@ public class MatchMaking implements Runnable {
                 while (true) {
                     indexP1 = ThreadLocalRandom.current().nextInt(0, pendingPlayers.size());
                     indexP2 = ThreadLocalRandom.current().nextInt(0, pendingPlayers.size());
+                    Set<Player> setPlayer = pendingPlayers.keySet();
                     if (indexP1 != indexP2) {
-                        Player p1 = pendingPlayers.get(indexP1);
-                        Player p2 = pendingPlayers.get(indexP2);
-                        gameController.createNewMultiPlayerGame(p1, p2);
-                        pendingPlayers.remove(p1);
-                        pendingPlayers.remove(p2);
-                        logger.log(String.format("Matched a new game: %s and %s will play.", p1.getUsername(), p2.getUsername()));
-                        break;
+                        List<Player> listPlayer = new ArrayList<>(setPlayer);
+                        Player p1 = listPlayer.get(indexP1);
+                        Player p2 = listPlayer.get(indexP2);
+                        if(pendingPlayers.get(p1) == pendingPlayers.get(p2)){
+                            gameController.createNewMultiPlayerGame(p1, p2, pendingPlayers.get(p1));
+                            pendingPlayers.remove(p1);
+                            pendingPlayers.remove(p2);
+                            logger.log(String.format("Matched a new game: %s and %s will play.", p1.getUsername(), p2.getUsername()));
+                            break;
+                        }
                     }
                 }
             }
