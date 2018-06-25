@@ -22,7 +22,7 @@ CREATE TABLE stats (
   defeats int(11) DEFAULT NULL,
   points int(11) DEFAULT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (userId) REFERENCES users(userid)
+  FOREIGN KEY (userId) REFERENCES users(id)
 );
 
 
