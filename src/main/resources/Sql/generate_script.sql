@@ -21,7 +21,8 @@ CREATE TABLE stats (
   ties int(11) DEFAULT NULL,
   defeats int(11) DEFAULT NULL,
   points int(11) DEFAULT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  FOREIGN KEY (userId) REFERENCES users(userid)
 );
 
 
