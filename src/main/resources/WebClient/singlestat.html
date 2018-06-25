@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./css/singlestat.css">
+    <link rel="stylesheet" href="./css/button.css">
+    <link rel="stylesheet" href="./css/background.css">
+</head>
+<body>
+<script>
+    window.onload = function(){
+        getUserStats();
+    }
+</script>
+<div class="format" id="format">
+
+        <div class="row">
+            <label id="pos1">Player</label>
+            <label class="nameplayer" id="player_name"></label>
+
+            <div class="row">
+                <label id="pos2">Games</label>
+                <label class="nameplayer" id="player_games"></label>
+
+                <div class="row">
+                    <label id="pos3">Victories</label>
+                    <label class="nameplayer" id="player_win"></label>
+
+                    <div class="row">
+                        <label id="pos4">Defeats</label>
+                        <label class="nameplayer" id="player_lose"></label>
+
+                        <div class="row">
+                            <label id="pos5">Draws</label>
+                            <label class="nameplayer" id="player_draws"></label>
+
+                            <div class="row">
+                                <label id="pos5">Points</label>
+                                <label class="nameplayer" id="player_points"></label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+
+        </div>
+
+    <div class="confirm">
+        <input type="button" value="Go Back" id="Confirm" onclick="document.location.href='./newgame.html'">
+    </div>
+</div>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/statsRest.js"></script>
+</body>
+</html>

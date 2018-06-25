@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./css/newGameFormat.css">
+    <link rel="stylesheet" href="./css/button.css">
+    <link rel="stylesheet" href="./css/background.css">
+    <link href="./css/loginFormat.css" rel="stylesheet">
+    <link href="loginFormat.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="menu_game">
+    <div class="login">
+        <div class="login_title">
+            <span>Searching for players</span>
+        </div>
+        <div class="login_fields">
+            <div class="login_field_User">
+                <div class="icon">
+                    <img src="./img/user_icon_copy.png">
+                </div>
+                <input placeholder="Username" type="text" id="username" required>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="menu_butt">
+        <input type="button" value="Send Request" class="req" onclick="newGameWithFriend(sessionStorage.mode)">
+        <input type="button" value="Random" class="rnd" onclick="newGame(sessionStorage.mode)">
+        <input type="button" value="Go Back" class="gbck" onclick="document.location.href='./newgame.html'">
+    </div>
+</div>
+
+
+
+<script src = "./js/jquery.js"></script>
+<script src = "./js/auth.js"></script>
+<script src = "./js/gameRest.js"></script>
+
+</body>
+</html>

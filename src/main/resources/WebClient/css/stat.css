@@ -1,0 +1,80 @@
+
+.format{
+    opacity: 1;
+    border-radius: 10px;
+    width: 600px;
+    border-top: 2px solid black;
+    height: 320px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    padding: 100px 40px 40px 40px;
+    background: #262626;
+    background: linear-gradient(45deg, #262626 0%, #1f222e 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#35394a', endColorstr='#1f222e',GradientType=1 );
+}
+
+h2{
+    display: block;
+    color: #ff4300;
+    position: absolute;
+    left: 170px;
+    top: -35px;
+    line-height: 40px;
+    font-size: 3.3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+
+
+.row{
+    color: #afb1be;
+    display: flex;
+    width: auto;
+    font-size: 25px;
+    top: 60px;
+    height: 20px;
+    position: absolute;
+    left: 0;
+
+}
+
+.indexStat{
+    display: flex;
+    font-size: 20px;
+    line-height: 35px;
+}
+
+
+
+label{
+    color: #afb1be;
+    text-align: center;
+    background: #32364a;
+    border-top: 2px solid #393d52;
+    border-bottom: 2px solid #393d52;
+    border-right: none;
+    border-left: none;
+    outline: none;
+    font-family: 'Gudea', sans-serif;
+    flex: 20%;
+    height: 30px;
+    width: 80px;
+}
+
+label[class="nameplayer"]{
+    width: 200px;
+}
+
+
+.confirm{
+    position: absolute;
+    top: 410px;
+    left: 260px;
+}
+
