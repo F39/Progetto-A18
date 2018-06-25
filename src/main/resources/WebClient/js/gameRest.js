@@ -117,24 +117,27 @@ function move(move) {
 }
 
 function pause() {
-    $.ajax(
-        {
-            type: 'POST',
-            contentType: 'application/json',
-            url: restServer + '/game/pause',
-            headers: {
-                "token": sessionStorage.token
-            },
-            data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId}),
-            success: function (response) {
-                //alert("Paused");
-            },
-            error: function () {
-                alert("Something went wrong");
-            }
+    if(sessionStorage.turn == changePlayer){
+        $.ajax(
+            {
+                type: 'POST',
+                contentType: 'application/json',
+                url: restServer + '/game/pause',
+                headers: {
+                    "token": sessionStorage.token
+                },
+                data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId}),
+                success: function (response) {
+                    //alert("Paused");
+                },
+                error: function () {
+                    alert("Something went wrong");
+                }
 
-        }
-    );
+            }
+        );
+    }
+
 }
 
 var quitted = false;
