@@ -3,7 +3,6 @@ package Controllers;
 import DatabaseManagement.*;
 import GameLogic.Player;
 import Logger.Logger;
-import Utils.AbstractCommand;
 import Utils.Email;
 import Utils.EmailAdapter;
 import Utils.OnlineChecker;
@@ -67,13 +66,13 @@ public class UserController {
     public Response signUp(@HeaderParam("host") String host, User user) {
         String confirmLink = generateAuthToken();
         user.setEmail_token(confirmLink);
-        if(user.getEmail().equals("demo@demo.com")){
+        if (user.getEmail().equals("demo@demo.com")) {
             user.setEmail_confirmed(true);
             if (addUser(user)) {
                 logger.log("Signup procedure completed successfully");
                 return Response.status(Status.OK).build();
             }
-        }else{
+        } else {
             if (addUser(user)) {
                 String url = "http://" + host + "/rest/user/confirm/";
                 email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + url + confirmLink);
@@ -91,12 +90,12 @@ public class UserController {
     public InputStream confirmEmail(@PathParam("token") String token) {
         User toConfirm;
         try {
-            if((toConfirm = userRepository.getUserByEmailToken(token)) != null ){
+            if ((toConfirm = userRepository.getUserByEmailToken(token)) != null) {
                 toConfirm.setEmail_confirmed(true);
                 userRepository.updateUserEmailConfirmed(toConfirm);
                 File f = new File("src/main/resources/WebClient/emailconfirmed.html");
                 return new FileInputStream(f);
-            }else{
+            } else {
                 File f = new File("src/main/resources/WebClient/emailnotconfirmed.html");
                 return new FileInputStream(f);
             }
@@ -112,8 +111,8 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(User user) {
         byte[] salt;
-        if((salt = userRepository.getSalt(user.getUsername())) !=null){
-            user = encryption(user,salt);
+        if ((salt = userRepository.getSalt(user.getUsername())) != null) {
+            user = encryption(user, salt);
             if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
                 String newToken = generateAuthToken();
                 userRepository.updateUserAuthToken(newToken, user.getUsername());
@@ -133,8 +132,8 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginTCP(User user) {
         byte[] salt;
-        if((salt = userRepository.getSalt(user.getUsername())) !=null){
-            user = encryption(user,salt);
+        if ((salt = userRepository.getSalt(user.getUsername())) != null) {
+            user = encryption(user, salt);
             if ((user = userRepository.checkUserCredential(user.getUsername(), user.getPassword())) != null) {
                 String newToken = generateAuthToken();
                 userRepository.updateUserAuthToken(newToken, user.getUsername());
@@ -179,9 +178,9 @@ public class UserController {
 
     public static void removeOfflinePlayers() {
         Iterator<Player> iterator = online.values().iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Player player = iterator.next();
-            if(player.hasToPoll()){
+            if (player.hasToPoll()) {
                 if (System.currentTimeMillis() - player.getLastPoll() > threshold * 1000) {
                     iterator.remove();
                     Logger.getInstance().log(String.format("Removed offline player %s ", player.getUsername()));
@@ -192,25 +191,23 @@ public class UserController {
 
     }
 
-    public User encryption(User user){
+    private User encryption(User user) {
         byte[] salt = new byte[16];
         Random random = new Random();
         random.nextBytes(salt);
         encryption(user, salt);
         return user;
     }
-    public User encryption(User user, byte[] salt){
+
+    private User encryption(User user, byte[] salt) {
         try {
             KeySpec spec = new PBEKeySpec(user.getPassword().toCharArray(), salt, 65536, 128);
-            SecretKeyFactory f = null;
-            f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] hash = f.generateSecret(spec).getEncoded();
             Base64.Encoder enc = Base64.getEncoder();
             user.setPassword(enc.encodeToString(hash));
             user.setSalt(enc.encodeToString(salt));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
         return user;

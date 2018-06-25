@@ -29,15 +29,15 @@ public class Match extends Thread {
         board = new Board();
         lastMove = -1;
         moved = false;
-        timeout=System.currentTimeMillis();
+        timeout = System.currentTimeMillis();
     }
 
     public Match(Player player1, Player player2, int gameId, Mode mode) {
         this(player1, gameId);
         players.put(2, player2);
-        if(mode == Mode.MultiPlayerTurbo){
+        if (mode == Mode.MultiPlayerTurbo) {
             threshold = 10;
-        }else{
+        } else {
             threshold = 60;
         }
     }
@@ -65,7 +65,7 @@ public class Match extends Thread {
     }
 
     public Map<Integer, Player> getPlayers() {
-        if(aiStrategyInt != null){
+        if (aiStrategyInt != null) {
 
         }
         return players;
@@ -80,7 +80,7 @@ public class Match extends Thread {
         checkResult(result);
 
         turn -= Math.pow(-1, turn);
-        if (aiStrategyInt != null && matchFlowState != MatchFlowState.winner1 && matchFlowState != MatchFlowState.winner2 && matchFlowState != MatchFlowState.tie ) {
+        if (aiStrategyInt != null && matchFlowState != MatchFlowState.winner1 && matchFlowState != MatchFlowState.winner2 && matchFlowState != MatchFlowState.tie) {
             lastMove = aiStrategyInt.move();
             result = board.move(lastMove, turn);
             checkResult(result);
@@ -121,9 +121,9 @@ public class Match extends Thread {
     }
 
     public void quitGame(Player player) {
-        if(players.get(1).getUsername() == player.getUsername()){
+        if (players.get(1).getUsername() == player.getUsername()) {
             matchFlowState = MatchFlowState.winner2;
-        }else{
+        } else {
             matchFlowState = MatchFlowState.winner1;
         }
 
@@ -167,21 +167,5 @@ public class Match extends Thread {
     public AIStrategyInt getAiStrategyInt() {
         return aiStrategyInt;
     }
-    //    private MatchFlowState whoWin(MatchEndState matchEndState){
-//        MatchFlowState matchFlowState;
-//        if(turn == 1){
-//            if(matchEndState.equals(MatchEndState.move)){
-//                matchFlowState = MatchFlowState.winner1;
-//            }else{
-//                matchFlowState = MatchFlowState.winner2;
-//            }
-//        }else{
-//            if(matchEndState.equals(MatchEndState.move)){
-//                matchFlowState = MatchFlowState.winner2;
-//            }else{
-//                matchFlowState = MatchFlowState.winner1;
-//            }
-//        }
-//        return matchFlowState;
-//    }
+
 }

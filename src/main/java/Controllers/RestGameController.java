@@ -5,7 +5,6 @@ import DatabaseManagement.User;
 import GameLogic.MatchFlowState;
 import Logger.Logger;
 import Utils.*;
-import sun.rmi.runtime.Log;
 
 import javax.inject.Singleton;
 import javax.ws.rs.*;

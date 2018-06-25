@@ -1,39 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<style>
 
-</style>
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-        <link rel="stylesheet" href="./css/newGameFormat.css">
-        <link rel="stylesheet" href="./css/button.css">
-        <link rel="stylesheet" href="./css/background.css">
-        <link rel="stylesheet" href="./css/gif.css">
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    </head>
-    <body>
-            <script src = "./js/jquery.js"></script>
-            <script src = "./js/auth.js"></script>
-            <script src = "./js/gameRest.js"></script>        
+<head>
+    <meta charset="UTF-8">
+    <title>Connect 4</title>
+    <link rel="stylesheet" href="./css/newGameFormat.css">
+    <link rel="stylesheet" href="./css/button.css">
+    <link rel="stylesheet" href="./css/background.css">
+    <link rel="stylesheet" href="./css/gif.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body>
+<script src="./js/jquery.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/gameRest.js"></script>
 
-    <ul id="home_icon">
-        <li id="home_icon"><a href="#"><i class="fa fa-gift" aria-hidden="true"></i></a></li>
-    </ul>
-    <div class="loading">
-        <img src="./img/g.gif" alt="HTML5 Icon" style="width:200px;height:200px;">
-    </div>
+<ul id="home_icon">
+    <li id="home_icon"><a href="#"><i class="fa fa-gift" aria-hidden="true"></i></a></li>
+</ul>
+<div class="loading">
+    <img src="./img/g.gif" alt="HTML5 Icon" style="width:200px;height:200px;">
+</div>
 
+<div class="menu_game">
 
-    <div class="menu_game">
-
-        <div class="menu_butt">
-            <input type="checkbox" class="button" id="new_game">
-            <span class="aaa" id="aaa">
+    <div class="menu_butt">
+        <input type="checkbox" class="button" id="new_game">
+        <span class="aaa" id="aaa">
                 <label for="new_game" id="new_game">New Game</label>
                             <div class="mod_game">
                             <ul>
-                                <li><input type="button" value="1 vs 1" class="mod1" onclick="document.location.href='./chooseMode.html'"></li>
+                                <li><input type="button" value="1 vs 1" class="mod1"
+                                           onclick="document.location.href='./chooseMode.html'"></li>
                                 <li><a href="./choosematch.html"><input type="button" value="1 vs CPU" class="mod2"></a></li>
                             </ul>
                             </div>
@@ -41,29 +39,27 @@
 
                 </span>
 
-            <input type="button" value="Stats" class="button2" onclick="document.location.href='./singlestat.html'" >
-            <input type="button" value="Log out" class="logout" onclick="logout()">
+        <input type="button" value="Stats" class="button2" onclick="document.location.href='./singlestat.html'">
+        <input type="button" value="Log out" class="logout" onclick="logout()">
 
-            <div id="reqmess"><label for="reqmess" id="textReq"></label></div>
-            <input type="button" value="accept" class="acceptButton" id="Y" onclick="Accept(1)">
-            <input type="button" value="decline" class="decline" id ="N" onclick="Accept(0)">
-        </div>
+        <div id="reqmess"><label for="reqmess" id="textReq"></label></div>
+        <input type="button" value="accept" class="acceptButton" id="Y" onclick="Accept(1)">
+        <input type="button" value="decline" class="decline" id="N" onclick="Accept(0)">
     </div>
-    <script>
-            function NewReq(){
-                document.getElementById("Y").style.display="block";
-                document.getElementById("N").style.display="block";
-            }
-            function DeclineReq(){
-                document.getElementById("Y").style.display="none";
-                document.getElementById("N").style.display="none";
-                document.getElementById("textReq").innerHTML = "";
-            }
+</div>
 
-    </script>
-    
-    
+<script>
+    function NewReq() {
+        document.getElementById("Y").style.display = "block";
+        document.getElementById("N").style.display = "block";
+    }
 
+    function DeclineReq() {
+        document.getElementById("Y").style.display = "none";
+        document.getElementById("N").style.display = "none";
+        document.getElementById("textReq").innerHTML = "";
+    }
+</script>
 
-    </body>
+</body>
 </html>
