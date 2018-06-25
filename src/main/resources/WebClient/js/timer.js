@@ -9,6 +9,7 @@ function startTimer(){
     }else {
         if(sessionStorage.turn == changePlayer){
             quit();
+
         }
     }
     

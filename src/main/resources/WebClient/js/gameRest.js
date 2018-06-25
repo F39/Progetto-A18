@@ -137,6 +137,7 @@ function pause() {
     );
 }
 
+var quitted = false;
 function quit() {
     $.ajax(
         {
@@ -148,7 +149,7 @@ function quit() {
             },
             data: JSON.stringify({"username": sessionStorage.username, "gameId": sessionStorage.gameId}),
             success: function (response) {
-
+                quitted = true;
             },
             error: function () {
                 alert("Something went wrong");
@@ -221,7 +222,11 @@ function poll() {
                 } else {
                     //console.log("mossa");
                     var enemyTurn = sessionStorage.turn - Math.pow(-1,sessionStorage.turn);
-                    addMove(enemyTurn, response.move);
+                    if(quitted == false){
+                        addMove(enemyTurn, response.move);
+                    }else{
+                        quitted = true;
+                    }
                 }
             },
             error: function () {
