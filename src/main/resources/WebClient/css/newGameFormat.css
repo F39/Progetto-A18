@@ -122,6 +122,25 @@ input.button2{
     width: 200px;
 }
 
+input.req{
+    position: relative;
+    top: 40px;
+    width: 200px;
+}
+
+input.rnd{
+    position: relative;
+    top: 50px;
+    width: 200px;
+
+}
+
+input.gbck{
+    position: relative;
+    top: 60px;
+    width: 200px;
+}
+
 input.logout{
     position: relative;
     top: 30px;

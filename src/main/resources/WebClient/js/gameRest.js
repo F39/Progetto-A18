@@ -1,5 +1,4 @@
 var restServer = "http://localhost:8080/rest";
-
 function newGame(mode) {
     $.ajax(
         {
@@ -15,6 +14,8 @@ function newGame(mode) {
                     sessionStorage.timer = 60;
                 }else if(mode == 4){
                     sessionStorage.timer = 10;
+                }else{
+                    sessionStorage.timer = 60;
                 }
                  
                 document.location.href = "./loadingPage.html";
@@ -28,7 +29,7 @@ function newGame(mode) {
 }
 
 function newGameWithFriend(mode){
-    //var opponentUsername = document.getElementById("opponentUsername").value;
+    var opponentUsername = document.getElementById("username").value;
     $.ajax(
         {
             type: 'POST',
@@ -55,7 +56,7 @@ function newGameWithFriend(mode){
     );
 }
 
-function accept(){
+function accept(accepted){
     $.ajax(
         {
             type: 'POST',
@@ -64,7 +65,7 @@ function accept(){
             headers: {
                 "token": sessionStorage.token
             },
-            data: JSON.stringify({"username": sessionStorage.username, "opponentUsername": opponentUsername}),
+            data: JSON.stringify({"username": sessionStorage.username, "opponentUsername": opponentUsername, "accepted": accepted}),
             success: function () {
                 if(sessionStorage.mode == 0){
                     sessionStorage.timer = 60;
@@ -171,10 +172,12 @@ function poll() {
                 } else if (response.move == -2 && response.gameId != 0) {
                     //game found
                     sessionStorage.gameId = response.gameId;
+                    console.log(response.mode);
                     if(response.mode == "MultiPlayer"){
-                        sessionStorage.mode = 0;
+                        sessionStorage.timer = 60;
+                        console.log("invito ricevuto");
                     }else if(response.mode == "MultiPlayerTurbo"){
-                        sessionStorage.mode = 4;                    ;
+                        sessionStorage.timer = 10;
                     }else if (response.matchFlowState == "started1"){
                         sessionStorage.turn = 1;
                         sessionStorage.noRefresh = 0;
@@ -182,7 +185,9 @@ function poll() {
                     }else if(response.matchFlowState == "started2"){
                         sessionStorage.turn = 2;
                         sessionStorage.noRefresh = 0;
-                    document.location.href = "./connect4.html";
+                        document.location.href = "./connect4.html";
+                    }else if(response.matchFlowState == "refused"){
+                        document.location.href = "./newgame.html";
                     }
                     
                     

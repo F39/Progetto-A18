@@ -93,11 +93,15 @@ public class GameController implements GameControllerInt {
         //userStatsRepository.addUserGame(p2.getUser());
     }
 
-    public void acceptGame(Player p1, Player p2, int gameId) {
-        commandsOut.add(new CommandOut(p1.getUsername(), gameId, MatchFlowState.started1, -2));
-        userStatsRepository.addUserGame(p1.getUser());
-        commandsOut.add(new CommandOut(p2.getUsername(), gameId, MatchFlowState.started2, -2));
-        userStatsRepository.addUserGame(p2.getUser());
+    public void acceptGame(Player p1, Player p2, int gameId, int accepted) {
+        if(accepted != 0){
+            commandsOut.add(new CommandOut(p1.getUsername(), gameId, MatchFlowState.started1, -2));
+            userStatsRepository.addUserGame(p1.getUser());
+            commandsOut.add(new CommandOut(p2.getUsername(), gameId, MatchFlowState.started2, -2));
+            userStatsRepository.addUserGame(p2.getUser());
+        }else{
+            commandsOut.add(new CommandOut(p2.getUsername(), gameId, MatchFlowState.refused, -2));
+        }
     }
 
     @Override
@@ -128,7 +132,7 @@ public class GameController implements GameControllerInt {
     @Override
     public void quit(CommandQuit command) {
         logger.log("Received new quit command");
-        commandsIn.add(command);
+            commandsIn.add(command);
     }
 
     @Override

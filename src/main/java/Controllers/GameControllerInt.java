@@ -30,5 +30,5 @@ public interface GameControllerInt extends Runnable {
 
     void accept(CommandAcceptMatch command);
 
-    void acceptGame(Player p1, Player p2, int gameId);
+    void acceptGame(Player p1, Player p2, int gameId, int accepted);
 }

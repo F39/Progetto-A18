@@ -46,6 +46,10 @@ public class CommandOut extends AbstractCommand {
         return move;
     }
 
+    public Mode getMode() {
+        return mode;
+    }
+
     @Override
     public void execute() {
 

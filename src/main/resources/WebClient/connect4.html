@@ -25,6 +25,7 @@
         <script type="text/javascript" src="./js/game.js"></script>
         <script type="text/javascript" src="./js/timer.js"></script>
         <script>
+            var isPaused = false;
             window.onload = function(){
                 if(sessionStorage.noRefresh == 1){
                     alert("Invalid game");
@@ -157,15 +158,18 @@
 <script>
     function isPause(event){
         //alert("Paused");
+        document.getElementById("pauseview").innerHTML = "PAUSED";
         var displaypaused = document.getElementById("pauseview").style.display;
-        if(displaypaused==="block"){
+        if(document.getElementById("pauseview").style.display==="block"){
             document.getElementById("pausebutton").value="Pause Game";
-            displaypaused="none";
+            document.getElementById("pauseview").style.display="none";
+            isPaused = false;
         }
         else{
             document.getElementById("pauseview").innerHTML = "PAUSED";
             document.getElementById("pauseview").style.display = "block";
             document.getElementById("pausebutton").value="Unpause Game";
+            isPaused = true;
         }
     }
 </script>

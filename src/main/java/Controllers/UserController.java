@@ -3,6 +3,7 @@ package Controllers;
 import DatabaseManagement.*;
 import GameLogic.Player;
 import Logger.Logger;
+import Utils.AbstractCommand;
 import Utils.Email;
 import Utils.EmailAdapter;
 import Utils.OnlineChecker;
@@ -167,14 +168,18 @@ public class UserController {
     }
 
     public static void removeOfflinePlayers() {
-        for (Player player : online.values()) {
+        Iterator<Player> iterator = online.values().iterator();
+        while(iterator.hasNext()){
+            Player player = iterator.next();
             if(player.hasToPoll()){
                 if (System.currentTimeMillis() - player.getLastPoll() > threshold * 1000) {
-                    online.values().remove(player);
+                    iterator.remove();
                     Logger.getInstance().log(String.format("Removed offline player %s ", player.getUsername()));
                 }
             }
+
         }
+        
     }
 
     public User encryption(User user){
