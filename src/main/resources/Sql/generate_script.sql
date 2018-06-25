@@ -23,18 +23,5 @@ CREATE TABLE stats (
   points int(11) DEFAULT NULL,
   PRIMARY KEY (id)
 );
-INSERT INTO forza4.stats
-(userId,
-games,
-wins,
-ties,
-defeats,
-points)
-VALUES
-(1
-,0
-,0
-,0
-,0
-,0);
+
 
