@@ -67,12 +67,22 @@ public class UserController {
     public Response signUp(@HeaderParam("host") String host, User user) {
         String confirmLink = generateAuthToken();
         user.setEmail_token(confirmLink);
-        if (addUser(user)) {
-            String url = "http://" + host + "/rest/user/confirm/";
-            email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + url + confirmLink);
-            return Response.status(Status.OK).build();
+        if(user.getEmail().equals("demo@demo.com")){
+            user.setEmail_confirmed(true);
+            if (addUser(user)) {
+                logger.log("Signup procedure completed successfully");
+                return Response.status(Status.OK).build();
+            }
+        }else{
+            if (addUser(user)) {
+                String url = "http://" + host + "/rest/user/confirm/";
+                email.sendEmail(user.getEmail(), null, "Confirmation email for connect4", "Press this link to confirm your registration: " + url + confirmLink);
+                logger.log("Signup procedure completed successfully");
+                return Response.status(Status.OK).build();
+            }
         }
-        logger.log("Signup procedure completed successfully");
+
+        logger.log("Signup procedure failed");
         return Response.status(Status.BAD_REQUEST).build();
     }
 
