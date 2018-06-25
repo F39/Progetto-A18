@@ -13,16 +13,6 @@ CREATE TABLE users (
   UNIQUE KEY username (username),
   UNIQUE KEY email (email)
 );
-INSERT INTO forza4.users
-(username,
-email,
-password,
-email_confirmed)
-VALUES
-('testUser'
-,'fake.email@mail.com'
-,'super_password123'
-,1);
 CREATE TABLE stats (
   id int(11) NOT NULL AUTO_INCREMENT,
   userId int(11) NOT NULL,
