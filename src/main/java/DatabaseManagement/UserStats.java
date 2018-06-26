@@ -2,7 +2,9 @@ package DatabaseManagement;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
+/**
+ * Pojo class, entity mapped on the DB; handles the user's statistics.
+ */
 @DatabaseTable(tableName = "stats")
 public class UserStats {
 

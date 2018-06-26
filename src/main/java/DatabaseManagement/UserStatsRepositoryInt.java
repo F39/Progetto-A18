@@ -1,5 +1,7 @@
 package DatabaseManagement;
-
+/**
+ * Interface providing the create, update, delete methods for the UserStats entity of the DB
+ */
 public interface UserStatsRepositoryInt extends CrudRepository<UserStats> {
 
     UserStats getUserStats(User user);

@@ -9,6 +9,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Class that implements the user's statistics on the sql DB
+ */
 public class UserStatsSqlRepository implements UserStatsRepositoryInt {
 
     Dao<UserStats, Integer> statsDao;
