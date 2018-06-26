@@ -3,6 +3,9 @@ package GameLogic.ArtificialIntelligence;
 import GameLogic.Board;
 import GameLogic.Match;
 
+/**
+ * Artificial intelligence class; it forecasts the best move for the second level single player game
+ */
 public class AIStrategy4StepForecasting implements AIStrategyInt {
 
     private Match match;

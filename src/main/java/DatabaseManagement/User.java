@@ -6,6 +6,9 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.io.Serializable;
 import java.util.UUID;
 
+/**
+ * Pojo class, entity mapped on the DB; handles the user's data. Represents the user of the application.
+ */
 @DatabaseTable(tableName = "users")
 public class User implements Serializable {
 

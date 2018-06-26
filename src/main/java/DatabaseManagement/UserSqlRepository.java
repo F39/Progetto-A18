@@ -11,7 +11,9 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 
-
+/**
+ * Class that implements the user's data on the sql DB
+ */
 public class UserSqlRepository implements UserRepositoryInt {
 
     private Dao<User, Integer> userDao;
