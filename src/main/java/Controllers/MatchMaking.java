@@ -7,6 +7,9 @@ import Logger.Logger;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Match making thread, it handles the game pending users and matches it with the first available one
+ */
 public class MatchMaking implements Runnable {
 
     private Map<Player, Mode> pendingPlayers;

@@ -6,6 +6,9 @@ import Utils.*;
 
 import java.util.List;
 
+/**
+ * User Controller facade
+ */
 public interface GameControllerInt extends Runnable {
 
     void newGame(CommandNewGame command);

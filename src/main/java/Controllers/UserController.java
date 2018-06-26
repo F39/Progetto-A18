@@ -24,6 +24,9 @@ import java.security.spec.KeySpec;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * Rest Servlet to handle the endpoints related to the User persistence level on the db
+ */
 @Singleton
 @Path("/user")
 public class UserController {

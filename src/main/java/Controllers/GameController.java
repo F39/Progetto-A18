@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Main controller logic class, it's the invoker object of the command pattern, handles all the active games and the matchmaking
+ */
 @Singleton
 public class GameController implements GameControllerInt {
 
@@ -151,7 +154,7 @@ public class GameController implements GameControllerInt {
                     ((CommandNewGame) toExecute).setGameController(this);
                     toExecute.execute();
                     logger.log("New game command successfully executed");
-                } else if (toExecute instanceof  CommandAcceptMatch) {
+                } else if (toExecute instanceof CommandAcceptMatch) {
                     ((CommandAcceptMatch) toExecute).setGameController(this);
                     toExecute.execute();
                     logger.log("New game command successfully executed");

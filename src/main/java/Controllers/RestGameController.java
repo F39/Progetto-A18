@@ -13,6 +13,9 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Rest Servlet to handle the endpoints related to the GameController logic level
+ */
 @Singleton
 @Path("/game")
 public class RestGameController {

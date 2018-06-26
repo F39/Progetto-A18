@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Rest Servlet to handle the endpoints related to the StatsController logic level
+ */
 @Singleton
 @Path("/stats")
 public class RestStatsController {
