@@ -4,6 +4,9 @@ import DatabaseManagement.User;
 
 import java.io.Serializable;
 
+/**
+ * Class representing the player of the game
+ */
 public class Player implements Serializable {
 
     private User user;

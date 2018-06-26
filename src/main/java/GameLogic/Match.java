@@ -6,6 +6,9 @@ import GameLogic.ArtificialIntelligence.AIStrategyRandom;
 
 import java.util.HashMap;
 import java.util.Map;
+/**
+ * Main game logic class. Handles the board and the game flow state
+ */
 
 public class Match extends Thread {
 
@@ -70,7 +73,9 @@ public class Match extends Thread {
         }
         return players;
     }
-
+    /**
+     * Move in the specified column
+     */
     public void move(int move) {
         int result;
         timeout = System.currentTimeMillis();
@@ -108,6 +113,9 @@ public class Match extends Thread {
         return matchFlowState;
     }
 
+    /**
+     * Begin a new game
+     */
     public void startGame() {
         this.start();
     }
